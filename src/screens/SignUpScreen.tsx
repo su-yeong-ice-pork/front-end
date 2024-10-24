@@ -8,6 +8,7 @@ import {
   Dimensions,
   ScrollView,
   TextInput,
+  TouchableWithoutFeedback,
   Image,
   Alert,
 } from 'react-native';
@@ -17,6 +18,7 @@ import Svg, {
   LinearGradient as SVGLinearGradient,
   Stop,
   Text as SvgText,
+  TSpan,
 } from 'react-native-svg';
 import Header from '../components/Header';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -296,7 +298,7 @@ const SignUpScreen = ({navigation}) => {
             <View style={styles.container}>
               <Text style={styles.welcomeText}>환영합니다!</Text>
               <View style={styles.inlineText}>
-                <Svg height={height * 0.05} width={width * 0.3}>
+                <Svg height={height * 0.05} width={width * 0.8}>
                   <Defs>
                     <SVGLinearGradient id="grad1">
                       <Stop offset="0%" stopColor="#2CCDE4" stopOpacity="1" />
@@ -304,17 +306,16 @@ const SignUpScreen = ({navigation}) => {
                     </SVGLinearGradient>
                   </Defs>
                   <SvgText
-                    fill="url(#grad1)"
-                    fontSize="25"
-                    fontWeight="bold"
+                    fontSize="24"
+                    fontWeight="800"
                     x="0"
-                    y="10%"
+                    y="30%"
                     textAnchor="start"
                     alignmentBaseline="hanging">
-                    당신의 잔디
+                    <TSpan fill="url(#grad1)">당신의 잔디</TSpan>
+                    <TSpan fill="#3E3E3E">를 함께 심어보아요!</TSpan>
                   </SvgText>
                 </Svg>
-                <Text style={styles.welcomeText2}>를 함께 심어보아요!</Text>
               </View>
             </View>
 
@@ -550,10 +551,7 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
 
       {/* 드롭다운 모달 */}
       <Modal visible={modalVisible} transparent={true} animationType="slide">
-        <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1}
-          onPressOut={() => setModalVisible(false)}>
+        <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             {/* College Selection */}
             <View style={styles.inputWrapper}>
@@ -567,6 +565,7 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
 
             <View style={styles.modalContainer2}>
               <DropDownPicker
+                zIndex={100}
                 open={openCollege}
                 value={selectedCollege}
                 items={colleges}
@@ -574,13 +573,13 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
                 setValue={setSelectedCollege}
                 setItems={setColleges}
                 listMode="SCROLLVIEW"
+                scrollViewProps={{
+                  nestedScrollEnabled: true,
+                }}
                 placeholder="단과대학"
                 zIndex={3000}
                 zIndexInverse={100}
                 onOpen={() => setOpenDepartment(false)}
-                scrollViewProps={{
-                  nestedScrollEnabled: true,
-                }}
                 containerStyle={{
                   height: 40,
                   width: width * 0.35, // 원하는 너비로 조절
@@ -661,7 +660,7 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
               <Text style={styles.confirmButtonText}>확인</Text>
             </TouchableOpacity>
           </View>
-        </TouchableOpacity>
+        </View>
       </Modal>
     </View>
   );
@@ -765,6 +764,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F4F4F4',
     borderRadius: 6,
     paddingHorizontal: 10,
+    paddingVertical: 8, // 필요에 따라 추가
     justifyContent: 'center',
     fontFamily: 'NanumSquareNeo-Variable',
     fontWeight: '600',

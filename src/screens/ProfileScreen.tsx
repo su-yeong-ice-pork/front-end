@@ -49,12 +49,6 @@ const IMAGES = {
   iIcon: require('../../assets/images/icons/iIcon.png'),
 };
 
-const BADGES = [
-  require('../../assets/images/badge/badge1.png'),
-  require('../../assets/images/badge/badge2.png'),
-  require('../../assets/images/badge/badge3.png'),
-];
-
 const ProfileScreen = ({navigation}) => {
   const [member, setMember] = useState<Member | null>(null);
   const [badges, setBadges] = useState<Badge[] | null>(null);
@@ -65,7 +59,6 @@ const ProfileScreen = ({navigation}) => {
   const [totalDays, setTotalDays] = useState<number>(0);
   const [totalTime, setTotalTime] = useState<number>(0);
   const [createDate, setCreateDate] = useState<string>('');
-  const [showBadgeModal, setShowBadgeModal] = useState(false);
 
   const handleNotUseableModal = () => {
     setModalMessage('추가 예정인 기능입니다.');
@@ -201,10 +194,7 @@ const ProfileScreen = ({navigation}) => {
               buttonText="그룹목록 보기"
               onButtonPress={handleNotUseableModal}
             />
-            <BadgeSection
-              badges={badges}
-              onMorePress={() => setShowBadgeModal(true)}
-            />
+            <BadgeSection badges={badges} />
             <FreezeSummary
               freezeCount={member?.freezeCount}
               onPress={handleNotUseableModal}
@@ -232,45 +222,6 @@ const ProfileScreen = ({navigation}) => {
               <TouchableOpacity
                 style={styles.closeButton}
                 onPress={() => setModalVisible(false)}>
-                <Text style={styles.closeButtonText}>닫기</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={showBadgeModal}
-          onRequestClose={() => setShowBadgeModal(false)}>
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalView}>
-              {/* 모달 헤더 */}
-              <View style={styles.modalHeaderContainer}>
-                <Text style={styles.modalHeaderText}>프로필 뱃지 </Text>
-                <Text style={styles.modalHeaderHighlight}>
-                  총 {badges ? badges.length : 0}개 보유 중
-                </Text>
-              </View>
-              <ScrollView style={styles.modalScrollView}>
-                {badges &&
-                  badges.map(badge => (
-                    <View key={badge.id} style={styles.modalBadge}>
-                      <Image
-                        source={BADGES[Number(badge.fileName)]}
-                        style={styles.modalBadgeImage}
-                      />
-                      <View style={styles.modalBadgeInfo}>
-                        <Text style={styles.modalBadgeName}>{badge.name}</Text>
-                        <Text style={styles.modalBadgeDescription}>
-                          {badge.description}
-                        </Text>
-                      </View>
-                    </View>
-                  ))}
-              </ScrollView>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setShowBadgeModal(false)}>
                 <Text style={styles.closeButtonText}>닫기</Text>
               </TouchableOpacity>
             </View>
@@ -321,7 +272,13 @@ const InfoCard = ({
 };
 
 // BadgeSection Component
-const BadgeSection = ({badges, onMorePress}) => {
+const BadgeSection = ({badges}) => {
+  const BADGES = [
+    require('../../assets/images/badge/badge1.png'),
+    require('../../assets/images/badge/badge2.png'),
+    require('../../assets/images/badge/badge3.png'),
+  ];
+
   return (
     <View style={styles.badgeSection}>
       <Text style={styles.badgeTitle}>보유 뱃지</Text>
@@ -338,7 +295,9 @@ const BadgeSection = ({badges, onMorePress}) => {
               ))}
               {badges.length > 0 && (
                 <TouchableOpacity
-                  onPress={onMorePress}
+                  onPress={() => {
+                    console.log('... 버튼 클릭됨');
+                  }}
                   style={styles.moreButton}>
                   <Text style={styles.moreText}>...</Text>
                 </TouchableOpacity>
@@ -358,14 +317,20 @@ const FreezeSummary = ({freezeCount, onPress}) => {
   return (
     <View style={styles.frozenSection}>
       <Text style={styles.frozenTitle}>보유 프리즈</Text>
-      <View style={styles.frozenDetailContainer}>
-        <Text style={styles.frozenDetailText}>
-          현재 총 <Text style={styles.frozenCount}>{freezeCount}</Text> 개의
-          프리즈를 보유하고 있습니다.
-        </Text>
-        <TouchableOpacity style={styles.useFrozenButton} onPress={onPress}>
+
+      {/* 프리즈 개수 표시 상자 */}
+      <View style={styles.infoCardContainer}>
+        <View style={styles.frozenDetailContainer}>
+          <Text style={styles.frozenDetailText}>
+            현재 총 <Text style={styles.frozenCount}>{freezeCount}</Text> 개의
+            프리즈를 보유하고 있습니다.
+          </Text>
+        </View>
+
+        {/* 프리즈 충전하기 버튼 */}
+        <TouchableOpacity onPress={onPress}>
           <LinearGradient
-            colors={['rgba(31, 209, 245, 1)', 'rgba(0, 255, 150, 1)']} // 그라데이션 색상
+            colors={['rgba(31, 209, 245, 1)', 'rgba(0, 255, 150, 1)']}
             style={styles.gradientStyle}
             start={{x: 0.5, y: 1}}
             end={{x: 0.5, y: 0}}>
@@ -376,6 +341,8 @@ const FreezeSummary = ({freezeCount, onPress}) => {
           </LinearGradient>
         </TouchableOpacity>
       </View>
+
+      {/* 안내 문구 */}
       <Text style={styles.frozenNote}>
         <Image source={IMAGES.iIcon} style={styles.setiIcon} /> 프리즈는 잔디를
         대신 채워줄 수 있는 잔디 채우기권입니다!
@@ -480,9 +447,11 @@ const ProfileFooter = ({navigation}) => {
                 source={IMAGES.sleepyFaceEmoji}
                 style={styles.logoutModalSleepyEmoji}
               />
-              <Text style={styles.logoutModalText}>
-                정말 로그아웃 하실건가요?
-              </Text>
+              <View style={styles.logoutModalTextWrapper}>
+                <Text style={styles.logoutModalText}>
+                  정말 로그아웃 하실건가요?
+                </Text>
+              </View>
               <TouchableOpacity
                 onPress={() => setShowLogOut(false)}
                 style={styles.logoutModalCloseButton}>
@@ -616,10 +585,10 @@ const styles = StyleSheet.create({
   infoCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: height * 0.06,
+    height: height * 0.055,
     width: width * 0.6,
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: width * 0.05,
+    paddingHorizontal: width * 0.035,
     borderRadius: 4,
   },
   infoCardIcon: {
@@ -629,21 +598,21 @@ const styles = StyleSheet.create({
     marginRight: width * 0.02,
   },
   infoCardText: {
-    fontSize: width * 0.03,
-    fontWeight: '800',
+    fontSize: width * 0.027,
+    fontWeight: '700',
     color: '#B6B6B6',
     fontFamily: 'NanumSquareNeo-Variable',
   },
   infoCardCount: {
-    fontSize: width * 0.04,
+    fontSize: width * 0.038,
     color: '#0D9488',
-    fontWeight: '800',
+    fontWeight: '700',
     fontFamily: 'NanumSquareNeo-Variable',
   },
   infoCardButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: height * 0.06,
+    height: height * 0.055,
     borderRadius: 4,
     backgroundColor: '#0D9488',
     paddingHorizontal: width * 0.03,
@@ -660,7 +629,7 @@ const styles = StyleSheet.create({
   },
   infoCardButtonText: {
     color: '#FFFFFF',
-    fontSize: width * 0.03,
+    fontSize: width * 0.028,
     fontWeight: '800',
     fontFamily: 'NanumSquareNeo-Variable',
   },
@@ -678,12 +647,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
-    height: height * 0.08,
-    width: width * 0.65,
-    paddingHorizontal: width * 0.06,
-    paddingVertical: height * 0.02,
+    height: height * 0.06,
+    width: width * 0.6,
+    paddingHorizontal: width * 0.03,
+    paddingVertical: height * 0.01,
     borderRadius: 4,
-    marginTop: height * 0.01,
+    marginTop: height * 0.005,
   },
   badge: {
     width: 35,
@@ -708,8 +677,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   frozenSection: {
-    marginTop: 16, // mt-4
-    // width: width * 0.6, // 고정된 너비 제거
+    marginTop: 16,
   },
   frozenTitle: {
     fontSize: 10,
@@ -721,17 +689,17 @@ const styles = StyleSheet.create({
   frozenDetailContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    height: height * 0.055,
+    width: width * 0.6,
     backgroundColor: '#FFFFFF',
-    borderRadius: 3,
-    paddingHorizontal: width * 0.04,
-    paddingVertical: height * 0.015,
-    justifyContent: 'space-between',
+    paddingHorizontal: width * 0.03,
+    marginRight: width * 0.02,
+    borderRadius: 4,
   },
   frozenDetailText: {
-    flex: 1, // 텍스트가 남은 공간을 차지하도록 설정
-    fontSize: 13,
-    color: '#333',
-    fontWeight: '700',
+    fontSize: width * 0.027,
+    fontWeight: '800',
+    color: '#B6B6B6',
     fontFamily: 'NanumSquareNeo-Variable',
   },
   frozenCount: {
@@ -740,25 +708,20 @@ const styles = StyleSheet.create({
     color: '#12A5B0',
     fontFamily: 'NanumSquareNeo-Variable',
   },
-  useFrozenButton: {
-    // width와 height를 제거하여 내용에 따라 크기가 조절되도록 함
-    paddingHorizontal: width * 0.03,
-    paddingVertical: height * 0.01,
-  },
   gradientStyle: {
-    justifyContent: 'center', // 내용 중앙 정렬
-    alignItems: 'center', // 내용 중앙 정렬
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 3,
     paddingHorizontal: width * 0.03,
-    paddingVertical: height * 0.01,
   },
   frozenText: {
     flexDirection: 'row',
     alignItems: 'center',
+    height: height * 0.055,
   },
   useFrozenButtonText: {
     color: '#FFFFFF',
-    fontSize: width * 0.035,
+    fontSize: width * 0.028,
     fontWeight: 'bold',
     fontFamily: 'NanumSquareNeo-Variable',
   },
@@ -771,15 +734,13 @@ const styles = StyleSheet.create({
   frozenNote: {
     fontSize: width * 0.03,
     color: '#009499',
-    flexDirection: 'row', // 가로로 정렬
-    alignItems: 'center',
     fontFamily: 'NanumSquareNeo-Variable',
   },
   setiIcon: {
     width: width * 0.03,
     height: height * 0.03,
     resizeMode: 'contain',
-    marginRight: width * 0.03,
+    marginRight: width * 0.01,
   },
   grassSection: {
     marginTop: 56, // mt-14
@@ -1000,6 +961,13 @@ const styles = StyleSheet.create({
     height: 20,
     marginRight: 10,
   },
+  logoutModalTextWrapper: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   logoutModalText: {
     color: '#FFFFFF',
     fontSize: 13,
@@ -1037,75 +1005,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalView: {
-    width: width * 0.8,
-    maxHeight: height * 0.6,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    padding: width * 0.05,
-    alignItems: 'center',
-    elevation: 5,
-  },
-  modalHeaderContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    marginBottom: height * 0.02,
-  },
-  modalHeaderText: {
-    fontSize: width * 0.045,
-    fontWeight: 'bold',
-    color: '#000',
-    textAlign: 'left',
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  modalHeaderHighlight: {
-    fontSize: width * 0.04,
-    fontWeight: 'bold',
-    color: '#1AA5AA',
-    paddingHorizontal: 5,
-    borderRadius: 3,
-    marginTop: 3,
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  modalScrollView: {
-    width: '100%',
-    marginBottom: height * 0.02,
-  },
-  modalBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-    backgroundColor: '#E0E0E0',
-    borderRadius: 5,
-    padding: 10,
-  },
-  modalBadgeImage: {
-    width: 60,
-    height: 60,
-    marginRight: 10,
-    resizeMode: 'contain',
-  },
-  modalBadgeInfo: {
-    flex: 1,
-  },
-  modalBadgeName: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  modalBadgeDescription: {
-    fontSize: 12,
-    marginTop: 5,
-    color: '#555',
     fontFamily: 'NanumSquareNeo-Variable',
   },
 });
