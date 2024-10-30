@@ -12,10 +12,8 @@ const YearlyCalendar = ({memberId}: {memberId: number}) => {
   const dayLabels = ['일', '월', '화', '수', '목', '금', '토'];
 
   const START_DATE = new Date();
-  START_DATE.setDate(
-    START_DATE.getDate() - (((START_DATE.getDay() + 2) % 7) + 1),
-  );
-  START_DATE.setHours(0, 0, 0, 0);
+  START_DATE.setHours(0, 0, 0, 0); // Set to midnight
+  START_DATE.setDate(START_DATE.getDate() - 365); // Go back 1 year
 
   useEffect(() => {
     const fetchGrassData = async () => {
@@ -87,7 +85,6 @@ const YearlyCalendar = ({memberId}: {memberId: number}) => {
   };
 
   const getColorForActivity = (studyHour: number) => {
-    console.log('StudyHour:', studyHour);
     if (studyHour === 0) return '#ebedf0'; // 연한 회색
     else if (studyHour >= 1 && studyHour <= 2) return '#c6e48b'; // 연한 초록
     else if (studyHour >= 3 && studyHour <= 4) return '#7bc96f'; // 중간 초록
@@ -107,15 +104,11 @@ const YearlyCalendar = ({memberId}: {memberId: number}) => {
     const day = date.getDate();
 
     const grassEntry = grassData.find(
-      entry => entry.month === month && entry.day === day,
+      entry => Number(entry.month) === month && Number(entry.day) === day,
     );
 
     const studyHour = grassEntry ? grassEntry.studyHour : 0;
-    console.log(
-      `Date: ${date.getFullYear()}-${String(month).padStart(2, '0')}-${String(
-        day,
-      ).padStart(2, '0')}, StudyHour: ${studyHour}`,
-    );
+
     return getColorForActivity(studyHour);
   };
 
@@ -185,8 +178,6 @@ const styles = StyleSheet.create({
   calendarContainer: {
     backgroundColor: '#F5F5F5',
     flexDirection: 'row',
-    // 고정 높이 설정
-    height: 100,
   },
   weekColumn: {
     flexDirection: 'column',
