@@ -28,8 +28,8 @@ const {width, height} = Dimensions.get('window');
 
 const IMAGES = {
   backButton: require('../../assets/images/icons/backButton.png'),
-  chooseFromGallery1: require('../../assets/images/icons/chooseFromGallery1.png'),
-  chooseFromGallery2: require('../../assets/images/icons/chooseFromGallery2.png'),
+  plusCircle: require('../../assets/images/icons/plusCircle.png'),
+  plusSquare: require('../../assets/images/icons/plusSquare.png'),
 };
 
 const EditProfileScreen = ({navigation, route}) => {
@@ -192,7 +192,7 @@ const ChangeProfileImage = ({
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <TouchableOpacity onPress={ShowPicker} style={styles.buttonStyle}>
             <Image
-              source={IMAGES.chooseFromGallery1}
+              source={IMAGES.plusCircle}
               style={styles.chooseImageStyle}
               resizeMode="contain"
             />
@@ -262,7 +262,7 @@ const ChangeBannerImage = ({
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <TouchableOpacity onPress={ShowPicker} style={styles.buttonStyle}>
             <Image
-              source={IMAGES.chooseFromGallery2}
+              source={IMAGES.plusSquare}
               style={styles.chooseImageStyle}
               resizeMode="contain"
             />

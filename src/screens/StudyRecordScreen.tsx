@@ -1,4 +1,3 @@
-// src/screens/StudyRecordScreen.tsx
 import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
@@ -9,7 +8,6 @@ import {
   TouchableOpacity,
   Dimensions,
   SafeAreaView,
-  AppState,
   Alert,
 } from 'react-native';
 
@@ -19,7 +17,7 @@ import BottomBar from '../components/BottomBar';
 import ProfileCard from '../components/ProfileCard';
 import {useNavigation} from '@react-navigation/native';
 import NoticeModal from '../components/NoticeModal';
-import {Member} from '../api/profile';
+import Loader from '../components/Loader';
 import {
   getStudyTime,
   updateStudyTime,
@@ -43,11 +41,11 @@ const StudyRecordScreen = () => {
   const [timeElapsed, setTimeElapsed] = useState<number>(0);
   const [todayStudyTime, setTodayStudyTime] = useState<number>(0);
   const [totalStudyTime, setTotalStudyTime] = useState<number>(0);
-  const [userData, setUserData] = useState<Member | null>(null);
-
+  const [isLoading, setIsLoading] = useState(false);
   const intervalRef = useRef<NodeJS.Timer | null>(null);
-  const startTimeRef = useRef<number>(0);
-  const isRecordingRef = useRef(isRecording);
+  const startTimeRef = useRef<number | null>(null);
+  const isStoppingRef = useRef<boolean>(false);
+  const isStartingRef = useRef<boolean>(false); // Flag to prevent multiple starts
 
   // Modal state variables
   const [modalVisible, setModalVisible] = useState(false);
@@ -57,11 +55,6 @@ const StudyRecordScreen = () => {
   const navigation = useNavigation();
 
   const locationCheckIntervalRef = useRef<NodeJS.Timer | null>(null);
-
-  useEffect(() => {
-    // 유저 정보 가져오기
-    setUserData(user);
-  }, [user]);
 
   useEffect(() => {
     // 공부 시간 데이터 가져오기
@@ -89,29 +82,6 @@ const StudyRecordScreen = () => {
   }, []);
 
   useEffect(() => {
-    isRecordingRef.current = isRecording;
-  }, [isRecording]);
-
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', nextAppState => {
-      if (nextAppState.match(/inactive|background/)) {
-        if (isRecordingRef.current) {
-          stopRecording(true); // 백그라운드로 갈 때는 플래그를 전달
-        }
-      } else if (nextAppState === 'active') {
-        // 앱이 포그라운드로 돌아왔을 때
-        if (isRecordingRef.current) {
-          resumeRecording();
-        }
-      }
-    });
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
-
-  useEffect(() => {
     if (isRecording) {
       startLocationCheckInterval();
     } else {
@@ -123,17 +93,14 @@ const StudyRecordScreen = () => {
     };
   }, [isRecording]);
 
-  const resumeRecording = () => {
-    startTimeRef.current = Date.now();
-    intervalRef.current = setInterval(() => {
-      const elapsed = Date.now() - startTimeRef.current;
-      setTimeElapsed(elapsed);
-    }, 1000);
-  };
-
   const startRecording = async () => {
-    // 출석 여부 확인
+    if (isStartingRef.current) {
+      return;
+    }
+    isStartingRef.current = true;
+    setIsLoading(true);
     try {
+      // 출석 여부 확인
       const attendanceResponse = await getTodayAttendance(authInfo.authToken);
       if (attendanceResponse.success) {
         const isAttended = attendanceResponse.response.attendance;
@@ -150,47 +117,67 @@ const StudyRecordScreen = () => {
         Alert.alert('출석 정보를 가져올 수 없습니다.');
         return;
       }
-    } catch (error) {
-      console.error('Error checking attendance:', error);
-      Alert.alert('출석 정보를 가져올 수 없습니다.');
-      return;
-    }
 
-    // 위치 권한 확인 및 현재 위치 가져오기
-    const hasPermission = await requestLocationPermission();
-    if (!hasPermission) {
-      Alert.alert('위치 권한이 필요합니다.');
-      return;
-    }
-
-    try {
-      const location = await getCurrentLocation();
-      const isInLibrary = isPointInPolygon(location, SERVICE_AREA);
-      if (!isInLibrary) {
-        // 모달을 표시하고 타이머 시작 중지
-        setModalTitle('도서관이 아닌 곳입니다.\n');
-        setModalMessage('잔디 스터디 기능은 도서관 내에서만 이용 가능합니다.');
-        setModalVisible(true);
+      // 위치 권한 확인 및 현재 위치 가져오기
+      const hasPermission = await requestLocationPermission();
+      if (!hasPermission) {
+        Alert.alert('위치 권한이 필요합니다.');
         return;
       }
+
+      try {
+        const location = await getCurrentLocation();
+        const isInLibrary = isPointInPolygon(location, SERVICE_AREA);
+        if (!isInLibrary) {
+          // 모달을 표시하고 타이머 시작 중지
+          setModalTitle('도서관이 아닌 곳입니다.\n');
+          setModalMessage(
+            '잔디 스터디 기능은 도서관 내에서만 이용 가능합니다.',
+          );
+          setModalVisible(true);
+          return;
+        }
+      } catch (error) {
+        console.error('Error getting location:', error);
+        Alert.alert('위치 정보를 가져올 수 없습니다.');
+        return;
+      }
+
+      setIsRecording(true);
+      startTimeRef.current = Date.now();
+      setTimeElapsed(0); // 녹화 시작 시 시간 초기화
+      intervalRef.current = setInterval(() => {
+        if (startTimeRef.current) {
+          const elapsed = Date.now() - startTimeRef.current;
+          setTimeElapsed(elapsed);
+        }
+      }, 1000);
     } catch (error) {
-      console.error('Error getting location:', error);
-      Alert.alert('위치 정보를 가져올 수 없습니다.');
+      console.error('Error in startRecording:', error);
+    } finally {
+      isStartingRef.current = false;
+      setIsLoading(false);
+    }
+  };
+
+  const stopRecording = async () => {
+    if (isStoppingRef.current) {
+      console.warn('Stop operation already in progress.');
+      return;
+    }
+    isStoppingRef.current = true;
+
+    if (!startTimeRef.current || isNaN(startTimeRef.current)) {
+      console.error('Start time is invalid, cannot calculate elapsed time.');
+      isStoppingRef.current = false;
       return;
     }
 
-    setIsRecording(true);
-    startTimeRef.current = Date.now();
-    isRecordingRef.current = true;
-    intervalRef.current = setInterval(() => {
-      const elapsed = Date.now() - startTimeRef.current;
-      setTimeElapsed(elapsed);
-    }, 1000);
-  };
+    const elapsed = Date.now() - startTimeRef.current;
 
-  const stopRecording = async (isAppBackground = false) => {
-    if (startTimeRef.current === 0) {
-      console.error('Start time is zero, cannot calculate elapsed time.');
+    if (elapsed <= 0) {
+      console.error('Elapsed time is zero or negative.');
+      isStoppingRef.current = false;
       return;
     }
 
@@ -199,33 +186,36 @@ const StudyRecordScreen = () => {
       intervalRef.current = null;
     }
 
-    const elapsed = Date.now() - startTimeRef.current;
-    const newTodayStudyTime = todayStudyTime + elapsed;
-
-    if (!isAppBackground) {
-      setIsRecording(false);
-      isRecordingRef.current = false; // 즉시 업데이트
-    }
-
+    setIsRecording(false);
     setTimeElapsed(0);
-    startTimeRef.current = 0;
 
     // 서버에 공부 시간 업데이트
-    const todayStudyTimeString =
-      formatMillisecondsToTimeString(newTodayStudyTime);
+    const elapsedTimeString = formatMillisecondsToTimeString(elapsed);
 
     try {
       const response = await updateStudyTime(
-        todayStudyTimeString,
+        elapsedTimeString,
         authInfo.authToken,
       );
       if (response.success) {
-        setTodayStudyTime(parseTimeStringToMilliseconds(todayStudyTimeString));
+        const {
+          todayStudyTime: todayTimeString,
+          totalStudyTime: totalTimeString,
+        } = response.response;
+        if (todayTimeString && totalTimeString) {
+          setTodayStudyTime(parseTimeStringToMilliseconds(todayTimeString));
+          setTotalStudyTime(parseTimeStringToMilliseconds(totalTimeString));
+        } else {
+          console.error('Invalid time strings in server response.');
+        }
       } else {
         console.error('Failed to update study time:', response.error);
       }
     } catch (error) {
       console.error('Error updating study time:', error);
+    } finally {
+      startTimeRef.current = null; // Start time 초기화
+      isStoppingRef.current = false;
     }
   };
 
@@ -240,7 +230,18 @@ const StudyRecordScreen = () => {
   // 시간 문자열을 밀리초로 변환
   const parseTimeStringToMilliseconds = (timeString: string): number => {
     const [hours, minutes, seconds] = timeString.split(':').map(Number);
-    return ((hours || 0) * 3600 + (minutes || 0) * 60 + (seconds || 0)) * 1000;
+    if (
+      isNaN(hours) ||
+      isNaN(minutes) ||
+      isNaN(seconds) ||
+      hours < 0 ||
+      minutes < 0 ||
+      seconds < 0
+    ) {
+      console.error('Invalid time string:', timeString);
+      return 0;
+    }
+    return (hours * 3600 + minutes * 60 + seconds) * 1000;
   };
 
   // 밀리초를 시간 문자열로 변환
@@ -287,7 +288,7 @@ const StudyRecordScreen = () => {
         Alert.alert('위치 정보를 가져올 수 없습니다.');
         stopRecording();
       }
-    }, 10 * 1000 * 60);
+    }, 10 * 60 * 1000); // 10분마다 체크
   };
 
   // 위치 확인 인터벌 중지
@@ -297,14 +298,6 @@ const StudyRecordScreen = () => {
       locationCheckIntervalRef.current = null;
     }
   };
-
-  let currentStudyTime = todayStudyTime;
-  let currentTotalStudyTime = totalStudyTime;
-  if (timeElapsed !== 0) {
-    currentStudyTime = todayStudyTime + timeElapsed;
-    currentTotalStudyTime = totalStudyTime + timeElapsed;
-  }
-  let friends = '';
 
   // handleNotUseableModal function
   const handleNotUseableModal = () => {
@@ -343,9 +336,13 @@ const StudyRecordScreen = () => {
                 title={user?.mainTitle || ''}
                 name={user?.name || ''}
                 profileImage={user?.profileImage || null}
-                studyMessage="중간고사 화이팅..."
-                timerValue={formatTime(currentStudyTime)}
-                totalTimeValue={formatTime(currentTotalStudyTime)}
+                studyMessage={user?.message || '중간고사 화이팅!'}
+                timerValue={
+                  isRecording
+                    ? formatTime(todayStudyTime + timeElapsed)
+                    : formatTime(todayStudyTime)
+                }
+                totalTimeValue={formatTime(totalStudyTime)}
                 isRecording={isRecording}
                 onStudyButtonPress={handleStudyButtonPress}
               />
@@ -371,56 +368,7 @@ const StudyRecordScreen = () => {
 
             {/* 친구 리스트 */}
             <View style={styles.membersList}>
-              {friends
-                ? friends.map((friend, index) => (
-                    <View key={friend.id}>
-                      <TouchableOpacity
-                        style={styles.memberItem}
-                        onPress={() => navigation.navigate('FriendsProfile')}>
-                        <Image
-                          source={
-                            friend.image
-                              ? {uri: friend.image}
-                              : require('../../assets/images/icons/baseIcon.png')
-                          }
-                          style={styles.memberImage}
-                          resizeMode="cover"
-                        />
-                        <View style={styles.memberInfo}>
-                          <View style={styles.nameRow}>
-                            <Text style={styles.memberName}>{friend.name}</Text>
-                            {friend.isOnline && (
-                              <View style={styles.onlineStatus}>
-                                <View style={styles.onlineDot} />
-                                <Text style={styles.onlineText}>공부 중</Text>
-                              </View>
-                            )}
-                          </View>
-                          <Text style={styles.memberStudyTime}>
-                            오늘 공부 시간:{' '}
-                            <Text style={styles.totalStudyTimeValue}>
-                              {friend.todayStudyTime}
-                            </Text>
-                          </Text>
-                          {/* 친구의 한마디 */}
-                          <View style={styles.messageBubble}>
-                            <Text style={styles.messageText}>
-                              {friend.message}
-                            </Text>
-                          </View>
-                          <Image
-                            source={require('../../assets/images/icons/right-arrow-gray.png')}
-                            style={styles.friendInfoIconAbsolute}
-                            resizeMode="contain"
-                          />
-                        </View>
-                      </TouchableOpacity>
-                      {index !== friends.length - 1 && (
-                        <View style={styles.separator} />
-                      )}
-                    </View>
-                  ))
-                : ''}
+              {/* 친구 리스트 코드가 여기에 들어갑니다 */}
             </View>
           </ScrollView>
         </View>
@@ -430,6 +378,7 @@ const StudyRecordScreen = () => {
           title={modalTitle}
           message={modalMessage}
         />
+        {isLoading && <Loader />}
       </SafeAreaView>
       <BottomBar />
     </>

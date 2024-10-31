@@ -49,6 +49,12 @@ const IMAGES = {
   iIcon: require('../../assets/images/icons/iIcon.png'),
 };
 
+const BADGES = [
+  require('../../assets/images/badge/badge1.png'),
+  require('../../assets/images/badge/badge2.png'),
+  require('../../assets/images/badge/badge3.png'),
+];
+
 const ProfileScreen = ({navigation}) => {
   const [member, setMember] = useState<Member | null>(null);
   const [badges, setBadges] = useState<Badge[] | null>(null);
@@ -59,6 +65,7 @@ const ProfileScreen = ({navigation}) => {
   const [totalDays, setTotalDays] = useState<number>(0);
   const [totalTime, setTotalTime] = useState<number>(0);
   const [createDate, setCreateDate] = useState<string>('');
+  const [showBadgeModal, setShowBadgeModal] = useState(false);
 
   const handleNotUseableModal = () => {
     setModalMessage('추가 예정인 기능입니다.');
@@ -194,7 +201,10 @@ const ProfileScreen = ({navigation}) => {
               buttonText="그룹목록 보기"
               onButtonPress={handleNotUseableModal}
             />
-            <BadgeSection badges={badges} />
+            <BadgeSection
+              badges={badges}
+              onMorePress={() => setShowBadgeModal(true)}
+            />
             <FreezeSummary
               freezeCount={member?.freezeCount}
               onPress={handleNotUseableModal}
@@ -214,14 +224,37 @@ const ProfileScreen = ({navigation}) => {
         <Modal
           animationType="slide"
           transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}>
+          visible={showBadgeModal}
+          onRequestClose={() => setShowBadgeModal(false)}>
           <View style={styles.modalOverlay}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>{modalMessage}</Text>
+              {/* 모달 헤더 */}
+              <View style={styles.modalHeaderContainer}>
+                <Text style={styles.modalHeaderText}>프로필 뱃지 </Text>
+                <Text style={styles.modalHeaderHighlight}>
+                  총 {badges ? badges.length : 0}개 보유 중
+                </Text>
+              </View>
+              <ScrollView style={styles.modalScrollView}>
+                {badges &&
+                  badges.map(badge => (
+                    <View key={badge.id} style={styles.modalBadge}>
+                      <Image
+                        source={BADGES[Number(badge.fileName)]}
+                        style={styles.modalBadgeImage}
+                      />
+                      <View style={styles.modalBadgeInfo}>
+                        <Text style={styles.modalBadgeName}>{badge.name}</Text>
+                        <Text style={styles.modalBadgeDescription}>
+                          {badge.description}
+                        </Text>
+                      </View>
+                    </View>
+                  ))}
+              </ScrollView>
               <TouchableOpacity
                 style={styles.closeButton}
-                onPress={() => setModalVisible(false)}>
+                onPress={() => setShowBadgeModal(false)}>
                 <Text style={styles.closeButtonText}>닫기</Text>
               </TouchableOpacity>
             </View>
@@ -272,13 +305,7 @@ const InfoCard = ({
 };
 
 // BadgeSection Component
-const BadgeSection = ({badges}) => {
-  const BADGES = [
-    require('../../assets/images/badge/badge1.png'),
-    require('../../assets/images/badge/badge2.png'),
-    require('../../assets/images/badge/badge3.png'),
-  ];
-
+const BadgeSection = ({badges, onMorePress}) => {
   return (
     <View style={styles.badgeSection}>
       <Text style={styles.badgeTitle}>보유 뱃지</Text>
@@ -295,9 +322,7 @@ const BadgeSection = ({badges}) => {
               ))}
               {badges.length > 0 && (
                 <TouchableOpacity
-                  onPress={() => {
-                    console.log('... 버튼 클릭됨');
-                  }}
+                  onPress={onMorePress}
                   style={styles.moreButton}>
                   <Text style={styles.moreText}>...</Text>
                 </TouchableOpacity>
@@ -655,8 +680,8 @@ const styles = StyleSheet.create({
     marginTop: height * 0.005,
   },
   badge: {
-    width: 35,
-    height: 35,
+    width: 25,
+    height: 25,
     marginRight: 7,
     resizeMode: 'contain',
   },
@@ -1005,6 +1030,75 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
+    fontFamily: 'NanumSquareNeo-Variable',
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    width: width * 0.8,
+    maxHeight: height * 0.6,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: width * 0.05,
+    alignItems: 'center',
+    elevation: 5,
+  },
+  modalHeaderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: height * 0.02,
+  },
+  modalHeaderText: {
+    fontSize: width * 0.045,
+    fontWeight: 'bold',
+    color: '#000',
+    textAlign: 'left',
+    fontFamily: 'NanumSquareNeo-Variable',
+  },
+  modalHeaderHighlight: {
+    fontSize: width * 0.04,
+    fontWeight: 'bold',
+    color: '#1AA5AA',
+    paddingHorizontal: 5,
+    borderRadius: 3,
+    marginTop: 3,
+    fontFamily: 'NanumSquareNeo-Variable',
+  },
+  modalScrollView: {
+    width: '100%',
+    marginBottom: height * 0.02,
+  },
+  modalBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 5,
+    padding: 10,
+  },
+  modalBadgeImage: {
+    width: 60,
+    height: 60,
+    marginRight: 10,
+    resizeMode: 'contain',
+  },
+  modalBadgeInfo: {
+    flex: 1,
+  },
+  modalBadgeName: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    fontFamily: 'NanumSquareNeo-Variable',
+  },
+  modalBadgeDescription: {
+    fontSize: 12,
+    marginTop: 5,
+    color: '#555',
     fontFamily: 'NanumSquareNeo-Variable',
   },
 });

@@ -23,6 +23,7 @@ import Svg, {
 import Header from '../components/Header';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import DropDownPicker from 'react-native-dropdown-picker';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import {collegeData} from '../constants/departData.js';
 import handleSignup from '../api/signup';
@@ -564,93 +565,97 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
             </View>
 
             <View style={styles.modalContainer2}>
-              <DropDownPicker
-                zIndex={100}
-                open={openCollege}
-                value={selectedCollege}
-                items={colleges}
-                setOpen={setOpenCollege}
-                setValue={setSelectedCollege}
-                setItems={setColleges}
-                listMode="SCROLLVIEW"
-                scrollViewProps={{
-                  nestedScrollEnabled: true,
-                }}
-                placeholder="단과대학"
-                zIndex={3000}
-                zIndexInverse={100}
-                onOpen={() => setOpenDepartment(false)}
-                containerStyle={{
-                  height: 40,
-                  width: width * 0.35, // 원하는 너비로 조절
-                  marginBottom: 10, // 필요에 따라 조절
-                }}
-                style={{
-                  backgroundColor: '#fafafa',
-                  // borderColor: '#ccc',
-                  borderWidth: 0,
-                }}
-                dropDownContainerStyle={{
-                  backgroundColor: '#fafafa',
-                  borderColor: '#ddd',
-                }}
-                tickIconStyle={{
-                  width: 20,
-                  height: 20,
-                  tintColor: '#009499', // 체크 마크 색상
-                }}
-                labelStyle={{
-                  fontSize: 13,
-                  textAlign: 'left',
-                }}
-                arrowStyle={{
-                  tintColor: '#009499', // 화살표 아이콘 색상
-                }}
-              />
+              <View style={{zIndex: 10}}>
+                <DropDownPicker
+                  zIndex={100}
+                  open={openCollege}
+                  value={selectedCollege}
+                  items={colleges}
+                  setOpen={setOpenCollege}
+                  setValue={setSelectedCollege}
+                  setItems={setColleges}
+                  listMode="SCROLLVIEW"
+                  scrollViewProps={{
+                    nestedScrollEnabled: true,
+                  }}
+                  placeholder="단과대학"
+                  zIndex={3000}
+                  zIndexInverse={100}
+                  onOpen={() => setOpenDepartment(false)}
+                  containerStyle={{
+                    height: 40,
+                    width: width * 0.35, // 원하는 너비로 조절
+                    marginBottom: 10, // 필요에 따라 조절
+                  }}
+                  style={{
+                    backgroundColor: '#fafafa',
+                    // borderColor: '#ccc',
+                    borderWidth: 0,
+                  }}
+                  dropDownContainerStyle={{
+                    backgroundColor: '#fafafa',
+                    borderColor: '#ddd',
+                  }}
+                  tickIconStyle={{
+                    width: 20,
+                    height: 20,
+                    tintColor: '#009499', // 체크 마크 색상
+                  }}
+                  labelStyle={{
+                    fontSize: 13,
+                    textAlign: 'left',
+                  }}
+                  arrowStyle={{
+                    tintColor: '#009499', // 화살표 아이콘 색상
+                  }}
+                />
+              </View>
 
-              <DropDownPicker
-                open={openDepartment}
-                value={selectedDepartment}
-                items={departments}
-                setOpen={setOpenDepartment}
-                setValue={setSelectedDepartment}
-                setItems={setDepartments}
-                listMode="SCROLLVIEW"
-                placeholder="학과"
-                zIndex={2000} // Ensure the dropdown is above other content
-                zIndexInverse={1000}
-                disabled={!selectedCollege} // Disable until a college is selected
-                onOpen={() => setOpenCollege(false)}
-                scrollViewProps={{
-                  nestedScrollEnabled: true,
-                }}
-                containerStyle={{
-                  height: 40,
-                  width: width * 0.35, // 원하는 너비로 조절
-                  marginBottom: 10, // 필요에 따라 조절
-                }}
-                style={{
-                  backgroundColor: '#fafafa',
-                  // borderColor: '#ccc',
-                  borderWidth: 0,
-                }}
-                dropDownContainerStyle={{
-                  backgroundColor: '#fafafa',
-                  borderColor: '#ddd',
-                }}
-                tickIconStyle={{
-                  width: 20,
-                  height: 20,
-                  tintColor: '#009499', // 체크 마크 색상
-                }}
-                labelStyle={{
-                  fontSize: 12,
-                  textAlign: 'left',
-                }}
-                arrowStyle={{
-                  tintColor: '#009499', // 화살표 아이콘 색상
-                }}
-              />
+              <View style={{zIndex: 10}}>
+                <DropDownPicker
+                  open={openDepartment}
+                  value={selectedDepartment}
+                  items={departments}
+                  setOpen={setOpenDepartment}
+                  setValue={setSelectedDepartment}
+                  setItems={setDepartments}
+                  listMode="SCROLLVIEW"
+                  placeholder="학과"
+                  zIndex={2000} // Ensure the dropdown is above other content
+                  zIndexInverse={1000}
+                  disabled={!selectedCollege} // Disable until a college is selected
+                  onOpen={() => setOpenCollege(false)}
+                  scrollViewProps={{
+                    nestedScrollEnabled: true,
+                  }}
+                  containerStyle={{
+                    height: 40,
+                    width: width * 0.35, // 원하는 너비로 조절
+                    marginBottom: 10, // 필요에 따라 조절
+                  }}
+                  style={{
+                    backgroundColor: '#fafafa',
+                    // borderColor: '#ccc',
+                    borderWidth: 0,
+                  }}
+                  dropDownContainerStyle={{
+                    backgroundColor: '#fafafa',
+                    borderColor: '#ddd',
+                  }}
+                  tickIconStyle={{
+                    width: 20,
+                    height: 20,
+                    tintColor: '#009499', // 체크 마크 색상
+                  }}
+                  labelStyle={{
+                    fontSize: 12,
+                    textAlign: 'left',
+                  }}
+                  arrowStyle={{
+                    tintColor: '#009499', // 화살표 아이콘 색상
+                  }}
+                />
+              </View>
             </View>
 
             {/* Confirm Button */}
