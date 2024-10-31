@@ -565,7 +565,7 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
             </View>
 
             <View style={styles.modalContainer2}>
-              <View style={{zIndex: 10}}>
+              <View>
                 <DropDownPicker
                   zIndex={100}
                   open={openCollege}
@@ -582,15 +582,13 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
                   zIndex={3000}
                   zIndexInverse={100}
                   onOpen={() => setOpenDepartment(false)}
-                  containerStyle={{
-                    height: 40,
-                    width: width * 0.35, // 원하는 너비로 조절
-                    marginBottom: 10, // 필요에 따라 조절
-                  }}
                   style={{
                     backgroundColor: '#fafafa',
-                    // borderColor: '#ccc',
+                    borderColor: '#ccc',
                     borderWidth: 0,
+                    height: 40,
+                    width: width * 0.35, // 원하는 너비로 조절
+                    marginBottom: 10, //
                   }}
                   dropDownContainerStyle={{
                     backgroundColor: '#fafafa',
@@ -611,7 +609,7 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
                 />
               </View>
 
-              <View style={{zIndex: 10}}>
+              <View>
                 <DropDownPicker
                   open={openDepartment}
                   value={selectedDepartment}
@@ -628,15 +626,13 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
                   scrollViewProps={{
                     nestedScrollEnabled: true,
                   }}
-                  containerStyle={{
+                  style={{
+                    backgroundColor: '#fafafa',
+                    borderColor: '#ccc',
+                    borderWidth: 0,
                     height: 40,
                     width: width * 0.35, // 원하는 너비로 조절
                     marginBottom: 10, // 필요에 따라 조절
-                  }}
-                  style={{
-                    backgroundColor: '#fafafa',
-                    // borderColor: '#ccc',
-                    borderWidth: 0,
                   }}
                   dropDownContainerStyle={{
                     backgroundColor: '#fafafa',

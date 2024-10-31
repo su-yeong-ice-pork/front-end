@@ -5,6 +5,7 @@ import {
   Image,
   Modal,
   StyleSheet,
+  TextInput,
   TouchableOpacity,
   ScrollView,
   Dimensions,
@@ -19,6 +20,7 @@ import {GetDefaultImages, DefaultImg} from '../api/defaultImages';
 import sendDefaultImg from '../api/sendDefaultImg';
 
 import {updateProfileImage} from '../api/profileImg';
+import changeMessage from '../api/changeMessage';
 
 import {useRecoilState, useRecoilValue} from 'recoil';
 import userState from '../recoil/userAtom';
@@ -30,6 +32,7 @@ const IMAGES = {
   backButton: require('../../assets/images/icons/backButton.png'),
   plusCircle: require('../../assets/images/icons/plusCircle.png'),
   plusSquare: require('../../assets/images/icons/plusSquare.png'),
+  resetButton: require('../../assets/images/icons/resetButton.png'),
 };
 
 const EditProfileScreen = ({navigation, route}) => {
@@ -51,6 +54,9 @@ const EditProfileScreen = ({navigation, route}) => {
   // 업로드된 프로필/배너 이미지 저장할 상태
   const [customProfileImages, setCustomProfileImages] = useState([]);
   const [customBannerImages, setCustomBannerImages] = useState([]);
+
+  // 상태 메시지 확인
+  const [currentMessage, setCurrentMessage] = useState<string>('');
 
   useEffect(() => {
     const fetchDefaultImages = async () => {
@@ -155,6 +161,10 @@ const EditProfileScreen = ({navigation, route}) => {
               )
             }
           />
+          <ChangeMessage
+            currentMessage={currentMessage}
+            setCurrentMessage={setCurrentMessage}
+          />
         </ScrollView>
         <SaveButton
           selectedProfile={selectedImage}
@@ -165,6 +175,7 @@ const EditProfileScreen = ({navigation, route}) => {
           setSelectedBanner={setSelectedBanner}
           setUploadSuccess={setUploadSuccess}
           id={id}
+          currentMessage={currentMessage}
         />
       </View>
       <SuccessModal
@@ -315,6 +326,50 @@ const ChangeBannerImage = ({
   );
 };
 
+// 상태 메시지 변경 컴포넌트
+const ChangeMessage = ({currentMessage, setCurrentMessage}) => {
+  const user = useRecoilValue(userState);
+
+  const [messageLength, setMessageLength] = useState<number>(0);
+
+  const handleMessageChange = (text: string) => {
+    setCurrentMessage(text);
+    setMessageLength(text.length);
+  };
+
+  const deleteMessage = () => {
+    setCurrentMessage('');
+  };
+
+  return (
+    <View>
+      <View style={styles.inputContainer2}>
+        <Text style={styles.textStyle}>
+          상태 메시지 변경 {currentMessage && <Text>({messageLength}/30)</Text>}
+        </Text>
+
+        <View style={styles.inputWrapper}>
+          <TextInput
+            style={styles.inputBox}
+            placeholder={user?.message}
+            placeholderTextColor="#838F8F"
+            value={currentMessage}
+            onChangeText={handleMessageChange}
+            maxLength={30}
+          />
+          {currentMessage.length > 0 && (
+            <TouchableOpacity
+              style={styles.resetButton}
+              onPress={deleteMessage}>
+              <Image source={IMAGES.resetButton} style={styles.clearIcon} />
+            </TouchableOpacity>
+          )}
+        </View>
+      </View>
+    </View>
+  );
+};
+
 // 저장하기 버튼
 const SaveButton = ({
   selectedProfile,
@@ -325,6 +380,7 @@ const SaveButton = ({
   setSelectedBanner,
   setUploadSuccess,
   id,
+  currentMessage,
 }) => {
   const authInfo = useRecoilValue(authState);
 
@@ -413,8 +469,26 @@ const SaveButton = ({
       }
     }
 
+    // 상태 메시지 변경
+    if (currentMessage) {
+      try {
+        const success = await changeMessage(id, authToken, {
+          message: currentMessage,
+        });
+
+        if (success) {
+          console.log('상태 메시지 변경 완료');
+          successMessage = true;
+        } else {
+          console.log('상태 메시지 변경 실패');
+        }
+      } catch (error) {
+        console.log('에러 발생: ', error);
+      }
+    }
+
     // 업로드 성공 여부 확인 후 모달 표시
-    if (successProfile || successBanner) {
+    if (successProfile || successBanner || successMessage) {
       setUploadSuccess(true);
     } else {
       console.log('이미지 업로드 실패');
@@ -620,5 +694,42 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     paddingVertical: height * 0.015,
     paddingHorizontal: width * 0.1,
+  },
+
+  inputContainer2: {
+    marginTop: 0,
+    paddingTop: height * 0.02,
+    marginBottom: height * 0.025,
+  },
+  inputLabel: {
+    fontFamily: 'NanumSquareNeo-cBd',
+    fontSize: 14,
+    color: '#454545',
+    marginBottom: height * 0.005,
+  },
+  starmark: {
+    color: '#FF7360',
+  },
+  inputBox: {
+    height: height * 0.06,
+    backgroundColor: '#F4F4F4',
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    justifyContent: 'center',
+    color: '#000000',
+  },
+  inputWrapper: {
+    position: 'relative',
+    justifyContent: 'center',
+  },
+  resetButton: {
+    position: 'absolute',
+    right: 5,
+    paddingHorizontal: 15,
+  },
+  clearIcon: {
+    width: width * 0.04,
+    height: height * 0.02,
+    borderRadius: 10,
   },
 });
