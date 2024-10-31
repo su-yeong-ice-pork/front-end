@@ -28,7 +28,7 @@ import {useRecoilState, useRecoilValue} from 'recoil';
 import userState from '../recoil/userAtom';
 import authState from '../recoil/authAtom';
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
   const authInfo = useRecoilValue(authState);
   const [user, setUser] = useRecoilState(userState);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -122,8 +122,9 @@ const HomeScreen = () => {
       }
     };
 
-    fetchMember();
-  }, []);
+    const unsubscribe = navigation.addListener('focus', fetchMember);
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <>
