@@ -70,6 +70,7 @@ const IMAGES = {
   jandi2: require('../../assets/images/icons/jandiImg2.png'),
   jandi3: require('../../assets/images/icons/jandiImg3.png'),
   jandi4: require('../../assets/images/icons/jandiImg4.png'),
+  jandiColor: require('../../assets/images/icons/jandiColor.png'),
 };
 
 const CalendarScreen = ({userId}: {userId: number}) => {
@@ -291,7 +292,7 @@ const CalendarScreen = ({userId}: {userId: number}) => {
           />
           <View style={styles.statsContainer}>
             {userRecord ? (
-              <View>
+              <View style={styles.rowContainer}>
                 <View>
                   <Text style={styles.statsText}>
                     <Image source={IMAGES.calendar} />
@@ -308,9 +309,15 @@ const CalendarScreen = ({userId}: {userId: number}) => {
                     시간
                   </Text>
                 </View>
+                <View>
+                  <Image
+                    source={IMAGES.jandiColor}
+                    style={styles.jandiColorInfo}
+                  />
+                </View>
               </View>
             ) : (
-              <View>
+              <View style={styles.jandiColorInfo}>
                 <Text>스트릭 정보가 없습니다. 첫 기록을 시작해보세요!</Text>
               </View>
             )}
@@ -322,7 +329,7 @@ const CalendarScreen = ({userId}: {userId: number}) => {
           <YearlyCalendar memberId={userId} />
           <View style={styles.statsContainer}>
             {userRecord ? (
-              <View>
+              <View style={styles.rowContainer}>
                 <View>
                   <Text style={styles.statsText}>
                     <Image source={IMAGES.calendar} />
@@ -339,6 +346,10 @@ const CalendarScreen = ({userId}: {userId: number}) => {
                     시간
                   </Text>
                 </View>
+                <Image
+                  source={IMAGES.jandiColor}
+                  style={styles.yearJandiColorInfo}
+                />
               </View>
             ) : (
               <View>
@@ -451,11 +462,15 @@ const styles = StyleSheet.create({
   },
   statsContainer: {
     marginTop: 20,
-    padding: 15,
+    padding: 10,
     backgroundColor: '#f0f4f7',
     borderRadius: 8,
     alignItems: 'flex-start',
     width: 180,
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    marginLeft: 20,
   },
   statsText: {
     fontSize: 14,
@@ -597,6 +612,22 @@ const styles = StyleSheet.create({
   dayImage: {
     width: 40,
     height: 40,
+    resizeMode: 'contain',
+  },
+  jandiColorInfo: {
+    position: 'absolute',
+    top: 0,
+    marginLeft: 35,
+    width: 130,
+    height: 130,
+    resizeMode: 'contain',
+  },
+  yearJandiColorInfo: {
+    position: 'absolute',
+    top: 0,
+    marginLeft: 160,
+    width: 130,
+    height: 130,
     resizeMode: 'contain',
   },
 });
