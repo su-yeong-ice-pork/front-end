@@ -8,7 +8,7 @@ import {
   StyleSheet,
   Modal,
 } from 'react-native';
-import {Calendar, LocaleConfig} from 'react-native-calendars';
+import {Calendar, LocaleConfig, DateData} from 'react-native-calendars';
 import YearlyCalendar from './YearCalendar';
 import moment from 'moment';
 import LinearGradient from 'react-native-linear-gradient';
@@ -65,6 +65,11 @@ LocaleConfig.defaultLocale = 'kr';
 const IMAGES = {
   calendar: require('../../assets/images/icons/calendar.png'),
   studyTime: require('../../assets/images/icons/studyTime.png'),
+  jandi: require('../../assets/images/icons/jandiImg.png'),
+  jandi1: require('../../assets/images/icons/jandiImg1.png'),
+  jandi2: require('../../assets/images/icons/jandiImg2.png'),
+  jandi3: require('../../assets/images/icons/jandiImg3.png'),
+  jandi4: require('../../assets/images/icons/jandiImg4.png'),
 };
 
 const CalendarScreen = ({userId}: {userId: number}) => {
@@ -120,44 +125,53 @@ const CalendarScreen = ({userId}: {userId: number}) => {
     fetchMonthlyGrassData(year, month);
   }, [displayedDate]);
 
-  const onDayPress = (day: any) => {
+  const onDayPress = (day: DateData) => {
     setSelectedDate(day.dateString);
     setSelectedDateData(grassData[day.dateString]);
     setModalVisible(true);
   };
 
-  const getMarkedDates = () => {
-    let markedDates: any = {};
-    for (let date in grassData) {
-      const activity = grassData[date];
-      const color = getColorForActivity({studyHour: activity.studyTime});
-      markedDates[date] = {
-        customStyles: {
-          container: {
-            backgroundColor: color,
-            borderRadius: 15,
-          },
-          text: {
-            color: 'white',
-          },
-        },
-      };
-    }
-    return markedDates;
-  };
-
-  const getColorForActivity = ({studyHour}: {studyHour: number}) => {
-    if (studyHour === 0) return '#ebedf0'; // 연한 회색
-    else if (studyHour >= 1 && studyHour <= 2) return '#c6e48b'; // 연한 초록
-    else if (studyHour >= 3 && studyHour <= 4) return '#7bc96f'; // 중간 초록
-    else if (studyHour >= 5 && studyHour <= 6) return '#239a3b'; // 진한 초록
-    else if (studyHour >= 7 && studyHour <= 8)
-      return '#196127'; // 아주 진한 초록
-    else return '#196127'; // 8시간 초과 시에도 동일한 색상
-  };
-
   const handleTabPress = (mode: 'monthly' | 'yearly') => {
     setViewMode(mode);
+  };
+
+  const getJandiImage = (studyHour: number) => {
+    if (studyHour === 0) return IMAGES.jandi;
+    else if (studyHour >= 1 && studyHour <= 2) return IMAGES.jandi1;
+    else if (studyHour >= 3 && studyHour <= 4) return IMAGES.jandi2;
+    else if (studyHour >= 5 && studyHour <= 6) return IMAGES.jandi3;
+    else if (studyHour >= 7 && studyHour <= 8) return IMAGES.jandi4;
+    else return IMAGES.jandi4;
+  };
+
+  const CustomDay = ({
+    date,
+    state,
+  }: {
+    date: DateData;
+    state: string;
+    marking: any;
+  }) => {
+    const isSelected = state === 'selected';
+    const isToday = moment(date.dateString).isSame(moment(), 'day');
+
+    // Retrieve study time for the date
+    const studyData = grassData[date.dateString];
+    const studyTime = studyData ? studyData.studyTime : 0;
+    const jandiImage = getJandiImage(studyTime);
+
+    return (
+      <TouchableOpacity
+        style={[styles.dayContainer, isSelected && styles.selectedDay]}
+        onPress={() => onDayPress(date)}
+        disabled={state === 'disabled'}>
+        <Image source={jandiImage} style={styles.dayImage} />
+
+        <Text style={[styles.dayText, isToday && styles.todayText]}>
+          {date.day}
+        </Text>
+      </TouchableOpacity>
+    );
   };
 
   return (
@@ -175,7 +189,6 @@ const CalendarScreen = ({userId}: {userId: number}) => {
         </Text>
       )}
 
-      {/* 탭 전환 및 연도 선택 부분 */}
       <View style={styles.tabContainer}>
         {/* 월간 잔디밭 탭 */}
         <TouchableOpacity
@@ -234,8 +247,6 @@ const CalendarScreen = ({userId}: {userId: number}) => {
             key={displayedDate}
             current={displayedDate}
             onDayPress={onDayPress}
-            markedDates={getMarkedDates()}
-            markingType={'custom'}
             renderArrow={() => null}
             renderHeader={() => {
               return (
@@ -274,6 +285,9 @@ const CalendarScreen = ({userId}: {userId: number}) => {
               dotColor: '#A8E6CF',
             }}
             firstDay={0}
+            dayComponent={({date, state, marking}) => (
+              <CustomDay date={date} state={state} marking={marking} />
+            )}
           />
           <View style={styles.statsContainer}>
             {userRecord ? (
@@ -343,7 +357,6 @@ const CalendarScreen = ({userId}: {userId: number}) => {
         onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalBackground}>
           <View style={styles.modalContainer}>
-            {/* 날짜 포맷을 변경하여 보기 좋은 형태로 표시 */}
             <Text style={styles.modalTitle}>
               {selectedDate
                 ? moment(selectedDate, 'YYYY-MM-DD').isValid()
@@ -379,17 +392,15 @@ const CalendarScreen = ({userId}: {userId: number}) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // 화면 전체를 사용하도록 변경
+    flex: 1,
     backgroundColor: '#F5F5F5',
-    // width: width, // 제거
-    // height: height, // 제거
   },
   monthlyContainer: {
-    flex: 1, // 남은 공간을 사용하도록 설정
+    flex: 1,
     padding: 10,
   },
   yearlyView: {
-    flex: 1, // 남은 공간을 사용하도록 설정
+    flex: 1,
     padding: 20,
     color: '#333',
   },
@@ -423,7 +434,7 @@ const styles = StyleSheet.create({
   dot: {
     width: 5,
     height: 5,
-    borderRadius: 5, // Half of width and height for a perfect circle
+    borderRadius: 5,
     marginTop: 7,
   },
   tabText: {
@@ -456,7 +467,6 @@ const styles = StyleSheet.create({
     color: '#1AA5AA',
     fontWeight: 'bold',
   },
-
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -476,7 +486,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-
   modalBackground: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
@@ -561,6 +570,34 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     fontFamily: 'NanumSquareNeo-Variable',
+  },
+  dayContainer: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  selectedDay: {
+    borderWidth: 2,
+    borderColor: '#1AA5AA',
+  },
+  dayText: {
+    position: 'absolute',
+    textAlign: 'center',
+    fontSize: 14,
+    color: '#fff',
+    fontFamily: 'NanumSquareNeo-Variable',
+    fontWeight: 'bold',
+  },
+  todayText: {
+    color: '#FF6347',
+  },
+  dayImage: {
+    width: 40,
+    height: 40,
+    resizeMode: 'contain',
   },
 });
 
