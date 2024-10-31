@@ -9,6 +9,7 @@ export interface Member {
   mainBanner?: string;
   friendCount?: number;
   studyCount?: number;
+  message?: string;
 }
 
 interface ApiResponse {

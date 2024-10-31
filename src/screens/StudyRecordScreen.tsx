@@ -336,7 +336,7 @@ const StudyRecordScreen = () => {
                 title={user?.mainTitle || ''}
                 name={user?.name || ''}
                 profileImage={user?.profileImage || null}
-                studyMessage="중간고사 화이팅..."
+                studyMessage={user?.message || '중간고사 화이팅!'}
                 timerValue={
                   isRecording
                     ? formatTime(todayStudyTime + timeElapsed)
