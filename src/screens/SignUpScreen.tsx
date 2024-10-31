@@ -579,11 +579,7 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
                   }}
                   style={{
                     backgroundColor: '#fafafa',
-                    // borderColor: '#ccc',
                     borderWidth: 0,
-                    height: 40,
-                    width: width * 0.35, // 원하는 너비로 조절
-                    marginBottom: 10, //
                   }}
                   dropDownContainerStyle={{
                     backgroundColor: '#fafafa',
@@ -621,10 +617,7 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
                   scrollViewProps={{
                     nestedScrollEnabled: true,
                   }}
-                  style={{
-                    backgroundColor: '#fafafa',
-                    borderColor: '#ccc',
-                    borderWidth: 0,
+                  containerStyle={{
                     height: 40,
                     width: width * 0.35,
                     marginBottom: 10,
