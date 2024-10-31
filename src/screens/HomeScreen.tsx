@@ -142,14 +142,14 @@ const HomeScreen = () => {
           {member && (
             <View>
               <ImageBackground
-                source={{uri: member?.mainBanner}}
+                source={{uri: member?.mainBanner, cache: 'reload'}}
                 style={styles.upperSection}
                 resizeMode="cover">
                 <View style={styles.profileInfo}>
                   <Image
                     source={
                       member.profileImage
-                        ? {uri: member.profileImage}
+                        ? {uri: member.profileImage, cache: 'reload'}
                         : IMAGES.profile
                     }
                     style={styles.profileImage}
@@ -212,15 +212,18 @@ const HomeScreen = () => {
           {member && (
             <View style={styles.frozenSection}>
               <Text style={styles.frozenTitle}>보유 프리즈</Text>
-              <View style={styles.frozenDetailContainer}>
-                <Text style={styles.frozenDetailText}>
-                  현재 총{' '}
-                  <Text style={styles.frozenCount}>{member.freezeCount}</Text>{' '}
-                  개의 프리즈를 보유하고 있습니다.
-                </Text>
-                <TouchableOpacity
-                  style={styles.useFrozenButton}
-                  onPress={handleNotUseableModal}>
+
+              <View style={styles.infoCardContainer}>
+                <View style={styles.frozenDetailContainer}>
+                  <Text style={styles.frozenDetailText}>
+                    현재 총{' '}
+                    <Text style={styles.frozenCount}>{member.freezeCount}</Text>{' '}
+                    개의 프리즈를 보유하고 있습니다.
+                  </Text>
+                </View>
+
+                {/* 프리즈 충전하기 버튼 */}
+                <TouchableOpacity onPress={handleNotUseableModal}>
                   <View style={styles.frozenText}>
                     <Image source={IMAGES.freeze} style={styles.freeze} />
                     <Text style={styles.useFrozenButtonText}>
@@ -229,6 +232,7 @@ const HomeScreen = () => {
                   </View>
                 </TouchableOpacity>
               </View>
+
               <Text style={styles.frozenNote}>
                 <Image source={IMAGES.iIcon} style={styles.setiIcon} /> 프리즈는
                 잔디를 대신 채워줄 수 있는 잔디 채우기권입니다!
@@ -445,30 +449,38 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.02,
   },
   frozenTitle: {
-    fontSize: width * 0.035,
+    fontSize: 10,
     fontWeight: 'bold',
     color: '#838F8F',
-    marginBottom: height * 0.005,
+    marginBottom: 5,
     fontFamily: 'NanumSquareNeo-Variable',
+  },
+  infoCardContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   frozenDetailContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    height: height * 0.055,
+    width: width * 0.6,
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: width * 0.04,
-    paddingVertical: height * 0.015,
-    borderRadius: 3,
+    paddingHorizontal: width * 0.03,
+    marginRight: width * 0.02,
+    borderRadius: 4,
   },
   frozenDetailText: {
-    flex: 1, // 텍스트가 남은 공간을 차지하도록 설정
-    fontSize: width * 0.035,
-    color: '#333',
+    fontSize: width * 0.027,
+    fontWeight: '800',
+    color: '#B6B6B6',
     fontFamily: 'NanumSquareNeo-Variable',
   },
   frozenCount: {
-    fontSize: width * 0.04,
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#12A5B0',
+    fontFamily: 'NanumSquareNeo-Variable',
   },
   useFrozenButton: {
     backgroundColor: '#1AA5AA',
@@ -479,13 +491,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: width * 0.03,
   },
+  gradientStyle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 3,
+    paddingHorizontal: width * 0.03,
+  },
   frozenText: {
+    backgroundColor: '#12A5B0',
     flexDirection: 'row',
     alignItems: 'center',
+    height: height * 0.055,
+    justifyContent: 'center',
+    borderRadius: 3,
+    paddingHorizontal: width * 0.03,
   },
   useFrozenButtonText: {
     color: '#FFFFFF',
-    fontSize: width * 0.035,
+    fontSize: width * 0.028,
     fontWeight: 'bold',
     fontFamily: 'NanumSquareNeo-Variable',
   },
