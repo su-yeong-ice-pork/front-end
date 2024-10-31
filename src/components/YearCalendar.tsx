@@ -1,35 +1,34 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {View, StyleSheet, ScrollView, Text} from 'react-native';
-import {getYearlyGrass, GrassData} from '../api/YearJandi';
-import {useRecoilValue} from 'recoil';
-import authState from '../recoil/authAtom';
+interface GrassData {
+  [date: string]: {
+    studyTime: number;
+    grassScore: number;
+  };
+}
 
-const YearlyCalendar = ({memberId}: {memberId: number}) => {
-  const authInfo = useRecoilValue(authState);
+interface YearlyCalendarProps {
+  memberId: number;
+  grassData: GrassData;
+}
+
+const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
+  memberId,
+  grassData,
+}) => {
   const [weeks, setWeeks] = useState<Date[][]>([]);
   const [monthLabels, setMonthLabels] = useState<
     {index: number; month: string}[]
   >([]);
-  const [grassData, setGrassData] = useState<GrassData[]>([]);
   const dayLabels = ['일', '월', '화', '수', '목', '금', '토'];
 
   const scrollViewRef = useRef<ScrollView>(null);
 
   const START_DATE = new Date();
-  START_DATE.setHours(0, 0, 0, 0); // 자정으로 설정
-  START_DATE.setDate(START_DATE.getDate() - 365); // 1년 전으로 이동
+  START_DATE.setHours(0, 0, 0, 0);
+  START_DATE.setDate(START_DATE.getDate() - 365);
 
   useEffect(() => {
-    const fetchGrassData = async () => {
-      const today = new Date();
-      const year = today.getFullYear();
-
-      const grass = await getYearlyGrass(memberId, year, authInfo.authToken);
-      if (grass) {
-        setGrassData(grass);
-      }
-    };
-
     const generateDates = () => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -55,7 +54,10 @@ const YearlyCalendar = ({memberId}: {memberId: number}) => {
 
           if (
             dateCopy.getDate() === 1 &&
-            monthsMap.every(m => m.month !== dateCopy.getMonth())
+            monthsMap.every(
+              m =>
+                m.month !== dateCopy.toLocaleString('ko-KR', {month: 'short'}),
+            )
           ) {
             monthsMap.push({
               index: weeksArray.length,
@@ -75,11 +77,9 @@ const YearlyCalendar = ({memberId}: {memberId: number}) => {
       setMonthLabels(monthsMap);
     };
 
-    fetchGrassData();
     generateDates();
   }, [memberId]);
 
-  // grassData 업데이트 시 로그 출력
   useEffect(() => {
     console.log('Updated grassData:', grassData);
   }, [grassData]);
@@ -88,14 +88,14 @@ const YearlyCalendar = ({memberId}: {memberId: number}) => {
     return date >= START_DATE;
   };
 
-  const getColorForActivity = (studyHour: number) => {
-    if (studyHour === 0) return '#ebedf0'; // 연한 회색
+  const getColorForActivity = (studyHour: number, grassScore: number) => {
+    if (grassScore === 10 && studyHour === 0) return '#DCE1CB';
+    else if (studyHour === 0) return '#ebedf0';
     else if (studyHour >= 1 && studyHour <= 2) return '#c6e48b'; // 연한 초록
     else if (studyHour >= 3 && studyHour <= 4) return '#7bc96f'; // 중간 초록
     else if (studyHour >= 5 && studyHour <= 6) return '#239a3b'; // 진한 초록
-    else if (studyHour >= 7 && studyHour <= 8)
-      return '#196127'; // 아주 진한 초록
-    else return '#196127'; // 8시간 초과 시에도 동일한 색상
+    else if (studyHour >= 7 && studyHour <= 8) return '#196127';
+    else return '#196127';
   };
 
   const getColorForDate = (date: Date) => {
@@ -103,17 +103,17 @@ const YearlyCalendar = ({memberId}: {memberId: number}) => {
       return '#ebedf0';
     }
 
-    // 날짜 형식을 두 자릿수로 보정
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateKey = `${year}-${month}-${day}`;
 
-    const grassEntry = grassData.find(
-      entry => Number(entry.month) === month && Number(entry.day) === day,
-    );
+    const grassEntry = grassData[dateKey];
 
-    const studyHour = grassEntry ? grassEntry.studyHour : 0;
+    const studyHour = grassEntry ? grassEntry.studyTime : 0;
+    const grassScore = grassEntry ? grassEntry.grassScore : 0;
 
-    return getColorForActivity(studyHour);
+    return getColorForActivity(studyHour, grassScore);
   };
 
   const renderDayLabels = () => (
@@ -147,7 +147,7 @@ const YearlyCalendar = ({memberId}: {memberId: number}) => {
     </View>
   );
 
-  // 스크롤 위치 계산 함수
+  // 스크롤 위치 계산
   const scrollToToday = () => {
     if (scrollViewRef.current && weeks.length > 0) {
       const today = new Date();
@@ -157,7 +157,7 @@ const YearlyCalendar = ({memberId}: {memberId: number}) => {
       const weekIndex = Math.floor(daysFromStart / 7);
       const dayBoxWidth = styles.dayBox.width || 12;
       const dayBoxMargin = styles.dayBox.margin || 2;
-      const scrollToX = weekIndex * (dayBoxWidth + dayBoxMargin * 2) - 100; // 100은 약간 왼쪽으로 여유를 주기 위해 뺌
+      const scrollToX = weekIndex * (dayBoxWidth + dayBoxMargin * 2) - 100;
 
       scrollViewRef.current.scrollTo({x: scrollToX, animated: false});
     }

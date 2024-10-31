@@ -136,8 +136,9 @@ const CalendarScreen = ({userId}: {userId: number}) => {
     setViewMode(mode);
   };
 
-  const getJandiImage = (studyHour: number) => {
-    if (studyHour === 0) return IMAGES.jandi;
+  const getJandiImage = (studyHour: number, grassScore: number) => {
+    if (grassScore === 10 && studyHour === 0) return IMAGES.jandi;
+    else if (studyHour === 0) return null;
     else if (studyHour >= 1 && studyHour <= 2) return IMAGES.jandi1;
     else if (studyHour >= 3 && studyHour <= 4) return IMAGES.jandi2;
     else if (studyHour >= 5 && studyHour <= 6) return IMAGES.jandi3;
@@ -155,18 +156,21 @@ const CalendarScreen = ({userId}: {userId: number}) => {
   }) => {
     const isSelected = state === 'selected';
     const isToday = moment(date.dateString).isSame(moment(), 'day');
-
-    // Retrieve study time for the date
     const studyData = grassData[date.dateString];
     const studyTime = studyData ? studyData.studyTime : 0;
-    const jandiImage = getJandiImage(studyTime);
+    const grassScore = studyData ? studyData.grassScore : 0;
+    const jandiImage = getJandiImage(studyTime, grassScore);
 
     return (
       <TouchableOpacity
-        style={[styles.dayContainer, isSelected && styles.selectedDay]}
+        style={[
+          styles.dayContainer,
+          isSelected && styles.selectedDay,
+          !jandiImage && styles.defaultDayContainer,
+        ]}
         onPress={() => onDayPress(date)}
         disabled={state === 'disabled'}>
-        <Image source={jandiImage} style={styles.dayImage} />
+        {jandiImage && <Image source={jandiImage} style={styles.dayImage} />}
 
         <Text style={[styles.dayText, isToday && styles.todayText]}>
           {date.day}
@@ -326,7 +330,7 @@ const CalendarScreen = ({userId}: {userId: number}) => {
       ) : (
         <View style={styles.yearlyView}>
           {/* 연간 잔디밭 구현 */}
-          <YearlyCalendar memberId={userId} />
+          <YearlyCalendar memberId={userId} grassData={grassData} />
           <View style={styles.statsContainer}>
             {userRecord ? (
               <View style={styles.rowContainer}>
@@ -605,6 +609,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontFamily: 'NanumSquareNeo-Variable',
     fontWeight: 'bold',
+  },
+  defaultDayContainer: {
+    backgroundColor: '#E0E0E0', // 기본 동그라미 배경
   },
   todayText: {
     color: '#FF6347',
