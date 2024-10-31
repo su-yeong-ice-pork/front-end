@@ -138,6 +138,7 @@ const styles = StyleSheet.create({
     width: 25,
     height: 25,
     marginBottom: 5,
+    resizeMode: 'contain',
   },
   label: {
     fontSize: 12,

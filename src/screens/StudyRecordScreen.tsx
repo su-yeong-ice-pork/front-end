@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   Dimensions,
   SafeAreaView,
-  AppState,
   Alert,
 } from 'react-native';
 
@@ -47,7 +46,6 @@ const StudyRecordScreen = () => {
 
   const intervalRef = useRef<NodeJS.Timer | null>(null);
   const startTimeRef = useRef<number>(0);
-  const isRecordingRef = useRef(isRecording);
 
   // Modal state variables
   const [modalVisible, setModalVisible] = useState(false);
@@ -89,29 +87,6 @@ const StudyRecordScreen = () => {
   }, []);
 
   useEffect(() => {
-    isRecordingRef.current = isRecording;
-  }, [isRecording]);
-
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', nextAppState => {
-      if (nextAppState.match(/inactive|background/)) {
-        if (isRecordingRef.current) {
-          stopRecording(true); // 백그라운드로 갈 때는 플래그를 전달
-        }
-      } else if (nextAppState === 'active') {
-        // 앱이 포그라운드로 돌아왔을 때
-        if (isRecordingRef.current) {
-          resumeRecording();
-        }
-      }
-    });
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
-
-  useEffect(() => {
     if (isRecording) {
       startLocationCheckInterval();
     } else {
@@ -122,14 +97,6 @@ const StudyRecordScreen = () => {
       stopLocationCheckInterval();
     };
   }, [isRecording]);
-
-  const resumeRecording = () => {
-    startTimeRef.current = Date.now();
-    intervalRef.current = setInterval(() => {
-      const elapsed = Date.now() - startTimeRef.current;
-      setTimeElapsed(elapsed);
-    }, 1000);
-  };
 
   const startRecording = async () => {
     // 출석 여부 확인
@@ -181,14 +148,13 @@ const StudyRecordScreen = () => {
 
     setIsRecording(true);
     startTimeRef.current = Date.now();
-    isRecordingRef.current = true;
     intervalRef.current = setInterval(() => {
       const elapsed = Date.now() - startTimeRef.current;
       setTimeElapsed(elapsed);
     }, 1000);
   };
 
-  const stopRecording = async (isAppBackground = false) => {
+  const stopRecording = async () => {
     if (startTimeRef.current === 0) {
       console.error('Start time is zero, cannot calculate elapsed time.');
       return;
@@ -202,10 +168,7 @@ const StudyRecordScreen = () => {
     const elapsed = Date.now() - startTimeRef.current;
     const newTodayStudyTime = todayStudyTime + elapsed;
 
-    if (!isAppBackground) {
-      setIsRecording(false);
-      isRecordingRef.current = false; // 즉시 업데이트
-    }
+    setIsRecording(false);
 
     setTimeElapsed(0);
     startTimeRef.current = 0;
@@ -287,7 +250,7 @@ const StudyRecordScreen = () => {
         Alert.alert('위치 정보를 가져올 수 없습니다.');
         stopRecording();
       }
-    }, 10 * 1000 * 60);
+    }, 10 * 60 * 1000); // 10분마다 체크
   };
 
   // 위치 확인 인터벌 중지
