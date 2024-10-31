@@ -17,14 +17,16 @@ interface BadgeApiResponse {
   error: any;
 }
 
-export const getBadges = async (id: number): Promise<Badge[] | null> => {
+export const getBadges = async (
+  id: number,
+  authToken: string,
+): Promise<Badge[] | null> => {
   try {
-    const token = await getItem('authToken');
     const response = await apiClient.get<BadgeApiResponse>(
       `/members/${id}/badges`,
       {
         headers: {
-          Authorization: `${token}`,
+          Authorization: `${authToken}`,
         },
       },
     );

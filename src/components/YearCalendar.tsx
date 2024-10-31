@@ -1,9 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {View, StyleSheet, ScrollView, Text} from 'react-native';
 import {getYearlyGrass, GrassData} from '../api/YearJandi';
+import {useRecoilValue} from 'recoil';
+import authState from '../recoil/authAtom';
 
 const YearlyCalendar = ({memberId}: {memberId: number}) => {
-  console.log('Member ID:', memberId);
+  const authInfo = useRecoilValue(authState);
   const [weeks, setWeeks] = useState<Date[][]>([]);
   const [monthLabels, setMonthLabels] = useState<
     {index: number; month: string}[]
@@ -11,16 +13,18 @@ const YearlyCalendar = ({memberId}: {memberId: number}) => {
   const [grassData, setGrassData] = useState<GrassData[]>([]);
   const dayLabels = ['일', '월', '화', '수', '목', '금', '토'];
 
+  const scrollViewRef = useRef<ScrollView>(null);
+
   const START_DATE = new Date();
-  START_DATE.setHours(0, 0, 0, 0); // Set to midnight
-  START_DATE.setDate(START_DATE.getDate() - 365); // Go back 1 year
+  START_DATE.setHours(0, 0, 0, 0); // 자정으로 설정
+  START_DATE.setDate(START_DATE.getDate() - 365); // 1년 전으로 이동
 
   useEffect(() => {
     const fetchGrassData = async () => {
       const today = new Date();
       const year = today.getFullYear();
 
-      const grass = await getYearlyGrass(memberId, year);
+      const grass = await getYearlyGrass(memberId, year, authInfo.authToken);
       if (grass) {
         setGrassData(grass);
       }
@@ -143,8 +147,27 @@ const YearlyCalendar = ({memberId}: {memberId: number}) => {
     </View>
   );
 
+  // 스크롤 위치 계산 함수
+  const scrollToToday = () => {
+    if (scrollViewRef.current && weeks.length > 0) {
+      const today = new Date();
+      const daysFromStart = Math.floor(
+        (today.getTime() - START_DATE.getTime()) / (1000 * 60 * 60 * 24),
+      );
+      const weekIndex = Math.floor(daysFromStart / 7);
+      const dayBoxWidth = styles.dayBox.width || 12;
+      const dayBoxMargin = styles.dayBox.margin || 2;
+      const scrollToX = weekIndex * (dayBoxWidth + dayBoxMargin * 2) - 100; // 100은 약간 왼쪽으로 여유를 주기 위해 뺌
+
+      scrollViewRef.current.scrollTo({x: scrollToX, animated: false});
+    }
+  };
+
   return (
-    <ScrollView horizontal>
+    <ScrollView
+      horizontal
+      ref={scrollViewRef}
+      onContentSizeChange={scrollToToday}>
       <View style={styles.container}>
         {renderMonthLabels()}
         <View style={{flexDirection: 'row'}}>

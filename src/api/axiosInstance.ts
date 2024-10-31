@@ -32,7 +32,7 @@ apiClient.interceptors.response.use(
       const refreshToken = await getItem('refreshToken'); // 저장된 리프레시 토큰 가져오기
       if (!refreshToken) {
         // 리프레시 토큰이 없을 경우 처리
-        Alert.alert('로그인 정보가 만료되었습니다.');
+        Alert.alert('로그인을 다시 시도해주세요.');
         await setItem('refreshToken', '');
         await setItem('autoLogin', '');
         // 네비게이션을 사용하여 로그인 화면으로 이동
@@ -58,7 +58,7 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest); // 원래 요청 재시도
       } catch (err) {
         // 토큰 갱신 실패 시 처리
-        Alert.alert('로그인 정보가 만료되었습니다.');
+        Alert.alert('로그인을 다시 시도해주세요.');
         await setItem('refreshToken', '');
         await setItem('autoLogin', '');
         if (navigator) {

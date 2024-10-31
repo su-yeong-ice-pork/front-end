@@ -1,4 +1,3 @@
-import {getItem} from './asyncStorage';
 import apiClient from './axiosInstance';
 
 export interface StudyTimeResponse {
@@ -18,10 +17,11 @@ export interface AttendanceResponse {
 }
 
 // 공부 시간 조회
-export const getStudyTime = async (): Promise<StudyTimeResponse> => {
-  const token = await getItem('authToken');
+export const getStudyTime = async (
+  authToken: string,
+): Promise<StudyTimeResponse> => {
   try {
-    if (!token) {
+    if (!authToken) {
       console.error('토큰이 없습니다. 로그인이 필요합니다.');
       throw Error;
     }
@@ -29,7 +29,7 @@ export const getStudyTime = async (): Promise<StudyTimeResponse> => {
       '/grass/study-time',
       {
         headers: {
-          Authorization: token,
+          Authorization: authToken,
         },
       },
     );
@@ -41,20 +41,20 @@ export const getStudyTime = async (): Promise<StudyTimeResponse> => {
 
 export const updateStudyTime = async (
   todayStudyTime: string,
+  authToken: string,
 ): Promise<StudyTimeResponse> => {
-  const token = await getItem('authToken');
   try {
-    if (!token) {
+    if (!authToken) {
       console.error('토큰이 없습니다. 로그인이 필요합니다.');
       throw new Error('토큰이 없습니다.');
     }
-    console.log(token, todayStudyTime);
+    console.log(authToken, todayStudyTime);
     const response = await apiClient.patch<StudyTimeResponse>(
       '/grass/study-time',
       {todayStudyTime},
       {
         headers: {
-          Authorization: `${token}`,
+          Authorization: `${authToken}`,
         },
       },
     );
@@ -64,10 +64,11 @@ export const updateStudyTime = async (
   }
 };
 
-export const getTodayAttendance = async (): Promise<AttendanceResponse> => {
-  const token = await getItem('authToken');
+export const getTodayAttendance = async (
+  authToken: string,
+): Promise<AttendanceResponse> => {
   try {
-    if (!token) {
+    if (!authToken) {
       console.error('토큰이 없습니다. 로그인이 필요합니다.');
       throw new Error('토큰이 없습니다.');
     }
@@ -75,7 +76,7 @@ export const getTodayAttendance = async (): Promise<AttendanceResponse> => {
       '/grass/attendance/today',
       {
         headers: {
-          Authorization: `${token}`,
+          Authorization: `${authToken}`,
         },
       },
     );

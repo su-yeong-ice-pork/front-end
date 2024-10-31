@@ -5,9 +5,9 @@ export interface AuthTypes {
   authToken: string;
 }
 
-const authState = atom({
+const authState = atom<AuthTypes>({
   key: 'authState',
-  default: '',
+  default: {email: '', authToken: ''},
 });
 
 export default authState;

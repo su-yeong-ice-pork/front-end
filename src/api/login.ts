@@ -1,17 +1,17 @@
 //login.ts
-import {setItem, getItem} from './asyncStorage';
+import {useSetRecoilState} from 'recoil';
+import {getItem} from './asyncStorage';
 import apiClient from './axiosInstance';
 import axios from 'axios';
+import authState from '../recoil/authAtom';
+
 const handleLogin = async (email: string, password: string) => {
   try {
     const response = await apiClient.post('/members/login', {
       email,
       password,
     });
-    const authToken = response.headers['authorization'];
     const refreshToken = response.data.response.refreshToken;
-
-    await setItem('authToken', authToken);
 
     return {
       success: true,
@@ -35,12 +35,9 @@ export const autoLogin = async (refreshToken: string) => {
       refreshToken,
     });
 
-    const authToken = response.headers['authorization'];
-
-    await setItem('authToken', authToken);
-
     return {
       success: true,
+      headers: response.headers,
     };
   } catch (error: any) {
     return {
@@ -49,10 +46,12 @@ export const autoLogin = async (refreshToken: string) => {
     };
   }
 };
+
 axios.interceptors.response.use(
   response => response,
   async error => {
     const originalRequest = error.config;
+    const setAuthState = useSetRecoilState(authState);
 
     if (
       (error.response.status === 401 || error.response.status === 403) &&
@@ -68,10 +67,10 @@ axios.interceptors.response.use(
           });
           const newAuthToken = response.headers['authorization'];
           originalRequest.headers['Authorization'] = `${newAuthToken}`;
-          await setItem('authToken', newAuthToken);
+          setAuthState({email: '', authToken: newAuthToken});
           return apiClient(originalRequest);
         } catch (err) {
-          //랜딩
+          //예외 처리 방식 생각해봐야함 !
         }
       }
     }

@@ -1,3 +1,4 @@
+// src/screens/StudyRecordScreen.tsx
 import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
@@ -9,7 +10,6 @@ import {
   Dimensions,
   SafeAreaView,
   AppState,
-  Modal,
   Alert,
 } from 'react-native';
 
@@ -19,7 +19,7 @@ import BottomBar from '../components/BottomBar';
 import ProfileCard from '../components/ProfileCard';
 import {useNavigation} from '@react-navigation/native';
 import NoticeModal from '../components/NoticeModal';
-import {getMemberData, Member} from '../api/profile';
+import {Member} from '../api/profile';
 import {
   getStudyTime,
   updateStudyTime,
@@ -30,53 +30,15 @@ import {
   getCurrentLocation,
 } from '../utils/locationUtils';
 import {isPointInPolygon, SERVICE_AREA} from '../utils/serviceArea';
+import {useRecoilValue} from 'recoil';
+import userState from '../recoil/userAtom';
+import authState from '../recoil/authAtom';
 
 const {width} = Dimensions.get('window');
 
-// 더미 데이터
-const friends = [
-  {
-    id: 1,
-    name: '고민석',
-    todayStudyTime: '02시간 45분',
-    message: '열심히 공부합시다!',
-    image: null,
-    isOnline: true,
-  },
-  {
-    id: 2,
-    name: '김진우',
-    todayStudyTime: '24시간 00분',
-    message: '24시간이 모자라',
-    image: null,
-    isOnline: false,
-  },
-  {
-    id: 3,
-    name: '김태영',
-    todayStudyTime: '01시간 50분',
-    message: '커피 한 잔 하면서 쉬는 중~',
-    image: null,
-    isOnline: true,
-  },
-  {
-    id: 4,
-    name: '유경미',
-    todayStudyTime: '03시간 10분',
-    message: '프로젝트 마무리!',
-    image: null,
-    isOnline: false,
-  },
-  {
-    id: 5,
-    name: '이서현',
-    todayStudyTime: '02시간 30분',
-    message: '오늘도 파이팅!',
-    image: null,
-    isOnline: true,
-  },
-];
 const StudyRecordScreen = () => {
+  const user = useRecoilValue(userState);
+  const authInfo = useRecoilValue(authState);
   const [isRecording, setIsRecording] = useState(false);
   const [timeElapsed, setTimeElapsed] = useState<number>(0);
   const [todayStudyTime, setTodayStudyTime] = useState<number>(0);
@@ -87,7 +49,7 @@ const StudyRecordScreen = () => {
   const startTimeRef = useRef<number>(0);
   const isRecordingRef = useRef(isRecording);
 
-  // 모달 상태 변수
+  // Modal state variables
   const [modalVisible, setModalVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
   const [modalMessage, setModalMessage] = useState('');
@@ -98,21 +60,14 @@ const StudyRecordScreen = () => {
 
   useEffect(() => {
     // 유저 정보 가져오기
-    const fetchUserData = async () => {
-      const data = await getMemberData();
-      if (data) {
-        setUserData(data);
-      }
-    };
-
-    fetchUserData();
-  }, []);
+    setUserData(user);
+  }, [user]);
 
   useEffect(() => {
     // 공부 시간 데이터 가져오기
     const fetchStudyTimeData = async () => {
       try {
-        const response = await getStudyTime();
+        const response = await getStudyTime(authInfo.authToken);
         if (response.success) {
           const {todayStudyTime, totalStudyTime} = response.response;
           const todayTimeMs = parseTimeStringToMilliseconds(todayStudyTime);
@@ -141,7 +96,12 @@ const StudyRecordScreen = () => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       if (nextAppState.match(/inactive|background/)) {
         if (isRecordingRef.current) {
-          stopRecording();
+          stopRecording(true); // 백그라운드로 갈 때는 플래그를 전달
+        }
+      } else if (nextAppState === 'active') {
+        // 앱이 포그라운드로 돌아왔을 때
+        if (isRecordingRef.current) {
+          resumeRecording();
         }
       }
     });
@@ -163,10 +123,18 @@ const StudyRecordScreen = () => {
     };
   }, [isRecording]);
 
+  const resumeRecording = () => {
+    startTimeRef.current = Date.now();
+    intervalRef.current = setInterval(() => {
+      const elapsed = Date.now() - startTimeRef.current;
+      setTimeElapsed(elapsed);
+    }, 1000);
+  };
+
   const startRecording = async () => {
     // 출석 여부 확인
     try {
-      const attendanceResponse = await getTodayAttendance();
+      const attendanceResponse = await getTodayAttendance(authInfo.authToken);
       if (attendanceResponse.success) {
         const isAttended = attendanceResponse.response.attendance;
         if (!isAttended) {
@@ -197,10 +165,7 @@ const StudyRecordScreen = () => {
 
     try {
       const location = await getCurrentLocation();
-      const isInLibrary = isPointInPolygon(
-        {latitude: 35.2358, longitude: 129.0814}, //임시 값
-        SERVICE_AREA,
-      );
+      const isInLibrary = isPointInPolygon(location, SERVICE_AREA);
       if (!isInLibrary) {
         // 모달을 표시하고 타이머 시작 중지
         setModalTitle('도서관이 아닌 곳입니다.\n');
@@ -214,16 +179,21 @@ const StudyRecordScreen = () => {
       return;
     }
 
-    // 타이머 시작
     setIsRecording(true);
     startTimeRef.current = Date.now();
+    isRecordingRef.current = true;
     intervalRef.current = setInterval(() => {
       const elapsed = Date.now() - startTimeRef.current;
       setTimeElapsed(elapsed);
     }, 1000);
   };
 
-  const stopRecording = async () => {
+  const stopRecording = async (isAppBackground = false) => {
+    if (startTimeRef.current === 0) {
+      console.error('Start time is zero, cannot calculate elapsed time.');
+      return;
+    }
+
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -232,7 +202,11 @@ const StudyRecordScreen = () => {
     const elapsed = Date.now() - startTimeRef.current;
     const newTodayStudyTime = todayStudyTime + elapsed;
 
-    setIsRecording(false);
+    if (!isAppBackground) {
+      setIsRecording(false);
+      isRecordingRef.current = false; // 즉시 업데이트
+    }
+
     setTimeElapsed(0);
     startTimeRef.current = 0;
 
@@ -241,7 +215,10 @@ const StudyRecordScreen = () => {
       formatMillisecondsToTimeString(newTodayStudyTime);
 
     try {
-      const response = await updateStudyTime(todayStudyTimeString);
+      const response = await updateStudyTime(
+        todayStudyTimeString,
+        authInfo.authToken,
+      );
       if (response.success) {
         setTodayStudyTime(parseTimeStringToMilliseconds(todayStudyTimeString));
       } else {
@@ -321,8 +298,20 @@ const StudyRecordScreen = () => {
     }
   };
 
-  // 현재까지의 공부 시간 계산 (오늘 공부 시간 + 현재 세션 경과 시간)
-  const currentStudyTime = todayStudyTime + timeElapsed;
+  let currentStudyTime = todayStudyTime;
+  let currentTotalStudyTime = totalStudyTime;
+  if (timeElapsed !== 0) {
+    currentStudyTime = todayStudyTime + timeElapsed;
+    currentTotalStudyTime = totalStudyTime + timeElapsed;
+  }
+  let friends = '';
+
+  // handleNotUseableModal function
+  const handleNotUseableModal = () => {
+    setModalTitle('추가 예정인 기능입니다.');
+    setModalMessage('');
+    setModalVisible(true);
+  };
 
   return (
     <>
@@ -339,9 +328,7 @@ const StudyRecordScreen = () => {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.inactiveTab}
-                onPress={() => {
-                  Alert.alert('추가 예정입니다.');
-                }}>
+                onPress={handleNotUseableModal}>
                 <Text style={styles.inactiveTabText}>기록 랭킹</Text>
               </TouchableOpacity>
             </View>
@@ -353,12 +340,12 @@ const StudyRecordScreen = () => {
                 무럭무럭 자라고 있어요!
               </Text>
               <ProfileCard
-                title={userData?.mainTitle || ''}
-                name={userData?.name || ''}
-                profileImage={userData?.profileImage || null}
-                studyMessage="기말고사 화이팅..."
+                title={user?.mainTitle || ''}
+                name={user?.name || ''}
+                profileImage={user?.profileImage || null}
+                studyMessage="중간고사 화이팅..."
                 timerValue={formatTime(currentStudyTime)}
-                totalTimeValue={formatTime(totalStudyTime)}
+                totalTimeValue={formatTime(currentTotalStudyTime)}
                 isRecording={isRecording}
                 onStudyButtonPress={handleStudyButtonPress}
               />
@@ -372,9 +359,7 @@ const StudyRecordScreen = () => {
               <Text style={styles.membersTitle}>친구 목록</Text>
               <TouchableOpacity
                 style={styles.addMemberButton}
-                onPress={() => {
-                  /* 친구 추가 기능 */
-                }}>
+                onPress={handleNotUseableModal}>
                 <Image
                   source={require('../../assets/images/icons/whiteUsers.png')}
                   style={styles.redStar}
@@ -386,52 +371,56 @@ const StudyRecordScreen = () => {
 
             {/* 친구 리스트 */}
             <View style={styles.membersList}>
-              {friends.map((friend, index) => (
-                <View key={friend.id}>
-                  <TouchableOpacity
-                    style={styles.memberItem}
-                    onPress={() => navigation.navigate('FriendsProfile')}>
-                    <Image
-                      source={
-                        friend.image
-                          ? {uri: friend.image}
-                          : require('../../assets/images/icons/baseIcon.png')
-                      }
-                      style={styles.memberImage}
-                      resizeMode="cover"
-                    />
-                    <View style={styles.memberInfo}>
-                      <View style={styles.nameRow}>
-                        <Text style={styles.memberName}>{friend.name}</Text>
-                        {friend.isOnline && (
-                          <View style={styles.onlineStatus}>
-                            <View style={styles.onlineDot} />
-                            <Text style={styles.onlineText}>공부 중</Text>
+              {friends
+                ? friends.map((friend, index) => (
+                    <View key={friend.id}>
+                      <TouchableOpacity
+                        style={styles.memberItem}
+                        onPress={() => navigation.navigate('FriendsProfile')}>
+                        <Image
+                          source={
+                            friend.image
+                              ? {uri: friend.image}
+                              : require('../../assets/images/icons/baseIcon.png')
+                          }
+                          style={styles.memberImage}
+                          resizeMode="cover"
+                        />
+                        <View style={styles.memberInfo}>
+                          <View style={styles.nameRow}>
+                            <Text style={styles.memberName}>{friend.name}</Text>
+                            {friend.isOnline && (
+                              <View style={styles.onlineStatus}>
+                                <View style={styles.onlineDot} />
+                                <Text style={styles.onlineText}>공부 중</Text>
+                              </View>
+                            )}
                           </View>
-                        )}
-                      </View>
-                      <Text style={styles.memberStudyTime}>
-                        오늘 공부 시간:{' '}
-                        <Text style={styles.totalStudyTimeValue}>
-                          {friend.todayStudyTime}
-                        </Text>
-                      </Text>
-                      {/* 친구의 한마디 */}
-                      <View style={styles.messageBubble}>
-                        <Text style={styles.messageText}>{friend.message}</Text>
-                      </View>
-                      <Image
-                        source={require('../../assets/images/icons/right-arrow-gray.png')}
-                        style={styles.friendInfoIconAbsolute}
-                        resizeMode="contain"
-                      />
+                          <Text style={styles.memberStudyTime}>
+                            오늘 공부 시간:{' '}
+                            <Text style={styles.totalStudyTimeValue}>
+                              {friend.todayStudyTime}
+                            </Text>
+                          </Text>
+                          {/* 친구의 한마디 */}
+                          <View style={styles.messageBubble}>
+                            <Text style={styles.messageText}>
+                              {friend.message}
+                            </Text>
+                          </View>
+                          <Image
+                            source={require('../../assets/images/icons/right-arrow-gray.png')}
+                            style={styles.friendInfoIconAbsolute}
+                            resizeMode="contain"
+                          />
+                        </View>
+                      </TouchableOpacity>
+                      {index !== friends.length - 1 && (
+                        <View style={styles.separator} />
+                      )}
                     </View>
-                  </TouchableOpacity>
-                  {index !== friends.length - 1 && (
-                    <View style={styles.separator} />
-                  )}
-                </View>
-              ))}
+                  ))
+                : ''}
             </View>
           </ScrollView>
         </View>

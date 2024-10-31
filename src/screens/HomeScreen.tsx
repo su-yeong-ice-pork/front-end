@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   Dimensions,
+  ImageBackground,
   Image,
   StyleSheet,
   ScrollView,
@@ -17,14 +18,19 @@ const {width, height} = Dimensions.get('window');
 import CalendarScreen from '../components/calendar';
 import {getMemberData, Member} from '../api/profile';
 import {getBadges, Badge} from '../api/badge';
+import {postGrass} from '../api/grass';
 import {
   requestLocationPermission,
   getCurrentLocation,
 } from '../utils/locationUtils';
 import {SERVICE_AREA, isPointInPolygon, Coordinate} from '../utils/serviceArea';
-import {getItem, setItem} from '../api/asyncStorage';
+import {useRecoilState, useRecoilValue} from 'recoil';
+import userState from '../recoil/userAtom';
+import authState from '../recoil/authAtom';
+
 const HomeScreen = () => {
-  // 모달 상태 관리
+  const authInfo = useRecoilValue(authState);
+  const [user, setUser] = useRecoilState(userState);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [modalMessage, setModalMessage] = useState<string>('');
   const [member, setMember] = useState<Member | null>(null);
@@ -45,7 +51,11 @@ const HomeScreen = () => {
     require('../../assets/images/badge/badge2.png'),
     require('../../assets/images/badge/badge3.png'),
   ];
-  // "혼자 인증하기" 버튼 핸들러
+  const handleNotUseableModal = () => {
+    setModalMessage('추가 예정인 기능입니다.');
+    setModalVisible(true);
+    return;
+  };
   const handleSelfCertify = async () => {
     const hasPermission = await requestLocationPermission();
     if (!hasPermission) {
@@ -65,7 +75,18 @@ const HomeScreen = () => {
       const isInside = isPointInPolygon(userCoordinate, SERVICE_AREA);
 
       if (isInside) {
-        setModalMessage('인증에 성공했습니다!');
+        const token = authInfo.authToken;
+        if (!token) {
+          setModalMessage('인증 토큰이 없습니다.');
+          setModalVisible(true);
+          return;
+        }
+        const response = await postGrass(token);
+        if (response.success) {
+          setModalMessage('인증에 성공했습니다!');
+        } else {
+          setModalMessage(`${response.error.error.message}`);
+        }
       } else {
         setModalMessage('서비스 지역이 아닙니다.');
       }
@@ -80,10 +101,11 @@ const HomeScreen = () => {
   useEffect(() => {
     const fetchMember = async () => {
       try {
-        const memberData = await getMemberData();
+        const memberData = await getMemberData(authInfo.authToken);
         if (memberData) {
           setMember(memberData);
-          const badgesData = await getBadges(memberData.id); // 회원 ID로 뱃지 데이터 가져오기
+          setUser(memberData);
+          const badgesData = await getBadges(memberData.id, authInfo.authToken);
           if (badgesData) {
             setBadges(badgesData);
           } else {
@@ -110,6 +132,7 @@ const HomeScreen = () => {
           style={styles.container}
           contentContainerStyle={{paddingBottom: 80}}>
           {/* 상단 프로필 영역 */}
+
           <View style={styles.logoSection}>
             <View style={styles.logoInfo}>
               <Image source={IMAGES.logo} style={styles.logoImage} />
@@ -118,7 +141,10 @@ const HomeScreen = () => {
 
           {member && (
             <View>
-              <View style={styles.upperSection}>
+              <ImageBackground
+                source={{uri: member?.mainBanner}}
+                style={styles.upperSection}
+                resizeMode="cover">
                 <View style={styles.profileInfo}>
                   <Image
                     source={
@@ -129,7 +155,7 @@ const HomeScreen = () => {
                     style={styles.profileImage}
                   />
                 </View>
-              </View>
+              </ImageBackground>
 
               <View style={styles.profileTextContainer}>
                 <Text style={styles.nickname}>{member.mainTitle}</Text>
@@ -149,8 +175,6 @@ const HomeScreen = () => {
                         {badges.length > 0 && (
                           <TouchableOpacity
                             onPress={() => {
-                              console.log('... 버튼 클릭됨');
-
                               setShowModal(true);
                             }}
                             style={styles.moreButton}>
@@ -176,7 +200,9 @@ const HomeScreen = () => {
               <Image source={IMAGES.self} style={styles.buttons} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.certifyButton2}>
+            <TouchableOpacity
+              style={styles.certifyButton2}
+              onPress={handleNotUseableModal}>
               <Text style={styles.buttonText}>함께 인증하기</Text>
               <Image source={IMAGES.together} style={styles.buttons} />
             </TouchableOpacity>
@@ -192,7 +218,9 @@ const HomeScreen = () => {
                   <Text style={styles.frozenCount}>{member.freezeCount}</Text>{' '}
                   개의 프리즈를 보유하고 있습니다.
                 </Text>
-                <TouchableOpacity style={styles.useFrozenButton}>
+                <TouchableOpacity
+                  style={styles.useFrozenButton}
+                  onPress={handleNotUseableModal}>
                   <View style={styles.frozenText}>
                     <Image source={IMAGES.freeze} style={styles.freeze} />
                     <Text style={styles.useFrozenButtonText}>
@@ -232,7 +260,7 @@ const HomeScreen = () => {
                   badges.map(badge => (
                     <View key={badge.id} style={styles.modalBadge}>
                       <Image
-                        source={BADGES[badge.fileName]}
+                        source={BADGES[Number(badge.fileName)]}
                         style={styles.modalBadgeImage}
                       />
                       <View style={styles.modalBadgeInfo}>
@@ -315,6 +343,7 @@ const styles = StyleSheet.create({
     height: 100,
     marginTop: 50,
     left: 30,
+    borderRadius: 50,
   },
   profileTextContainer: {
     marginLeft: 15,
@@ -515,6 +544,7 @@ const styles = StyleSheet.create({
     fontSize: width * 0.04,
     fontWeight: '700',
     fontFamily: 'NanumSquareNeo-Variable',
+    color: '#000000',
   },
   closeButton: {
     backgroundColor: '#1AA5AA',

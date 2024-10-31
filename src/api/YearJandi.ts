@@ -1,5 +1,4 @@
 import apiClient from './axiosInstance';
-import {getItem} from './asyncStorage';
 
 export interface GrassData {
   id: number;
@@ -20,15 +19,14 @@ interface GrassApiResponse {
 export const getYearlyGrass = async (
   id: number,
   year: number,
+  authToken: string,
 ): Promise<GrassData[] | null> => {
   try {
-    const token = await getItem('authToken');
-
     const response = await apiClient.get<GrassApiResponse>(
       `/members/${id}/grass/yearly?year=${year}`,
       {
         headers: {
-          Authorization: `${token}`,
+          Authorization: authToken,
         },
       },
     );

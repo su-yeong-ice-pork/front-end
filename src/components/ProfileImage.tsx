@@ -4,15 +4,20 @@ import React from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
 
 interface ProfileImageProps {
+  profileImage: string;
   title: string;
   name: string;
 }
 
-const ProfileImage: React.FC<ProfileImageProps> = ({title, name}) => {
+const ProfileImage: React.FC<ProfileImageProps> = ({
+  profileImage,
+  title,
+  name,
+}) => {
   return (
     <View style={styles.container}>
       <Image
-        source={require('../../assets/images/icons/baseIcon.png')}
+        source={{uri: profileImage}}
         style={styles.image}
         resizeMode="cover"
       />

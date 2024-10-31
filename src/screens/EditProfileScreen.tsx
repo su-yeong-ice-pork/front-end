@@ -3,6 +3,7 @@ import {
   View,
   Text,
   Image,
+  Modal,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
@@ -11,7 +12,17 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {launchImageLibrary} from 'react-native-image-picker';
+import {useNavigation} from '@react-navigation/native';
 import Header from '../components/Header';
+
+import {GetDefaultImages, DefaultImg} from '../api/defaultImages';
+import sendDefaultImg from '../api/sendDefaultImg';
+
+import {updateProfileImage} from '../api/profileImg';
+
+import {useRecoilState, useRecoilValue} from 'recoil';
+import userState from '../recoil/userAtom';
+import authState from '../recoil/authAtom';
 
 const {width, height} = Dimensions.get('window');
 
@@ -21,23 +32,81 @@ const IMAGES = {
   chooseFromGallery2: require('../../assets/images/icons/chooseFromGallery2.png'),
 };
 
-const defaultImages = [
-  require('../../assets/images/illustration/profileImage2.png'),
-  require('../../assets/images/illustration/profileImage3.png'),
-  require('../../assets/images/illustration/profileImage4.png'),
-  require('../../assets/images/illustration/profileImage1.png'),
-];
+const EditProfileScreen = ({navigation, route}) => {
+  const {id} = route.params;
+  const authInfo = useRecoilValue(authState);
 
-const defaulBanners = [
-  require('../../assets/images/illustration/bannerImage1.png'),
-  require('../../assets/images/illustration/bannerImage2.png'),
-  require('../../assets/images/illustration/bannerImage4.png'),
-  require('../../assets/images/illustration/bannerImage3.png'),
-];
+  const [defaultProfile, setDefaultProfile] = useState<DefaultImg[] | null>(
+    null,
+  );
+  const [defaultBanner, setDefaultBanner] = useState<DefaultImg[] | null>(null);
 
-const EditProfileScreen = ({navigation}) => {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [isCustomImage, setIsCustomImage] = useState(false);
+
   const [selectedBanner, setSelectedBanner] = useState(null);
+  const [isCustomBanner, setIsCustomBanner] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+
+  // 업로드된 프로필/배너 이미지 저장할 상태
+  const [customProfileImages, setCustomProfileImages] = useState([]);
+  const [customBannerImages, setCustomBannerImages] = useState([]);
+
+  useEffect(() => {
+    const fetchDefaultImages = async () => {
+      try {
+        const defaultProfileImgs = await GetDefaultImages(
+          authInfo.authToken,
+          id,
+          'profile',
+        );
+
+        if (defaultProfileImgs) {
+          setDefaultProfile(defaultProfileImgs);
+          console.log('프로필 이미지를 불러오는데 성공했습니다');
+
+          const defaultBannerImgs = await GetDefaultImages(
+            authInfo.authToken,
+            id,
+            'banner',
+          );
+          if (defaultBannerImgs) {
+            setDefaultBanner(defaultBannerImgs);
+            console.log('배너 이미지를 불러오는 데 성공했습니다.');
+          } else {
+            console.log('배너 이미지를 불러오는 데 실패했습니다.');
+          }
+        } else {
+          console.log('프로필 이미지를 불러오는 데 실패했습니다.');
+        }
+      } catch (error) {
+        console.log('데이터를 불러오는 중 오류가 발생했습니다.');
+      }
+    };
+    fetchDefaultImages();
+  }, []);
+
+  const handleDefaultImageSelect = imageUrl => {
+    setSelectedImage(imageUrl);
+    setIsCustomImage(false); // 기본 이미지임을 표시
+  };
+
+  const handleDefaultBannerSelect = bannerUrl => {
+    setSelectedBanner(bannerUrl);
+    setIsCustomBanner(false); // 기본 배너 이미지임을 표시
+  };
+
+  const ShowPicker = (setImage, setIsCustom, setCustomImages) => {
+    launchImageLibrary({}, res => {
+      if (res.didCancel || res.errorCode) {
+        return;
+      }
+      const imageUri = res.assets[0].uri;
+      setImage(imageUri); // 선택한 이미지 설정
+      setIsCustom(true);
+      setCustomImages(prevImages => [...prevImages, imageUri]); // 사용자 업로드 이미지임을 표시
+    });
+  };
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -61,16 +130,47 @@ const EditProfileScreen = ({navigation}) => {
           <View style={styles.titleContainer}></View>
 
           <ChangeProfileImage
+            defaultImages={defaultProfile}
+            customImages={customProfileImages}
             selectedImage={selectedImage}
-            setSelectedImage={setSelectedImage}
+            handleDefaultImageSelect={handleDefaultImageSelect}
+            ShowPicker={() =>
+              ShowPicker(
+                setSelectedImage,
+                setIsCustomImage,
+                setCustomProfileImages,
+              )
+            }
           />
           <ChangeBannerImage
+            defaultBanners={defaultBanner}
+            customImages={customBannerImages}
             selectedBanner={selectedBanner}
-            setSelectedBanner={setSelectedBanner}
+            handleDefaultBannerSelect={handleDefaultBannerSelect}
+            ShowPicker={() =>
+              ShowPicker(
+                setSelectedBanner,
+                setIsCustomBanner,
+                setCustomBannerImages,
+              )
+            }
           />
         </ScrollView>
-        <SaveButton />
+        <SaveButton
+          selectedProfile={selectedImage}
+          selectedBanner={selectedBanner}
+          isCustomImage={isCustomImage}
+          isCustomBanner={isCustomBanner}
+          setSelectedImage={setSelectedImage}
+          setSelectedBanner={setSelectedBanner}
+          setUploadSuccess={setUploadSuccess}
+          id={id}
+        />
       </View>
+      <SuccessModal
+        uploadSuccess={uploadSuccess}
+        setUploadSuccess={setUploadSuccess}
+      />
     </SafeAreaView>
   );
 };
@@ -78,7 +178,13 @@ const EditProfileScreen = ({navigation}) => {
 export default EditProfileScreen;
 
 // 프로필 사진 변경
-const ChangeProfileImage = ({selectedImage, setSelectedImage}) => {
+const ChangeProfileImage = ({
+  defaultImages,
+  customImages,
+  selectedImage,
+  handleDefaultImageSelect,
+  ShowPicker,
+}) => {
   return (
     <View style={styles.changeContainer}>
       <Text style={styles.textStyle}>프로필 사진 변경</Text>
@@ -91,52 +197,67 @@ const ChangeProfileImage = ({selectedImage, setSelectedImage}) => {
               resizeMode="contain"
             />
           </TouchableOpacity>
-          {defaultImages.map((image, idx) => {
-            const isSelected = selectedImage === image;
-            return (
-              <TouchableOpacity
-                key={idx}
-                onPress={() => setSelectedImage(image)}
-                style={styles.buttonStyle}>
-                <View
-                  style={[
-                    styles.imageContainer,
-                    isSelected && styles.selectedImageBorder,
-                  ]}>
-                  <Image
-                    source={image}
-                    style={styles.defaultImageStyle}
-                    resizeMode="contain"
-                  />
-                </View>
-              </TouchableOpacity>
-            );
-          })}
+          {customImages &&
+            customImages.map((imageUri, idx) => {
+              const isSelected = selectedImage === imageUri;
+              return (
+                <TouchableOpacity
+                  key={`custom-${idx}`}
+                  onPress={() => handleDefaultImageSelect(imageUri)}
+                  style={styles.buttonStyle}>
+                  <View
+                    style={[
+                      styles.imageContainer,
+                      isSelected && styles.selectedImageBorder,
+                    ]}>
+                    <Image
+                      source={{uri: imageUri}}
+                      style={styles.defaultImageStyle}
+                      resizeMode="contain"
+                    />
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          {defaultImages &&
+            defaultImages.map((image, idx) => {
+              const isSelected = selectedImage === image.url;
+              return (
+                <TouchableOpacity
+                  key={idx}
+                  onPress={() => handleDefaultImageSelect(image.url)}
+                  style={styles.buttonStyle}>
+                  <View
+                    style={[
+                      styles.imageContainer,
+                      isSelected && styles.selectedImageBorder,
+                    ]}>
+                    <Image
+                      source={{uri: image.url}}
+                      style={styles.defaultImageStyle}
+                      resizeMode="contain"
+                    />
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
         </ScrollView>
       </View>
     </View>
   );
 };
 
-// 사용자 앨범 접근
-const ShowPicker = () => {
-  launchImageLibrary({}, res => {
-    // 사용자가 취소하거나 에러가 발생한 경우 처리
-    if (res.didCancel || res.errorCode) {
-      return;
-    }
-    alert(res.assets[0].uri);
-    const formdata = new FormData();
-    formdata.append('file', res.assets[0].uri);
-    console.log(res);
-  });
-};
-
 // 배너 사진 변경
-const ChangeBannerImage = ({selectedBanner, setSelectedBanner}) => {
+const ChangeBannerImage = ({
+  defaultBanners,
+  customImages,
+  selectedBanner,
+  handleDefaultBannerSelect,
+  ShowPicker,
+}) => {
   return (
     <View style={styles.changeContainer}>
-      <Text style={styles.textStyle}>프로필 사진 변경</Text>
+      <Text style={styles.textStyle}>배너 사진 변경</Text>
       <View style={styles.imageBox}>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <TouchableOpacity onPress={ShowPicker} style={styles.buttonStyle}>
@@ -146,23 +267,48 @@ const ChangeBannerImage = ({selectedBanner, setSelectedBanner}) => {
               resizeMode="contain"
             />
           </TouchableOpacity>
-          {defaulBanners.map((banner, idx) => {
-            const isSelected = selectedBanner === banner;
-            return (
-              <TouchableOpacity
-                key={idx}
-                onPress={() => setSelectedBanner(banner)}
-                style={styles.buttonStyle}>
-                <View
-                  style={[
-                    styles.bannerContainer,
-                    isSelected && styles.selectedBannerBorder,
-                  ]}>
-                  <Image source={banner} style={styles.defaultBannerStyle} />
-                </View>
-              </TouchableOpacity>
-            );
-          })}
+          {customImages &&
+            customImages.map((imageUri, idx) => {
+              const isSelected = selectedBanner === imageUri;
+              return (
+                <TouchableOpacity
+                  key={`custom-${idx}`}
+                  onPress={() => handleDefaultBannerSelect(imageUri)}
+                  style={styles.buttonStyle}>
+                  <View
+                    style={[
+                      styles.bannerContainer,
+                      isSelected && styles.selectedBannerBorder,
+                    ]}>
+                    <Image
+                      source={{uri: imageUri}}
+                      style={styles.defaultBannerStyle}
+                    />
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          {defaultBanners &&
+            defaultBanners.map((banner, idx) => {
+              const isSelected = selectedBanner === banner.url;
+              return (
+                <TouchableOpacity
+                  key={idx}
+                  onPress={() => handleDefaultBannerSelect(banner.url)}
+                  style={styles.buttonStyle}>
+                  <View
+                    style={[
+                      styles.bannerContainer,
+                      isSelected && styles.selectedBannerBorder,
+                    ]}>
+                    <Image
+                      source={{uri: banner.url}}
+                      style={styles.defaultBannerStyle}
+                    />
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
         </ScrollView>
       </View>
     </View>
@@ -170,10 +316,116 @@ const ChangeBannerImage = ({selectedBanner, setSelectedBanner}) => {
 };
 
 // 저장하기 버튼
-const SaveButton = () => {
+const SaveButton = ({
+  selectedProfile,
+  selectedBanner,
+  isCustomImage,
+  isCustomBanner,
+  setSelectedImage,
+  setSelectedBanner,
+  setUploadSuccess,
+  id,
+}) => {
+  const authInfo = useRecoilValue(authState);
+
+  const submitDefaultImage = async () => {
+    const authToken = authInfo.authToken;
+    let successProfile = false;
+    let successBanner = false;
+
+    // 프로필 이미지 업로드
+    if (selectedProfile) {
+      if (isCustomImage) {
+        // 사용자 업로드 이미지인 경우 Blob 코드로 전송
+        try {
+          const success = await updateProfileImage(id, authToken, 'image', {
+            uri: selectedProfile,
+            name: 'profile.jpg',
+            type: 'image/jpeg',
+          });
+
+          if (success) {
+            console.log('사용자 업로드 프로필 이미지 업로드 성공');
+            successProfile = true;
+            setSelectedImage(null);
+          } else {
+            console.log('프로필 이미지 업로드 실패');
+          }
+        } catch (error) {
+          console.log('에러 발생: ', error);
+        }
+      } else {
+        // 프로필 기본 이미지
+        try {
+          const response = await sendDefaultImg(id, authToken, 'profile', {
+            url: selectedProfile,
+          });
+          if (response.success) {
+            console.log('프로필 기본 이미지 업로드 성공');
+            successProfile = true;
+            setSelectedImage(null);
+          } else {
+            console.log('프로필 기본 이미지 업로드 실패');
+          }
+        } catch (error) {
+          console.log('error: ', error);
+        }
+      }
+    }
+
+    // 배너 이미지 업로드
+    if (selectedBanner) {
+      if (isCustomBanner) {
+        // 사용자 업로드 이미지인 경우 Blob 코드로 전송
+        try {
+          const success = await updateProfileImage(id, authToken, 'banner', {
+            uri: selectedBanner,
+            name: 'banner.jpg',
+            type: 'image/jpeg',
+          });
+
+          if (success) {
+            console.log('사용자 업로드 배너 이미지 업로드 성공');
+            successBanner = true;
+            setSelectedBanner(null);
+          } else {
+            console.log('배너 이미지 업로드 실패');
+          }
+        } catch (error) {
+          console.log('에러 발생: ', error);
+        }
+      } else {
+        // 배너 기본 이미지
+        try {
+          const response = await sendDefaultImg(id, authToken, 'banner', {
+            url: selectedBanner,
+          });
+          if (response.success) {
+            console.log('배너 기본 이미지 업로드 성공');
+            successBanner = true;
+            setSelectedBanner(null);
+          } else {
+            console.log('배너 기본 이미지 업로드 실패');
+          }
+        } catch (error) {
+          console.log('error: ', error);
+        }
+      }
+    }
+
+    // 업로드 성공 여부 확인 후 모달 표시
+    if (successProfile || successBanner) {
+      setUploadSuccess(true);
+    } else {
+      console.log('이미지 업로드 실패');
+    }
+  };
+
   return (
     <View style={styles.buttonContainer}>
-      <TouchableOpacity style={styles.signUpButton}>
+      <TouchableOpacity
+        style={styles.signUpButton}
+        onPress={submitDefaultImage}>
         <LinearGradient
           colors={['rgba(31, 209, 245, 1)', 'rgba(0, 255, 150, 1)']}
           style={{
@@ -191,7 +443,35 @@ const SaveButton = () => {
   );
 };
 
+// 업로드 성공 메시지 모달
+const SuccessModal = ({uploadSuccess, setUploadSuccess}) => {
+  const navigation = useNavigation();
+
+  const handleClose = () => {
+    navigation.navigate('Profile');
+    setUploadSuccess(false);
+  };
+
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={uploadSuccess}
+      onRequestClose={handleClose}>
+      <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+          <Text style={styles.modalText}>변경이 완료되었습니다!</Text>
+          <TouchableOpacity style={styles.buttonClose} onPress={handleClose}>
+            <Text style={styles.textStyle2}>닫기</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </Modal>
+  );
+};
+
 const styles = StyleSheet.create({
+  // 기존 스타일 그대로 유지
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
@@ -209,8 +489,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   buttonContainer: {
-    backgroundColor: '#E1E6E8', // 여백 부분에 색상 채움
-    alignItems: 'center', // 버튼을 가운데 정렬
+    backgroundColor: '#E1E6E8',
+    alignItems: 'center',
   },
   signUpButton: {
     height: height * 0.07,
@@ -231,9 +511,16 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   textStyle: {
-    color: '#454545',
-    fontWeight: '800',
-    marginBottom: 10,
+    color: '#838F8F',
+    fontWeight: 'bold',
+    fontSize: width * 0.035,
+    marginBottom: 5,
+  },
+  textStyle2: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: width * 0.035,
+    marginBottom: 5,
   },
   imageBox: {
     backgroundColor: '#FFFFFF',
@@ -295,5 +582,43 @@ const styles = StyleSheet.create({
     width: width * 0.25,
     height: height * 0.12,
     borderRadius: 10,
+  },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    width: width * 0.8,
+    maxHeight: height * 0.6,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: width * 0.05,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: height * 0.02,
+    textAlign: 'left',
+    fontSize: width * 0.04,
+    fontWeight: '700',
+    fontFamily: 'NanumSquareNeo-Variable',
+    color: '#000000',
+  },
+  buttonClose: {
+    backgroundColor: '#1AA5AA',
+    borderRadius: 4,
+    paddingVertical: height * 0.015,
+    paddingHorizontal: width * 0.1,
   },
 });

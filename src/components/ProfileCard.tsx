@@ -16,6 +16,7 @@ interface ProfileCardProps {
 const ProfileCard: React.FC<ProfileCardProps> = ({
   title,
   name,
+  profileImage,
   studyMessage,
   timerValue,
   totalTimeValue,
@@ -25,7 +26,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
   return (
     <View style={styles.card}>
       <View style={styles.leftSection}>
-        <ProfileImage title={title} name={name} />
+        <ProfileImage profileImage={profileImage} title={title} name={name} />
         <View style={styles.messageBubble}>
           <Text style={styles.messageText}>{studyMessage}</Text>
         </View>

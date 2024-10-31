@@ -1,7 +1,5 @@
 // src/api/record.ts
 import apiClient from './axiosInstance';
-import {getItem} from './asyncStorage';
-
 interface Record {
   currentStreak: number;
   maxStreak: number;
@@ -16,14 +14,16 @@ interface RecordApiResponse {
   error: any;
 }
 
-export const getRecord = async (id: number): Promise<Record | null> => {
+export const getRecord = async (
+  id: number,
+  authToken: string,
+): Promise<Record | null> => {
   try {
-    const token = await getItem('authToken');
     const response = await apiClient.get<RecordApiResponse>(
       `/members/${id}/record`,
       {
         headers: {
-          Authorization: `${token}`,
+          Authorization: `${authToken}`,
         },
       },
     );

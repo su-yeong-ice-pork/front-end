@@ -11,11 +11,12 @@ import {
   ScrollView,
   Dimensions,
   TextInput,
+  Alert,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import handleLogin, {autoLogin} from '../api/login';
 import {setItem, getItem} from '../api/asyncStorage';
-import {useRecoilValue} from 'recoil';
+
 const IMAGES = {
   blueGrass:
     'https://image-resource.creatie.ai/137927998611751/137927998611753/35fcb8e3152553006e3d0339a4456494.png',
@@ -45,8 +46,11 @@ const LandingScreen = ({navigation}) => {
         const response = await autoLogin(refreshToken);
         if (response.success) {
           const authToken = response.headers['authorization'];
-          setAuthState({email: '사용자 이메일', authToken});
-          navigation.navigate('Home');
+          setAuthState({email: '', authToken});
+          navigation.reset({
+            index: 0,
+            routes: [{name: 'Home'}],
+          });
         }
       }
     };
@@ -71,10 +75,13 @@ const LandingScreen = ({navigation}) => {
           await setItem('autoLogin', '');
         }
         const authToken = response.headers['authorization'];
-        await setItem('authToken', authToken);
-        console.log('handleLogin 응답:', response);
         setAuthState({email, authToken});
-        navigation.navigate('Home');
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Home'}],
+        });
+      } else if (response.error) {
+        Alert.alert(response.error.error.message);
       }
     } catch (error) {
       console.log('오류', error.message || '로그인 중 오류가 발생했습니다.');

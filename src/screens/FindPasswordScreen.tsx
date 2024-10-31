@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     marginTop: 0,
-    marginBottom: height * 0.025,
+    marginBottom: height * 0.005,
   },
   inputContainer2: {
     marginTop: 0,
@@ -446,6 +446,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     paddingHorizontal: 10,
     justifyContent: 'center',
+    color: '#000000',
   },
   inputRow: {
     flexDirection: 'row',

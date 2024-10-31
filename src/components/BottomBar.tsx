@@ -1,5 +1,5 @@
 // src/components/BottomBar.tsx
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Image,
@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   Dimensions,
+  Modal,
 } from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 
@@ -49,6 +50,16 @@ const BottomBar = () => {
     navigation.navigate(screen);
   };
 
+  // Modal state and functions
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+
+  const handleNotUseableModal = () => {
+    setModalMessage('추가 예정인 기능입니다.');
+    setModalVisible(true);
+    return;
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -59,7 +70,7 @@ const BottomBar = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.iconContainer}
-        onPress={() => navigateTo('Study')}>
+        onPress={handleNotUseableModal}>
         <Image source={images.study} style={styles.icon} />
         <Text style={getLabelStyle('Study')}>스터디</Text>
       </TouchableOpacity>
@@ -71,16 +82,34 @@ const BottomBar = () => {
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.iconContainer}
-        onPress={() => navigateTo('Alarm')}>
+        onPress={handleNotUseableModal}>
         <Image source={images.alarm} style={styles.icon} />
         <Text style={getLabelStyle('Alarm')}>알림</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.iconContainer}
-        onPress={() => navigateTo('FriendsProfile')}>
+        onPress={() => navigateTo('Profile')}>
         <Image source={images.profile} style={styles.icon} />
         <Text style={getLabelStyle('Profile')}>프로필</Text>
       </TouchableOpacity>
+
+      {/* Modal Component */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>{modalMessage}</Text>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}>
+              <Text style={styles.closeButtonText}>닫기</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -119,5 +148,48 @@ const styles = StyleSheet.create({
   labelActive: {
     color: '#000',
     fontWeight: 'bold',
+  },
+  // Modal styles
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    width: '80%',
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '700',
+    fontFamily: 'NanumSquareNeo-Variable',
+    color: '#000000',
+  },
+  closeButton: {
+    backgroundColor: '#1AA5AA',
+    borderRadius: 4,
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+  },
+  closeButtonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
 });

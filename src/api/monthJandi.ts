@@ -1,7 +1,5 @@
 // src/api/grass.ts
 import apiClient from './axiosInstance';
-import {getItem} from './asyncStorage';
-
 // Grass 데이터 타입 정의
 interface GrassData {
   id: number;
@@ -23,15 +21,14 @@ export const getMonthlyGrass = async (
   id: number,
   year: number,
   month: number,
+  authToken: string,
 ): Promise<GrassData[] | null> => {
   try {
-    const token = await getItem('authToken');
-
     const response = await apiClient.get<GrassApiResponse>(
       `/members/${id}/grass/monthly?year=${year}&month=${month}`,
       {
         headers: {
-          Authorization: `${token}`,
+          Authorization: authToken,
         },
       },
     );

@@ -1,17 +1,28 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
   Image,
   Modal,
+  ImageBackground,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
   Dimensions,
   SafeAreaView,
 } from 'react-native';
+
 import BottomBar from '../components/BottomBar';
 import LinearGradient from 'react-native-linear-gradient';
+
+import {getMemberData, Member} from '../api/profile';
+import {getBadges, Badge} from '../api/badge';
+import {getMyPageRecord} from '../api/myPageRecord';
+
+import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
+import userState from '../recoil/userAtom';
+import authState from '../recoil/authAtom';
+import {setItem} from '../api/asyncStorage';
 
 const {width, height} = Dimensions.get('window');
 
@@ -37,30 +48,54 @@ const IMAGES = {
   closeLogout: require('../../assets/images/icons/closeLogout.png'),
   iIcon: require('../../assets/images/icons/iIcon.png'),
 };
-import {useNavigation} from '@react-navigation/native';
 
 const ProfileScreen = ({navigation}) => {
-  const profiles = [
-    {
-      id: 1,
-      name: '김태영',
-      nickName: '새도의 신',
-      image: null,
-      badge: [
-        {image: IMAGES.badge1},
-        {image: IMAGES.badge2},
-        {image: IMAGES.badge3},
-      ],
-    },
-  ];
+  const [member, setMember] = useState<Member | null>(null);
+  const [badges, setBadges] = useState<Badge[] | null>(null);
+  const authInfo = useRecoilValue(authState);
+  const [user, setUser] = useRecoilState(userState);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [totalDays, setTotalDays] = useState<number>(0);
+  const [totalTime, setTotalTime] = useState<number>(0);
+  const [createDate, setCreateDate] = useState<string>('');
 
-  const freezes = [
-    {
-      num: 12,
-    },
-  ];
+  const handleNotUseableModal = () => {
+    setModalMessage('추가 예정인 기능입니다.');
+    setModalVisible(true);
+    return;
+  };
+  useEffect(() => {
+    const fetchMember = async () => {
+      try {
+        const memberData = await getMemberData(authInfo.authToken);
+        if (memberData) {
+          setMember(memberData);
+          setUser(memberData);
+          const badgesData = await getBadges(memberData.id, authInfo.authToken);
+          if (badgesData) {
+            setBadges(badgesData);
+          } else {
+            console.log('뱃지를 불러오는 데 실패했습니다.');
+          }
+          const recordData = await getMyPageRecord(authInfo.authToken);
+          if (recordData && recordData.success) {
+            setTotalDays(recordData.response.totalStreak);
+            setTotalTime(recordData.response.totalStudyTime);
+            setCreateDate(recordData.response.createdDate);
+          } else {
+            console.log('기록을 불러오는 데 실패했습니다.');
+          }
+        } else {
+          console.log('프로필을 불러오는 데 실패했습니다.');
+        }
+      } catch (error) {
+        console.log('데이터를 불러오는 중 오류가 발생했습니다.');
+      }
+    };
 
-  const profile = profiles[0];
+    fetchMember();
+  }, []);
 
   return (
     <SafeAreaView style={{flex: 1}}>
@@ -73,56 +108,102 @@ const ProfileScreen = ({navigation}) => {
               <Image source={IMAGES.logo} style={styles.logoImage} />
             </View>
           </View>
-          <View style={styles.upperSection}>
-            <TouchableOpacity
-              style={styles.backButtonWrapper}
-              onPress={() => navigation.goBack()}>
-              <Image
-                source={IMAGES.profileBackButton}
-                style={styles.profileBackButton}
-              />
-            </TouchableOpacity>
-            <View style={styles.profileInfo}>
-              <Image
-                source={profile.image ? {uri: profile.image} : IMAGES.profile} // 프로필 이미지 URL 대체 가능
-                style={styles.profileImage}
-              />
+
+          {member?.mainBanner ? (
+            // 배너 이미지가 있을 때 ImageBackground를 렌더링
+            <ImageBackground
+              source={{uri: member.mainBanner}}
+              style={styles.upperSection}
+              resizeMode="cover">
               <TouchableOpacity
-                onPress={() => navigation.navigate('EditProfile')}>
-                <Image source={IMAGES.editProfile} style={styles.editIcon} />
+                style={styles.backButtonWrapper}
+                onPress={() => navigation.goBack()}>
+                <Image
+                  source={IMAGES.profileBackButton}
+                  style={styles.profileBackButton}
+                />
               </TouchableOpacity>
+              <View style={styles.profileInfo}>
+                <Image
+                  source={
+                    member?.profileImage
+                      ? {uri: member.profileImage}
+                      : IMAGES.profile
+                  }
+                  style={styles.profileImage}
+                />
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('EditProfile', {id: member?.id})
+                  }>
+                  <Image source={IMAGES.editProfile} style={styles.editIcon} />
+                </TouchableOpacity>
+              </View>
+            </ImageBackground>
+          ) : (
+            // 배너 이미지가 없을 때 View를 렌더링하고 배경색을 적용
+            <View style={styles.upperSection}>
+              <TouchableOpacity
+                style={styles.backButtonWrapper}
+                onPress={() => navigation.goBack()}>
+                <Image
+                  source={IMAGES.profileBackButton}
+                  style={styles.profileBackButton}
+                />
+              </TouchableOpacity>
+              <View style={styles.profileInfo}>
+                <Image
+                  source={
+                    member?.profileImage
+                      ? {uri: member.profileImage}
+                      : IMAGES.profile
+                  }
+                  style={styles.profileImage}
+                />
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('EditProfile', {id: member?.id})
+                  }>
+                  <Image source={IMAGES.editProfile} style={styles.editIcon} />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          )}
 
           <View style={styles.profileTextContainer}>
-            <Text style={styles.nickname}>{profile.nickName}</Text>
-            <Text style={styles.username}>{profile.name}</Text>
+            <Text style={styles.nickname}>{member?.mainTitle}</Text>
+            <Text style={styles.username}>{member?.name}</Text>
           </View>
 
           <View style={styles.content}>
             <InfoCard
               subTitle="현재 나의 잔디 친구"
               iconSrc={IMAGES.coloredFriendsIcon}
-              count={5}
+              count={user.friendCount}
               text="의 잔디친구들과 공부 중입니다!"
               buttonSrc={IMAGES.friendsIcon}
               buttonText="친구목록 보기"
+              onButtonPress={handleNotUseableModal}
             />
             <InfoCard
               subTitle="현재 나의 잔디 스터디그룹"
               iconSrc={IMAGES.coloredGroupIcon}
-              count={3}
+              count={user.studyCount}
               text="의 잔디그룹에 소속되어있습니다!"
               buttonSrc={IMAGES.groupsIcon}
               buttonText="그룹목록 보기"
+              onButtonPress={handleNotUseableModal}
             />
-            <BadgeSection badges={profile.badge.map(b => b.image)} />
-            <FreezeSummary freezeCount={freezes[0].num} />
-            <GrassSummary name={profile.name} totalDays={85} />
+            <BadgeSection badges={badges} />
+            <FreezeSummary
+              freezeCount={member?.freezeCount}
+              onPress={handleNotUseableModal}
+            />
+            <GrassSummary name={member?.name} totalDays={totalDays} />
             <GrassButton
-              startDate="2024년 6월 16일"
-              totalDays={85}
-              totalTime={342}
+              startDate={createDate}
+              totalDays={totalDays}
+              totalTime={totalTime}
               ImgSrc1={IMAGES.jandi1}
               ImgSrc2={IMAGES.jandi2}
             />
@@ -130,6 +211,22 @@ const ProfileScreen = ({navigation}) => {
           <ProfileFooter navigation={navigation} />
         </ScrollView>
         <BottomBar />
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>{modalMessage}</Text>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}>
+                <Text style={styles.closeButtonText}>닫기</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </View>
     </SafeAreaView>
   );
@@ -138,7 +235,15 @@ const ProfileScreen = ({navigation}) => {
 export default ProfileScreen;
 
 // InfoCard Component
-const InfoCard = ({iconSrc, count, text, buttonSrc, buttonText, subTitle}) => {
+const InfoCard = ({
+  iconSrc,
+  count,
+  text,
+  buttonSrc,
+  buttonText,
+  subTitle,
+  onButtonPress,
+}) => {
   return (
     <>
       {/* SubTitle Section */}
@@ -157,7 +262,7 @@ const InfoCard = ({iconSrc, count, text, buttonSrc, buttonText, subTitle}) => {
         </View>
 
         {/* Button Section */}
-        <TouchableOpacity style={styles.infoCardButton}>
+        <TouchableOpacity style={styles.infoCardButton} onPress={onButtonPress}>
           <Image source={buttonSrc} style={styles.infoCardButtonIcon} />
           <Text style={styles.infoCardButtonText}>{buttonText}</Text>
         </TouchableOpacity>
@@ -168,35 +273,64 @@ const InfoCard = ({iconSrc, count, text, buttonSrc, buttonText, subTitle}) => {
 
 // BadgeSection Component
 const BadgeSection = ({badges}) => {
+  const BADGES = [
+    require('../../assets/images/badge/badge1.png'),
+    require('../../assets/images/badge/badge2.png'),
+    require('../../assets/images/badge/badge3.png'),
+  ];
+
   return (
     <View style={styles.badgeSection}>
       <Text style={styles.badgeTitle}>보유 뱃지</Text>
       <View style={styles.badgeContainer}>
-        {badges.map((badge, index) => (
-          <Image key={index} source={badge} style={styles.badge} />
-        ))}
-        <TouchableOpacity style={styles.moreButton}>
-          <Image style={styles.moreImage} source={IMAGES.moreIcon} />
-          <Text style={styles.moreText}>더보기</Text>
-        </TouchableOpacity>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {badges && badges.length > 0 ? (
+            <>
+              {badges.slice(0, 3).map(badge => (
+                <Image
+                  key={badge.id}
+                  source={BADGES[Number(badge.fileName)]}
+                  style={styles.badge}
+                />
+              ))}
+              {badges.length > 0 && (
+                <TouchableOpacity
+                  onPress={() => {
+                    console.log('... 버튼 클릭됨');
+                  }}
+                  style={styles.moreButton}>
+                  <Text style={styles.moreText}>...</Text>
+                </TouchableOpacity>
+              )}
+            </>
+          ) : (
+            <Text>보유한 뱃지가 없습니다.</Text>
+          )}
+        </ScrollView>
       </View>
     </View>
   );
 };
 
 // FreezeSummary Component
-const FreezeSummary = ({freezeCount}) => {
+const FreezeSummary = ({freezeCount, onPress}) => {
   return (
     <View style={styles.frozenSection}>
       <Text style={styles.frozenTitle}>보유 프리즈</Text>
-      <View style={styles.frozenDetailContainer}>
-        <Text style={styles.frozenDetailText}>
-          현재 총 <Text style={styles.frozenCount}>{freezeCount}</Text> 개의
-          프리즈를 보유하고 있습니다.
-        </Text>
-        <TouchableOpacity style={styles.useFrozenButton}>
+
+      {/* 프리즈 개수 표시 상자 */}
+      <View style={styles.infoCardContainer}>
+        <View style={styles.frozenDetailContainer}>
+          <Text style={styles.frozenDetailText}>
+            현재 총 <Text style={styles.frozenCount}>{freezeCount}</Text> 개의
+            프리즈를 보유하고 있습니다.
+          </Text>
+        </View>
+
+        {/* 프리즈 충전하기 버튼 */}
+        <TouchableOpacity onPress={onPress}>
           <LinearGradient
-            colors={['rgba(31, 209, 245, 1)', 'rgba(0, 255, 150, 1)']} // 그라데이션 색상
+            colors={['rgba(31, 209, 245, 1)', 'rgba(0, 255, 150, 1)']}
             style={styles.gradientStyle}
             start={{x: 0.5, y: 1}}
             end={{x: 0.5, y: 0}}>
@@ -207,6 +341,8 @@ const FreezeSummary = ({freezeCount}) => {
           </LinearGradient>
         </TouchableOpacity>
       </View>
+
+      {/* 안내 문구 */}
       <Text style={styles.frozenNote}>
         <Image source={IMAGES.iIcon} style={styles.setiIcon} /> 프리즈는 잔디를
         대신 채워줄 수 있는 잔디 채우기권입니다!
@@ -237,7 +373,7 @@ const GrassButton = ({startDate, totalDays, totalTime, ImgSrc1, ImgSrc2}) => {
     <View style={styles.cardContainer}>
       <View style={styles.card}>
         <Text style={styles.dateText}>
-          <Text style={{fontWeight: '800'}}>{startDate}</Text>에 시작하여{' '}
+          <Text style={{fontWeight: '800'}}>{startDate}</Text>에 시작하여
           지금까지 총{' '}
           <Text style={{fontSize: 15, color: '#009499', fontWeight: '500'}}>
             {totalDays}
@@ -265,6 +401,18 @@ const GrassButton = ({startDate, totalDays, totalTime, ImgSrc1, ImgSrc2}) => {
 // ProfileFooter Component
 const ProfileFooter = ({navigation}) => {
   const [showLogOut, setShowLogOut] = useState(false);
+  const setAuthState = useSetRecoilState(authState);
+  const handleLogout = async () => {
+    try {
+      await setItem('refreshToken', '');
+      await setItem('autoLogin', 'N');
+      setAuthState({email: '', authToken: ''});
+      setShowLogOut(false);
+      navigation.navigate('Landing');
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
+  };
 
   return (
     <View style={styles.footer}>
@@ -292,26 +440,36 @@ const ProfileFooter = ({navigation}) => {
         transparent={true}
         visible={showLogOut}
         onRequestClose={() => setShowLogOut(false)}>
-        <View style={styles.centeredModal}>
-          <View style={styles.upperView}>
-            <Image source={IMAGES.sleepyFaceEmoji} style={styles.sleepyEmoji} />
-            <Text style={styles.modalText}>정말 로그아웃 하실건가요?</Text>
-            <TouchableOpacity
-              onPress={() => setShowLogOut(false)}
-              style={styles.closeButton}>
-              <Image source={IMAGES.closeLogout} style={styles.closeIcon} />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.lowerSection}>
-            <Text style={styles.modalDescription}>
-              조금만 더 하면 잔디가 더 푸르게 자랄 수 있어요!{'\n'}
-              잔디는 언제나 기다리고 있을게요.
-            </Text>
-            <View style={styles.buttonContainer}>
+        <View style={styles.logoutModalOverlay}>
+          <View style={styles.logoutModalView}>
+            <View style={styles.logoutModalHeader}>
+              <Image
+                source={IMAGES.sleepyFaceEmoji}
+                style={styles.logoutModalSleepyEmoji}
+              />
+              <View style={styles.logoutModalTextWrapper}>
+                <Text style={styles.logoutModalText}>
+                  정말 로그아웃 하실건가요?
+                </Text>
+              </View>
               <TouchableOpacity
-                style={styles.button}
-                onPress={() => setShowLogOut(false)}>
-                <Text style={styles.textStyle}>네, 잘가요!</Text>
+                onPress={() => setShowLogOut(false)}
+                style={styles.logoutModalCloseButton}>
+                <Image
+                  source={IMAGES.closeLogout}
+                  style={styles.logoutModalCloseIcon}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.logoutModalContent}>
+              <Text style={styles.logoutModalDescription}>
+                조금만 더 하면 잔디가 더 푸르게 자랄 수 있어요!{'\n'}
+                잔디는 언제나 기다리고 있을게요.
+              </Text>
+              <TouchableOpacity
+                style={styles.logoutModalButton}
+                onPress={handleLogout}>
+                <Text style={styles.logoutModalButtonText}>네, 잘가요!</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -320,7 +478,6 @@ const ProfileFooter = ({navigation}) => {
     </View>
   );
 };
-
 // Styles
 const styles = StyleSheet.create({
   container: {
@@ -348,10 +505,11 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   upperSection: {
+    width: '100%',
+    height: 100, // 배너의 높이를 원하는 대로 조절하세요
     position: 'relative',
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 50,
     backgroundColor: '#86C0AE',
   },
   backButtonWrapper: {
@@ -377,6 +535,7 @@ const styles = StyleSheet.create({
     height: 100,
     marginTop: 50,
     left: 30,
+    borderRadius: 50,
   },
   editIcon: {
     position: 'absolute',
@@ -426,10 +585,10 @@ const styles = StyleSheet.create({
   infoCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: height * 0.06,
+    height: height * 0.055,
     width: width * 0.6,
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: width * 0.05,
+    paddingHorizontal: width * 0.035,
     borderRadius: 4,
   },
   infoCardIcon: {
@@ -439,21 +598,21 @@ const styles = StyleSheet.create({
     marginRight: width * 0.02,
   },
   infoCardText: {
-    fontSize: width * 0.03,
-    fontWeight: '800',
+    fontSize: width * 0.027,
+    fontWeight: '700',
     color: '#B6B6B6',
     fontFamily: 'NanumSquareNeo-Variable',
   },
   infoCardCount: {
-    fontSize: width * 0.04,
+    fontSize: width * 0.038,
     color: '#0D9488',
-    fontWeight: '800',
+    fontWeight: '700',
     fontFamily: 'NanumSquareNeo-Variable',
   },
   infoCardButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: height * 0.06,
+    height: height * 0.055,
     borderRadius: 4,
     backgroundColor: '#0D9488',
     paddingHorizontal: width * 0.03,
@@ -470,7 +629,7 @@ const styles = StyleSheet.create({
   },
   infoCardButtonText: {
     color: '#FFFFFF',
-    fontSize: width * 0.03,
+    fontSize: width * 0.028,
     fontWeight: '800',
     fontFamily: 'NanumSquareNeo-Variable',
   },
@@ -488,12 +647,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
-    height: height * 0.07,
-    width: width * 0.65,
-    paddingHorizontal: width * 0.06,
-    paddingVertical: height * 0.02,
+    height: height * 0.06,
+    width: width * 0.6,
+    paddingHorizontal: width * 0.03,
+    paddingVertical: height * 0.01,
     borderRadius: 4,
-    marginTop: height * 0.01,
+    marginTop: height * 0.005,
   },
   badge: {
     width: 35,
@@ -518,8 +677,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   frozenSection: {
-    marginTop: 16, // mt-4
-    // width: width * 0.6, // 고정된 너비 제거
+    marginTop: 16,
   },
   frozenTitle: {
     fontSize: 10,
@@ -531,17 +689,17 @@ const styles = StyleSheet.create({
   frozenDetailContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    height: height * 0.055,
+    width: width * 0.6,
     backgroundColor: '#FFFFFF',
-    borderRadius: 3,
-    paddingHorizontal: width * 0.04,
-    paddingVertical: height * 0.015,
-    justifyContent: 'space-between',
+    paddingHorizontal: width * 0.03,
+    marginRight: width * 0.02,
+    borderRadius: 4,
   },
   frozenDetailText: {
-    flex: 1, // 텍스트가 남은 공간을 차지하도록 설정
-    fontSize: 10,
-    color: '#333',
-    fontWeight: '700',
+    fontSize: width * 0.027,
+    fontWeight: '800',
+    color: '#B6B6B6',
     fontFamily: 'NanumSquareNeo-Variable',
   },
   frozenCount: {
@@ -550,25 +708,20 @@ const styles = StyleSheet.create({
     color: '#12A5B0',
     fontFamily: 'NanumSquareNeo-Variable',
   },
-  useFrozenButton: {
-    // width와 height를 제거하여 내용에 따라 크기가 조절되도록 함
-    paddingHorizontal: width * 0.03,
-    paddingVertical: height * 0.01,
-  },
   gradientStyle: {
-    justifyContent: 'center', // 내용 중앙 정렬
-    alignItems: 'center', // 내용 중앙 정렬
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 3,
     paddingHorizontal: width * 0.03,
-    paddingVertical: height * 0.01,
   },
   frozenText: {
     flexDirection: 'row',
     alignItems: 'center',
+    height: height * 0.055,
   },
   useFrozenButtonText: {
     color: '#FFFFFF',
-    fontSize: width * 0.035,
+    fontSize: width * 0.028,
     fontWeight: 'bold',
     fontFamily: 'NanumSquareNeo-Variable',
   },
@@ -579,17 +732,15 @@ const styles = StyleSheet.create({
     marginRight: width * 0.01,
   },
   frozenNote: {
-    fontSize: 8,
+    fontSize: width * 0.03,
     color: '#009499',
-    marginTop: 5,
-    fontWeight: '700',
     fontFamily: 'NanumSquareNeo-Variable',
   },
   setiIcon: {
     width: width * 0.03,
     height: height * 0.03,
     resizeMode: 'contain',
-    marginRight: width * 0.03,
+    marginRight: width * 0.01,
   },
   grassSection: {
     marginTop: 56, // mt-14
@@ -628,6 +779,7 @@ const styles = StyleSheet.create({
     marginBottom: -height * 0.01,
     fontFamily: 'NanumSquareNeo-Variable',
     fontWeight: '700',
+    color: '#000000',
   },
   timeText: {
     fontSize: width * 0.03,
@@ -636,6 +788,7 @@ const styles = StyleSheet.create({
     marginBottom: -height * 0.01,
     fontFamily: 'NanumSquareNeo-Variable',
     fontWeight: '700',
+    color: '#000000',
   },
   image: {
     width: width * 0.25,
@@ -697,30 +850,12 @@ const styles = StyleSheet.create({
     height: 20,
     marginRight: 10,
   },
-  closeButton: {
-    position: 'absolute',
-    right: 10,
-  },
+
   closeIcon: {
     width: 20,
     height: 20,
   },
-  modalView: {
-    backgroundColor: '#009499',
-    width: width * 0.8,
-    alignItems: 'center',
-    borderBottomLeftRadius: 10,
-    borderBottomRightRadius: 10,
-  },
-  modalText: {
-    textAlign: 'center',
-    alignContent: 'center',
-    justifyContent: 'center',
-    color: '#FFFFFF',
-    fontSize: 13,
-    fontWeight: '700',
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
+
   button: {
     backgroundColor: '#009499',
     borderRadius: 20,
@@ -765,5 +900,111 @@ const styles = StyleSheet.create({
     flexDirection: 'row', // 버튼을 수평으로 정렬
     justifyContent: 'center', // 가로 방향으로 중앙 정렬
     width: '100%', // 부모 컨테이너의 전체 너비 사용
+  },
+
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 35,
+    alignItems: 'center',
+    width: '80%',
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '700',
+    fontFamily: 'NanumSquareNeo-Variable',
+    color: '#000000',
+  },
+  closeButton: {
+    backgroundColor: '#1AA5AA',
+    borderRadius: 4,
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+  },
+  closeButtonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+
+  // Logout Modal styles
+  logoutModalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoutModalView: {
+    width: width * 0.8,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+  },
+  logoutModalHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#009499',
+    height: 50,
+    alignItems: 'center',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    paddingHorizontal: 10,
+  },
+  logoutModalSleepyEmoji: {
+    width: 20,
+    height: 20,
+    marginRight: 10,
+  },
+  logoutModalTextWrapper: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoutModalText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '700',
+    flex: 1,
+    textAlign: 'center',
+  },
+  logoutModalCloseButton: {
+    position: 'absolute',
+    right: 10,
+  },
+  logoutModalCloseIcon: {
+    width: 20,
+    height: 20,
+  },
+  logoutModalContent: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  logoutModalDescription: {
+    fontSize: 12,
+    textAlign: 'center',
+    marginBottom: 15,
+    fontWeight: '800',
+    fontFamily: 'NanumSquareNeo-Variable',
+    color: '#000000',
+  },
+  logoutModalButton: {
+    backgroundColor: '#009499',
+    borderRadius: 20,
+    width: width * 0.25,
+    padding: 10,
+  },
+  logoutModalButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: 'NanumSquareNeo-Variable',
   },
 });
