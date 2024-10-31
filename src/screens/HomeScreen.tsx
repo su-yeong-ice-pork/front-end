@@ -16,6 +16,7 @@ import {
 import BottomBar from '../components/BottomBar';
 const {width, height} = Dimensions.get('window');
 import CalendarScreen from '../components/calendar';
+import Loader from '../components/Loader';
 import {getMemberData, Member} from '../api/profile';
 import {getBadges, Badge} from '../api/badge';
 import {postGrass} from '../api/grass';
@@ -35,6 +36,7 @@ const HomeScreen = ({navigation}) => {
   const [modalMessage, setModalMessage] = useState<string>('');
   const [member, setMember] = useState<Member | null>(null);
   const [badges, setBadges] = useState<Badge[] | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState(false);
   const IMAGES = {
     profile: require('../../assets/images/illustration/typeThree.png'),
@@ -57,10 +59,12 @@ const HomeScreen = ({navigation}) => {
     return;
   };
   const handleSelfCertify = async () => {
+    setIsLoading(true);
     const hasPermission = await requestLocationPermission();
     if (!hasPermission) {
       setModalMessage('위치 권한이 필요합니다.');
       setModalVisible(true);
+      setIsLoading(false);
       return;
     }
 
@@ -79,6 +83,7 @@ const HomeScreen = ({navigation}) => {
         if (!token) {
           setModalMessage('인증 토큰이 없습니다.');
           setModalVisible(true);
+          setIsLoading(false);
           return;
         }
         const response = await postGrass(token);
@@ -95,6 +100,8 @@ const HomeScreen = ({navigation}) => {
       console.warn('위치 가져오기 실패:', error);
       setModalMessage('위치 가져오기에 실패했습니다.');
       setModalVisible(true);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -304,6 +311,7 @@ const HomeScreen = ({navigation}) => {
             </View>
           </View>
         </Modal>
+        {isLoading && <Loader />}
       </SafeAreaView>
     </>
   );
