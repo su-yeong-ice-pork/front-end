@@ -44,6 +44,7 @@ const StudyRecordScreen = () => {
   const intervalRef = useRef<NodeJS.Timer | null>(null);
   const startTimeRef = useRef<number | null>(null);
   const isStoppingRef = useRef<boolean>(false);
+  const isStartingRef = useRef<boolean>(false); // Flag to prevent multiple starts
 
   // Modal state variables
   const [modalVisible, setModalVisible] = useState(false);
@@ -92,8 +93,13 @@ const StudyRecordScreen = () => {
   }, [isRecording]);
 
   const startRecording = async () => {
-    // 출석 여부 확인
+    if (isStartingRef.current) {
+      return;
+    }
+    isStartingRef.current = true;
+
     try {
+      // 출석 여부 확인
       const attendanceResponse = await getTodayAttendance(authInfo.authToken);
       if (attendanceResponse.success) {
         const isAttended = attendanceResponse.response.attendance;
@@ -110,44 +116,46 @@ const StudyRecordScreen = () => {
         Alert.alert('출석 정보를 가져올 수 없습니다.');
         return;
       }
-    } catch (error) {
-      console.error('Error checking attendance:', error);
-      Alert.alert('출석 정보를 가져올 수 없습니다.');
-      return;
-    }
 
-    // 위치 권한 확인 및 현재 위치 가져오기
-    const hasPermission = await requestLocationPermission();
-    if (!hasPermission) {
-      Alert.alert('위치 권한이 필요합니다.');
-      return;
-    }
-
-    try {
-      const location = await getCurrentLocation();
-      const isInLibrary = isPointInPolygon(location, SERVICE_AREA);
-      if (!isInLibrary) {
-        // 모달을 표시하고 타이머 시작 중지
-        setModalTitle('도서관이 아닌 곳입니다.\n');
-        setModalMessage('잔디 스터디 기능은 도서관 내에서만 이용 가능합니다.');
-        setModalVisible(true);
+      // 위치 권한 확인 및 현재 위치 가져오기
+      const hasPermission = await requestLocationPermission();
+      if (!hasPermission) {
+        Alert.alert('위치 권한이 필요합니다.');
         return;
       }
-    } catch (error) {
-      console.error('Error getting location:', error);
-      Alert.alert('위치 정보를 가져올 수 없습니다.');
-      return;
-    }
 
-    setIsRecording(true);
-    startTimeRef.current = Date.now();
-    setTimeElapsed(0); // 녹화 시작 시 시간 초기화
-    intervalRef.current = setInterval(() => {
-      if (startTimeRef.current) {
-        const elapsed = Date.now() - startTimeRef.current;
-        setTimeElapsed(elapsed);
+      try {
+        const location = await getCurrentLocation();
+        const isInLibrary = isPointInPolygon(location, SERVICE_AREA);
+        if (!isInLibrary) {
+          // 모달을 표시하고 타이머 시작 중지
+          setModalTitle('도서관이 아닌 곳입니다.\n');
+          setModalMessage(
+            '잔디 스터디 기능은 도서관 내에서만 이용 가능합니다.',
+          );
+          setModalVisible(true);
+          return;
+        }
+      } catch (error) {
+        console.error('Error getting location:', error);
+        Alert.alert('위치 정보를 가져올 수 없습니다.');
+        return;
       }
-    }, 1000);
+
+      setIsRecording(true);
+      startTimeRef.current = Date.now();
+      setTimeElapsed(0); // 녹화 시작 시 시간 초기화
+      intervalRef.current = setInterval(() => {
+        if (startTimeRef.current) {
+          const elapsed = Date.now() - startTimeRef.current;
+          setTimeElapsed(elapsed);
+        }
+      }, 1000);
+    } catch (error) {
+      console.error('Error in startRecording:', error);
+    } finally {
+      isStartingRef.current = false;
+    }
   };
 
   const stopRecording = async () => {
@@ -180,9 +188,7 @@ const StudyRecordScreen = () => {
     setTimeElapsed(0);
 
     // 서버에 공부 시간 업데이트
-    const elapsedTimeString = formatMillisecondsToTimeString(
-      elapsed + todayStudyTime,
-    );
+    const elapsedTimeString = formatMillisecondsToTimeString(elapsed);
 
     try {
       const response = await updateStudyTime(
