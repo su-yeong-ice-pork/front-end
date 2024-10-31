@@ -489,7 +489,6 @@ const SignUpScreen = ({navigation}) => {
 
 export default SignUpScreen;
 
-// 학과 등록하기 컴포넌트
 const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
   const [openCollege, setOpenCollege] = useState(false);
   const [openDepartment, setOpenDepartment] = useState(false);
@@ -510,6 +509,7 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
     } else {
       setDepartments([]);
     }
+    setSelectedDepartment(''); // 학과 선택 초기화
   }, [selectedCollege]);
 
   const confirmSelection = () => {
@@ -521,15 +521,6 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
       alert('단과대학과 학과를 모두 선택해주세요.');
     }
   };
-
-  useEffect(() => {
-    const selected = collegeData.find(c => c.college === selectedCollege);
-    if (selected) {
-      setDepartments(selected.departments.map(d => ({label: d, value: d})));
-    } else {
-      setDepartments([]);
-    }
-  }, [selectedCollege]);
 
   return (
     <View style={styles.inputContainer}>
@@ -552,7 +543,7 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
 
       {/* 드롭다운 모달 */}
       <Modal visible={modalVisible} transparent={true} animationType="slide">
-        <View style={styles.modalOverlay}>
+        <GestureHandlerRootView style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             {/* College Selection */}
             <View style={styles.inputWrapper}>
@@ -565,9 +556,8 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
             </View>
 
             <View style={styles.modalContainer2}>
-              <View style={{zIndex: 10}}>
+              <View style={{zIndex: openCollege ? 1000 : 1}}>
                 <DropDownPicker
-                  zIndex={100}
                   open={openCollege}
                   value={selectedCollege}
                   items={colleges}
@@ -579,17 +569,16 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
                     nestedScrollEnabled: true,
                   }}
                   placeholder="단과대학"
-                  zIndex={3000}
-                  zIndexInverse={100}
+                  zIndex={1000}
+                  zIndexInverse={1000}
                   onOpen={() => setOpenDepartment(false)}
                   containerStyle={{
                     height: 40,
-                    width: width * 0.35, // 원하는 너비로 조절
-                    marginBottom: 10, // 필요에 따라 조절
+                    width: width * 0.35,
+                    marginBottom: 10,
                   }}
                   style={{
                     backgroundColor: '#fafafa',
-                    // borderColor: '#ccc',
                     borderWidth: 0,
                   }}
                   dropDownContainerStyle={{
@@ -599,19 +588,19 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
                   tickIconStyle={{
                     width: 20,
                     height: 20,
-                    tintColor: '#009499', // 체크 마크 색상
+                    tintColor: '#009499',
                   }}
                   labelStyle={{
                     fontSize: 13,
                     textAlign: 'left',
                   }}
                   arrowStyle={{
-                    tintColor: '#009499', // 화살표 아이콘 색상
+                    tintColor: '#009499',
                   }}
                 />
               </View>
 
-              <View style={{zIndex: 10}}>
+              <View style={{zIndex: openDepartment ? 1000 : 1}}>
                 <DropDownPicker
                   open={openDepartment}
                   value={selectedDepartment}
@@ -619,23 +608,22 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
                   setOpen={setOpenDepartment}
                   setValue={setSelectedDepartment}
                   setItems={setDepartments}
-                  listMode="SCROLLVIEW"
                   placeholder="학과"
-                  zIndex={2000} // Ensure the dropdown is above other content
+                  zIndex={500}
                   zIndexInverse={1000}
-                  disabled={!selectedCollege} // Disable until a college is selected
+                  disabled={!selectedCollege}
                   onOpen={() => setOpenCollege(false)}
+                  listMode="SCROLLVIEW"
                   scrollViewProps={{
                     nestedScrollEnabled: true,
                   }}
                   containerStyle={{
                     height: 40,
-                    width: width * 0.35, // 원하는 너비로 조절
-                    marginBottom: 10, // 필요에 따라 조절
+                    width: width * 0.35,
+                    marginBottom: 10,
                   }}
                   style={{
                     backgroundColor: '#fafafa',
-                    // borderColor: '#ccc',
                     borderWidth: 0,
                   }}
                   dropDownContainerStyle={{
@@ -645,14 +633,14 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
                   tickIconStyle={{
                     width: 20,
                     height: 20,
-                    tintColor: '#009499', // 체크 마크 색상
+                    tintColor: '#009499',
                   }}
                   labelStyle={{
                     fontSize: 12,
                     textAlign: 'left',
                   }}
                   arrowStyle={{
-                    tintColor: '#009499', // 화살표 아이콘 색상
+                    tintColor: '#009499',
                   }}
                 />
               </View>
@@ -665,7 +653,7 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
               <Text style={styles.confirmButtonText}>확인</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </GestureHandlerRootView>
       </Modal>
     </View>
   );
@@ -751,7 +739,7 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.035,
   },
   inputContainer: {
-    marginTop: 0,
+    marginTop: height * 0.025,
     marginBottom: height * 0.025,
   },
   inputLabel: {
@@ -809,6 +797,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', // 세로축 가운데 정렬
     paddingHorizontal: 20, // 좌우 패딩으로 모달의 가운데 위치 조정
     width: '100%',
+    position: 'relative',
   },
   dropdownStyle: {
     fontSize: 5,
