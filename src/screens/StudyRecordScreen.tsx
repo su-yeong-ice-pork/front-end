@@ -17,6 +17,7 @@ import BottomBar from '../components/BottomBar';
 import ProfileCard from '../components/ProfileCard';
 import {useNavigation} from '@react-navigation/native';
 import NoticeModal from '../components/NoticeModal';
+import Loader from '../components/Loader';
 import {
   getStudyTime,
   updateStudyTime,
@@ -40,7 +41,7 @@ const StudyRecordScreen = () => {
   const [timeElapsed, setTimeElapsed] = useState<number>(0);
   const [todayStudyTime, setTodayStudyTime] = useState<number>(0);
   const [totalStudyTime, setTotalStudyTime] = useState<number>(0);
-
+  const [isLoading, setIsLoading] = useState(false);
   const intervalRef = useRef<NodeJS.Timer | null>(null);
   const startTimeRef = useRef<number | null>(null);
   const isStoppingRef = useRef<boolean>(false);
@@ -97,7 +98,7 @@ const StudyRecordScreen = () => {
       return;
     }
     isStartingRef.current = true;
-
+    setIsLoading(true);
     try {
       // 출석 여부 확인
       const attendanceResponse = await getTodayAttendance(authInfo.authToken);
@@ -155,6 +156,7 @@ const StudyRecordScreen = () => {
       console.error('Error in startRecording:', error);
     } finally {
       isStartingRef.current = false;
+      setIsLoading(false);
     }
   };
 
@@ -376,6 +378,7 @@ const StudyRecordScreen = () => {
           title={modalTitle}
           message={modalMessage}
         />
+        {isLoading && <Loader />}
       </SafeAreaView>
       <BottomBar />
     </>
