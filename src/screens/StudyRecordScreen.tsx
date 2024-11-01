@@ -83,7 +83,9 @@ const StudyRecordScreen = () => {
 
   useEffect(() => {
     if (isRecording) {
-      startLocationCheckInterval();
+      if (user.name !== 'ADMIN') {
+        startLocationCheckInterval();
+      }
     } else {
       stopLocationCheckInterval();
     }
@@ -113,34 +115,34 @@ const StudyRecordScreen = () => {
           return;
         }
       } else {
-        console.error('Failed to check attendance:', attendanceResponse.error);
         Alert.alert('출석 정보를 가져올 수 없습니다.');
         return;
       }
 
-      // 위치 권한 확인 및 현재 위치 가져오기
-      const hasPermission = await requestLocationPermission();
-      if (!hasPermission) {
-        Alert.alert('위치 권한이 필요합니다.');
-        return;
-      }
-
-      try {
-        const location = await getCurrentLocation();
-        const isInLibrary = isPointInPolygon(location, SERVICE_AREA);
-        if (!isInLibrary) {
-          // 모달을 표시하고 타이머 시작 중지
-          setModalTitle('도서관이 아닌 곳입니다.\n');
-          setModalMessage(
-            '잔디 스터디 기능은 도서관 내에서만 이용 가능합니다.',
-          );
-          setModalVisible(true);
+      if (user.name !== 'ADMIN') {
+        // 위치 권한 확인 및 현재 위치 가져오기
+        const hasPermission = await requestLocationPermission();
+        if (!hasPermission) {
+          Alert.alert('위치 권한이 필요합니다.');
           return;
         }
-      } catch (error) {
-        console.error('Error getting location:', error);
-        Alert.alert('위치 정보를 가져올 수 없습니다.');
-        return;
+
+        try {
+          const location = await getCurrentLocation();
+          const isInLibrary = isPointInPolygon(location, SERVICE_AREA);
+          if (!isInLibrary) {
+            // 모달을 표시하고 타이머 시작 중지
+            setModalTitle('도서관이 아닌 곳입니다.\n');
+            setModalMessage(
+              '잔디 스터디 기능은 도서관 내에서만 이용 가능합니다.',
+            );
+            setModalVisible(true);
+            return;
+          }
+        } catch (error) {
+          Alert.alert('위치 정보를 가져올 수 없습니다.');
+          return;
+        }
       }
 
       setIsRecording(true);
@@ -153,7 +155,7 @@ const StudyRecordScreen = () => {
         }
       }, 1000);
     } catch (error) {
-      console.error('Error in startRecording:', error);
+      // 에러 처리
     } finally {
       isStartingRef.current = false;
       setIsLoading(false);
@@ -162,13 +164,11 @@ const StudyRecordScreen = () => {
 
   const stopRecording = async () => {
     if (isStoppingRef.current) {
-      console.warn('Stop operation already in progress.');
       return;
     }
     isStoppingRef.current = true;
 
     if (!startTimeRef.current || isNaN(startTimeRef.current)) {
-      console.error('Start time is invalid, cannot calculate elapsed time.');
       isStoppingRef.current = false;
       return;
     }
@@ -264,6 +264,9 @@ const StudyRecordScreen = () => {
   // 위치 확인 인터벌 시작
   const startLocationCheckInterval = () => {
     locationCheckIntervalRef.current = setInterval(async () => {
+      if (user.name === 'ADMIN') {
+        return;
+      }
       const hasPermission = await requestLocationPermission();
       if (!hasPermission) {
         Alert.alert('위치 권한이 필요합니다.');
@@ -388,6 +391,7 @@ const StudyRecordScreen = () => {
 export default StudyRecordScreen;
 
 const styles = StyleSheet.create({
+  // 기존 스타일 코드 유지
   container: {
     flex: 1,
   },
