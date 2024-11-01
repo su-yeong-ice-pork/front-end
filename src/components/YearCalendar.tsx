@@ -20,9 +20,13 @@ interface GrassData {
 
 interface YearlyCalendarProps {
   memberId: number;
+  onLoadComplete: () => void;
 }
 
-const YearlyCalendar: React.FC<YearlyCalendarProps> = ({memberId}) => {
+const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
+  memberId,
+  onLoadComplete,
+}) => {
   const authInfo = useRecoilValue(authState);
   const [weeks, setWeeks] = useState<Date[][]>([]);
   const [monthLabels, setMonthLabels] = useState<
@@ -122,6 +126,7 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({memberId}) => {
         });
 
         setGrassData(allGrassData);
+        onLoadComplete();
       } catch (error) {
         console.error('Failed to fetch yearly grass data:', error);
       } finally {

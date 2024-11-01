@@ -11,6 +11,7 @@ import {
 import {Calendar, LocaleConfig, DateData} from 'react-native-calendars';
 import YearlyCalendar from './YearCalendar';
 import moment from 'moment';
+import Loader from './Loader';
 import LinearGradient from 'react-native-linear-gradient';
 import {getRecord} from '../api/record';
 import {getMonthlyGrass} from '../api/monthJandi';
@@ -75,6 +76,7 @@ const IMAGES = {
 
 const CalendarScreen = ({userId}: {userId: number}) => {
   const authInfo = useRecoilValue(authState);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedDateData, setSelectedDateData] = useState<any>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -116,6 +118,7 @@ const CalendarScreen = ({userId}: {userId: number}) => {
         };
       });
       setGrassData(newGrassData);
+      setIsLoading(false);
     }
     console.log('월간', grassData);
   };
@@ -132,10 +135,16 @@ const CalendarScreen = ({userId}: {userId: number}) => {
     setModalVisible(true);
   };
 
-  const handleTabPress = (mode: 'monthly' | 'yearly') => {
+  const handleTabPress = (mode: 'monthly') => {
     setViewMode(mode);
   };
-
+  const handleTabPressYearly = (mode: 'yearly') => {
+    setViewMode(mode);
+    setIsLoading(true);
+  };
+  const handleYearlyDataLoad = () => {
+    setIsLoading(false);
+  };
   const getJandiImage = (studyHour: number, grassScore: number) => {
     if (grassScore === 10 && studyHour === 0) return IMAGES.jandi;
     else if (studyHour === 0) return null;
@@ -193,6 +202,7 @@ const CalendarScreen = ({userId}: {userId: number}) => {
           아직 기록된 스트릭 정보가 없습니다.
         </Text>
       )}
+      {isLoading && <Loader />}
 
       <View style={styles.tabContainer}>
         {/* 월간 잔디밭 탭 */}
@@ -223,7 +233,7 @@ const CalendarScreen = ({userId}: {userId: number}) => {
         {/* 연간 잔디밭 탭 */}
         <TouchableOpacity
           style={styles.tabButton}
-          onPress={() => handleTabPress('yearly')}
+          onPress={() => handleTabPressYearly('yearly')}
           activeOpacity={0.7}>
           <View style={styles.tabContent}>
             {viewMode === 'yearly' && (
@@ -331,7 +341,10 @@ const CalendarScreen = ({userId}: {userId: number}) => {
       ) : (
         <View style={styles.yearlyView}>
           {/* 연간 잔디밭 구현 */}
-          <YearlyCalendar memberId={userId} />
+          <YearlyCalendar
+            memberId={userId}
+            onLoadComplete={handleYearlyDataLoad}
+          />
           <View style={styles.statsContainer}>
             {userRecord ? (
               <View style={styles.rowContainer}>
