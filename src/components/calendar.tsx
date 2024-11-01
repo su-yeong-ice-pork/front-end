@@ -290,6 +290,7 @@ const CalendarScreen = ({userId}: {userId: number}) => {
               dotColor: '#A8E6CF',
             }}
             firstDay={0}
+            hideExtraDays={true}
             dayComponent={({date, state, marking}) => (
               <CustomDay date={date} state={state} marking={marking} />
             )}
@@ -330,7 +331,7 @@ const CalendarScreen = ({userId}: {userId: number}) => {
       ) : (
         <View style={styles.yearlyView}>
           {/* 연간 잔디밭 구현 */}
-          <YearlyCalendar memberId={userId} grassData={grassData} />
+          <YearlyCalendar memberId={userId} />
           <View style={styles.statsContainer}>
             {userRecord ? (
               <View style={styles.rowContainer}>

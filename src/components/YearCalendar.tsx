@@ -1,5 +1,16 @@
-import React, {useState, useEffect, useRef} from 'react';
-import {View, StyleSheet, ScrollView, Text} from 'react-native';
+// components/YearCalendar.tsx
+import React, {useState, useEffect, useRef, useCallback} from 'react';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  Text,
+  ActivityIndicator,
+} from 'react-native';
+import {getMonthlyGrass} from '../api/monthJandi';
+import {useRecoilValue} from 'recoil';
+import authState from '../recoil/authAtom';
+
 interface GrassData {
   [date: string]: {
     studyTime: number;
@@ -9,21 +20,21 @@ interface GrassData {
 
 interface YearlyCalendarProps {
   memberId: number;
-  grassData: GrassData;
 }
 
-const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
-  memberId,
-  grassData,
-}) => {
+const YearlyCalendar: React.FC<YearlyCalendarProps> = ({memberId}) => {
+  const authInfo = useRecoilValue(authState);
   const [weeks, setWeeks] = useState<Date[][]>([]);
   const [monthLabels, setMonthLabels] = useState<
     {index: number; month: string}[]
   >([]);
+  const [grassData, setGrassData] = useState<GrassData>({});
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const dayLabels = ['일', '월', '화', '수', '목', '금', '토'];
 
   const scrollViewRef = useRef<ScrollView>(null);
 
+  // 현재 날짜 기준으로 시작 날짜를 설정 (1년 전)
   const START_DATE = new Date();
   START_DATE.setHours(0, 0, 0, 0);
   START_DATE.setDate(START_DATE.getDate() - 365);
@@ -34,8 +45,8 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
       today.setHours(0, 0, 0, 0);
       const endDate = new Date(today);
       const startDate = new Date(endDate);
-      startDate.setDate(startDate.getDate() - 52 * 7);
-      startDate.setDate(startDate.getDate() - startDate.getDay());
+      startDate.setDate(startDate.getDate() - 52 * 7); // 52주 전
+      startDate.setDate(startDate.getDate() - startDate.getDay()); // 주 시작을 일요일로 맞춤
 
       const weeksArray: Date[][] = [];
       let currentDate = new Date(startDate);
@@ -52,6 +63,7 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
           const dateCopy = new Date(currentDate);
           week.push(dateCopy);
 
+          // 월 시작일에 월 라벨 추가
           if (
             dateCopy.getDate() === 1 &&
             monthsMap.every(
@@ -79,6 +91,46 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
 
     generateDates();
   }, [memberId]);
+
+  useEffect(() => {
+    const fetchYearlyGrassData = async () => {
+      try {
+        const today = new Date();
+        const year = today.getFullYear();
+        const allGrassData: GrassData = {};
+
+        //모든 달 데이터 가져오기
+        const fetchPromises = Array.from({length: 12}, (_, i) => {
+          const month = i + 1;
+          return getMonthlyGrass(memberId, year, month, authInfo.authToken);
+        });
+
+        const monthlyResults = await Promise.all(fetchPromises);
+
+        monthlyResults.forEach((monthlyData, index) => {
+          if (monthlyData) {
+            monthlyData.forEach((record: any) => {
+              const month = String(index + 1).padStart(2, '0');
+              const day = String(record.day).padStart(2, '0');
+              const dateKey = `${year}-${month}-${day}`;
+              allGrassData[dateKey] = {
+                studyTime: record.studyHour,
+                grassScore: record.grassScore,
+              };
+            });
+          }
+        });
+
+        setGrassData(allGrassData);
+      } catch (error) {
+        console.error('Failed to fetch yearly grass data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchYearlyGrassData();
+  }, [memberId, authInfo.authToken]);
 
   useEffect(() => {
     console.log('Updated grassData:', grassData);
@@ -148,7 +200,7 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
   );
 
   // 스크롤 위치 계산
-  const scrollToToday = () => {
+  const scrollToToday = useCallback(() => {
     if (scrollViewRef.current && weeks.length > 0) {
       const today = new Date();
       const daysFromStart = Math.floor(
@@ -161,7 +213,16 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
 
       scrollViewRef.current.scrollTo({x: scrollToX, animated: false});
     }
-  };
+  }, [weeks, START_DATE]);
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#1AA5AA" />
+        <Text>데이터를 불러오는 중...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView
@@ -230,6 +291,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     fontSize: 10,
     color: '#586069',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
