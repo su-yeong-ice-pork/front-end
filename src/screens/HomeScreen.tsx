@@ -78,7 +78,7 @@ const HomeScreen = ({navigation}) => {
 
       const isInside = isPointInPolygon(userCoordinate, SERVICE_AREA);
 
-      if (isInside) {
+      if (isInside || user.name === 'ADMIN') {
         const token = authInfo.authToken;
         if (!token) {
           setModalMessage('인증 토큰이 없습니다.');

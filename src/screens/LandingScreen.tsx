@@ -12,10 +12,12 @@ import {
   Dimensions,
   TextInput,
   Alert,
+  Linking,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import handleLogin, {autoLogin} from '../api/login';
 import {setItem, getItem} from '../api/asyncStorage';
+import Loader from '../components/Loader';
 
 const IMAGES = {
   blueGrass:
@@ -37,6 +39,7 @@ const LandingScreen = ({navigation}) => {
   const [isAutoLogin, setIsAutoLogin] = useState(false); // 자동 로그인 상태
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태
 
   useEffect(() => {
     const checkAutoLogin = async () => {
@@ -59,6 +62,7 @@ const LandingScreen = ({navigation}) => {
 
   //로그인 버튼을 누르면
   const onLoginPress = async () => {
+    setIsLoading(true); // 로딩 시작
     try {
       const response = await handleLogin(email, password);
       if (response.success) {
@@ -85,6 +89,8 @@ const LandingScreen = ({navigation}) => {
       }
     } catch (error) {
       console.log('오류', error.message || '로그인 중 오류가 발생했습니다.');
+    } finally {
+      setIsLoading(false); // 로딩 종료
     }
   };
   const slides = [
@@ -243,8 +249,16 @@ const LandingScreen = ({navigation}) => {
             numberOfLines={1}
             adjustsFontSizeToFit>
             계정 생성 시 잔디의{' '}
-            <Text style={styles.underline}>개인정보 처리방침</Text> 및{' '}
-            <Text style={styles.underline}>이용약관</Text>에 동의하게 됩니다.
+            <Text
+              style={[styles.footerText, styles.underline]}
+              onPress={() =>
+                Linking.openURL(
+                  'https://sites.google.com/view/jandi-privacy/%ED%99%88',
+                )
+              }>
+              개인정보처리방침
+            </Text>{' '}
+            및 이용약관에 동의하게 됩니다.
           </Text>
         </>
       )}
@@ -302,6 +316,8 @@ const LandingScreen = ({navigation}) => {
           </TouchableOpacity>
         </View>
       )}
+
+      {isLoading && <Loader />}
     </LinearGradient>
   );
 };
