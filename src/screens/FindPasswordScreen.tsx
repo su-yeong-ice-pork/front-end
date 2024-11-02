@@ -4,6 +4,7 @@ import {
   View,
   Text,
   Image,
+  Modal,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
@@ -15,12 +16,17 @@ import LinearGradient from 'react-native-linear-gradient';
 import checkCode from '../api/checkCode';
 import checkPasswordEmail from '../api/checkPasswordEmail';
 import resetPassword from '../api/resetPassword';
+import {CancelAccount} from '../api/leaveAccount';
+import {useRecoilValue} from 'recoil';
+import authState from '../recoil/authAtom';
+import userState from '../recoil/userAtom';
 import {NAME_REGEX, EMAIL_REGEX, PASSWORD_REGEX} from '../constants/regex';
 
 const IMAGES = {
   backButton: require('../../assets/images/icons/backButton.png'),
   resetButton: require('../../assets/images/icons/resetButton.png'),
   iIcon: require('../../assets/images/icons/iIcon.png'),
+  closeLogout: require('../../assets/images/icons/closeLogout.png'),
 };
 
 const {width, height} = Dimensions.get('window');
@@ -356,6 +362,11 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
               ) : null}
             </View>
           )}
+
+          {/*회원 탈퇴 컴포넌트*/}
+          {headerTitle == '비밀번호 변경하기' && (
+            <LeaveAccount navigation={navigation} />
+          )}
         </ScrollView>
 
         {/* 하단 버튼 */}
@@ -383,6 +394,106 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
 };
 
 export default FindPassword;
+
+// 회원탈퇴 컴포넌트
+const LeaveAccount = ({navigation}) => {
+  const [showLeaveAccount, setShowLeaveAccount] = useState<boolean>(false);
+
+  return (
+    <View>
+      <TouchableOpacity
+        style={styles.textWrapper}
+        onPress={() => {
+          setShowLeaveAccount(true);
+        }}>
+        <Text style={styles.underlineText}>회원탈퇴</Text>
+      </TouchableOpacity>
+
+      <LeaveAccountModal
+        showLeaveAccount={showLeaveAccount}
+        setShowLeaveAccount={setShowLeaveAccount}
+        navigation={navigation}
+      />
+    </View>
+  );
+};
+
+// 회원탈퇴 모달 컴포넌트
+const LeaveAccountModal = ({
+  showLeaveAccount,
+  setShowLeaveAccount,
+  navigation,
+}) => {
+  const authInfo = useRecoilValue(authState);
+  const authToken = authInfo?.authToken;
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  const handleLeaveAccount = async () => {
+    if (!authToken) {
+      console.error('인증 토큰이 없습니다. 탈퇴 요청을 진행할 수 없습니다.');
+      return;
+    }
+    try {
+      const response = await CancelAccount(authToken, currentPassword);
+      if (response && response.success) {
+        setShowLeaveAccount(false);
+        navigation.navigate('Landing');
+      } else {
+        console.error('탈퇴 요청 실패:', response?.error);
+      }
+    } catch (error) {
+      console.error('Error deleting account:', error);
+    }
+  };
+
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={showLeaveAccount}
+      onRequestClose={() => setShowLeaveAccount(false)}>
+      <View style={styles.logoutModalOverlay}>
+        <View style={styles.logoutModalView}>
+          <View style={styles.logoutModalHeader}>
+            <View style={styles.logoutModalTextWrapper}>
+              <Text style={styles.logoutModalText}>정말 탈퇴하실 건가요?</Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => setShowLeaveAccount(false)}
+              style={styles.logoutModalCloseButton}>
+              <Image
+                source={IMAGES.closeLogout}
+                style={styles.logoutModalCloseIcon}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.logoutModalContent}>
+            <Text style={styles.logoutModalDescription}>
+              이렇게 가면 슬퍼요...{'\n'}
+              탈퇴 버튼 누를 시 바로 회원님 모든 정보가 삭제됩니다. {'\n'}
+              다시는 되돌릴 수 없습니다.
+            </Text>
+            {/* 비밀번호 입력 필드 */}
+            <TextInput
+              style={styles.passwordInput}
+              placeholder="비밀번호를 입력하세요"
+              placeholderTextColor="#B9B9B9"
+              secureTextEntry={true}
+              value={currentPassword}
+              onChangeText={setCurrentPassword}
+            />
+            <TouchableOpacity
+              style={styles.logoutModalButton}
+              onPress={handleLeaveAccount}>
+              <Text style={styles.logoutModalButtonText}>네, 탈퇴할게요</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+};
 
 const styles = StyleSheet.create({
   // 기존 스타일 그대로 사용
@@ -493,6 +604,15 @@ const styles = StyleSheet.create({
     color: '#009499',
     fontSize: 11,
   },
+  textWrapper: {
+    alignSelf: 'flex-end',
+    marginTop: 10,
+    marginRight: 10,
+  },
+  underlineText: {
+    textDecorationLine: 'underline',
+    color: '#B9B9B9',
+  },
   setiIcon: {
     width: width * 0.03,
     height: height * 0.03,
@@ -533,5 +653,150 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+
+  // 모달 스타일
+  logoutModalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoutModalView: {
+    width: width * 0.8,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+  },
+  logoutModalHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#009499',
+    height: 50,
+    alignItems: 'center',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    paddingHorizontal: 10,
+  },
+  logoutModalTextWrapper: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoutModalText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '700',
+    flex: 1,
+    textAlign: 'center',
+  },
+  logoutModalCloseButton: {
+    position: 'absolute',
+    right: 10,
+  },
+  logoutModalCloseIcon: {
+    width: 20,
+    height: 20,
+  },
+  logoutModalContent: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  logoutModalDescription: {
+    fontSize: 12,
+    textAlign: 'center',
+    marginBottom: 15,
+    fontWeight: '800',
+    fontFamily: 'NanumSquareNeo-Variable',
+    color: '#000000',
+  },
+  logoutModalButton: {
+    backgroundColor: '#009499',
+    borderRadius: 20,
+    width: width * 0.3,
+    padding: 10,
+  },
+  passwordInput: {
+    width: '100%',
+    height: 40,
+    borderColor: '#B9B9B9',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  logoutModalButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontFamily: 'NanumSquareNeo-Variable',
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    width: width * 0.8,
+    maxHeight: height * 0.6,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: width * 0.05,
+    alignItems: 'center',
+    elevation: 5,
+  },
+  modalHeaderContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: height * 0.02,
+  },
+  modalHeaderText: {
+    fontSize: width * 0.045,
+    fontWeight: 'bold',
+    color: '#000',
+    textAlign: 'left',
+    fontFamily: 'NanumSquareNeo-Variable',
+  },
+  modalHeaderHighlight: {
+    fontSize: width * 0.04,
+    fontWeight: 'bold',
+    color: '#1AA5AA',
+    paddingHorizontal: 5,
+    borderRadius: 3,
+    marginTop: 3,
+    fontFamily: 'NanumSquareNeo-Variable',
+  },
+  modalScrollView: {
+    width: '100%',
+    marginBottom: height * 0.02,
+  },
+  modalBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 5,
+    padding: 10,
+  },
+  modalBadgeImage: {
+    width: 60,
+    height: 60,
+    marginRight: 10,
+    resizeMode: 'contain',
+  },
+  modalBadgeInfo: {
+    flex: 1,
+  },
+  modalBadgeName: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    fontFamily: 'NanumSquareNeo-Variable',
+  },
+  modalBadgeDescription: {
+    fontSize: 12,
+    marginTop: 5,
+    color: '#555',
+    fontFamily: 'NanumSquareNeo-Variable',
   },
 });
