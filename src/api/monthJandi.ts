@@ -24,6 +24,9 @@ export const getMonthlyGrass = async (
   authToken: string,
 ): Promise<GrassData[] | null> => {
   try {
+    if (!authToken) {
+      return null;
+    }
     const response = await apiClient.get<GrassApiResponse>(
       `/members/${id}/grass/monthly?year=${year}&month=${month}`,
       {
