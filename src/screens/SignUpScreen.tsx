@@ -299,7 +299,7 @@ const SignUpScreen = ({navigation}) => {
             <View style={styles.container}>
               <Text style={styles.welcomeText}>환영합니다!</Text>
               <View style={styles.inlineText}>
-                <Svg height={height * 0.05} width={width * 0.8}>
+                <Svg height={height * 0.05} width={width * 0.9}>
                   <Defs>
                     <SVGLinearGradient id="grad1">
                       <Stop offset="0%" stopColor="#2CCDE4" stopOpacity="1" />
