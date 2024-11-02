@@ -30,6 +30,7 @@ import handleSignup from '../api/signup';
 import checkCode from '../api/checkCode';
 import checkEmail from '../api/checkEmail';
 import checkName from '../api/checkName';
+import ModalComponent from '../components/ModalComponent.tsx';
 
 const IMAGES = {
   backButton: require('../../assets/images/icons/backButton.png'),
@@ -47,13 +48,13 @@ const SignUpScreen = ({navigation}) => {
   const [showCodeInput, setShowCodeInput] = useState(false);
 
   //이메일 등록
-  const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
-  const [isEmailSent, setIsEmailSent] = useState<boolean>(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState('');
+  const [isEmailSent, setIsEmailSent] = useState(false);
 
   //이메일 코드
-  const [isEmailVerified, setIsEmailVerified] = useState<boolean>(false);
-  const [codeErrorMessage, setCodeErrorMessage] = useState<string>('');
-  const [verificationCode, setVerificationCode] = useState<string>('');
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [codeErrorMessage, setCodeErrorMessage] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
 
   // 학과 등록
   const [college, setCollege] = useState('');
@@ -64,12 +65,16 @@ const SignUpScreen = ({navigation}) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   // 이름 입력
-  const [name, setName] = useState<string>('');
-  const [nameErrorMessage, setNameErrorMessage] = useState<string>('');
-  const [isNameAvailable, setIsNameAvailable] = useState<boolean>(false);
+  const [name, setName] = useState('');
+  const [nameErrorMessage, setNameErrorMessage] = useState('');
+  const [isNameAvailable, setIsNameAvailable] = useState(false);
+
+  // 모달창 관리
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   useEffect(() => {
-    let timer: ReturnType<typeof setInterval> | undefined;
+    let timer;
     if (isActive && timeLeft > 0) {
       timer = setInterval(() => {
         setTimeLeft(prevTime => prevTime - 1);
@@ -83,7 +88,7 @@ const SignUpScreen = ({navigation}) => {
   }, [isActive, timeLeft]);
 
   // 초를 분:초 형식으로 변환하는 함수
-  const formatTime = (seconds: number) => {
+  const formatTime = seconds => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(
@@ -92,7 +97,7 @@ const SignUpScreen = ({navigation}) => {
     )}`;
   };
 
-  const handleRequire = async (): Promise<void> => {
+  const handleRequire = async () => {
     if (!email) {
       setEmailErrorMessage('이메일을 입력해주세요');
       return;
@@ -135,7 +140,7 @@ const SignUpScreen = ({navigation}) => {
         }
         setIsEmailSent(false);
       }
-    } catch (error: any) {
+    } catch (error) {
       setEmailErrorMessage(
         error.message || '이메일 전송 중 오류가 발생했습니다.',
       );
@@ -145,7 +150,7 @@ const SignUpScreen = ({navigation}) => {
 
   //코드 확인
 
-  const verifyCode = async (): Promise<void> => {
+  const verifyCode = async () => {
     if (!verificationCode) {
       setCodeErrorMessage('인증 코드를 입력해주세요.');
       return;
@@ -182,14 +187,14 @@ const SignUpScreen = ({navigation}) => {
         }
         setIsEmailVerified(false);
       }
-    } catch (error: any) {
+    } catch (error) {
       setCodeErrorMessage(error.message || '인증 중 오류가 발생했습니다.');
       setIsEmailVerified(false);
     }
   };
 
   // 비밀번호 입력
-  const handlePasswordChange = (password: string) => {
+  const handlePasswordChange = password => {
     setInputPassword(password);
     validationPassword(password); // 조건 확인
   };
@@ -200,7 +205,7 @@ const SignUpScreen = ({navigation}) => {
   };
 
   // 비밀번호 조건 확인
-  const validationPassword = (password: string) => {
+  const validationPassword = password => {
     const passwordRegex =
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/;
     if (!passwordRegex.test(password)) {
@@ -215,7 +220,7 @@ const SignUpScreen = ({navigation}) => {
   };
 
   // 이름 중복 확인
-  const chkDuplicate = async (): Promise<void> => {
+  const chkDuplicate = async () => {
     if (!name) {
       setNameErrorMessage('이름을 입력해주세요.');
       return;
@@ -243,7 +248,7 @@ const SignUpScreen = ({navigation}) => {
         }
         setIsNameAvailable(false);
       }
-    } catch (error: any) {
+    } catch (error) {
       setNameErrorMessage(error.message || '이름 확인 중 오류가 발생했습니다.');
       setIsNameAvailable(false);
     }
@@ -252,12 +257,16 @@ const SignUpScreen = ({navigation}) => {
   // 잔디 심으러 가기 버튼 클릭
   const submitSignUp = async () => {
     if (!email || !inputPassword || !name) {
-      Alert.alert('모든 필드를 입력해주세요.');
+      setModalMessage('모든 필드를 입력해주세요.');
+      setModalVisible(true);
       return;
     }
 
     if (!validationPassword(inputPassword)) {
-      Alert.alert('비밀번호는 8~16자 영문, 숫자, 특수문자를 포함해야 합니다.');
+      setModalMessage(
+        '비밀번호는 8~16자 영문, 숫자, 특수문자를 포함해야 합니다.',
+      );
+      setModalVisible(true);
       return;
     }
 
@@ -273,15 +282,16 @@ const SignUpScreen = ({navigation}) => {
       const response = await handleSignup(signupData);
 
       if (response.success) {
-        // 회원가입 성공 처리
-        Alert.alert('회원가입 성공', '회원가입이 완료되었습니다.');
+        setModalMessage('회원가입이 완료되었습니다.');
+        setModalVisible(true);
         navigation.navigate('Landing'); // 로그인 화면으로 이동
       } else {
-        // 회원가입 실패 처리
-        Alert.alert('회원가입 실패', '회원가입에 실패하였습니다.');
+        setModalMessage('회원가입에 실패하였습니다.');
+        setModalVisible(true);
       }
-    } catch (error: any) {
-      Alert.alert('오류', error.message);
+    } catch (error) {
+      setModalMessage(`오류: ${error.message}`);
+      setModalVisible(true);
     }
   };
 
@@ -410,7 +420,7 @@ const SignUpScreen = ({navigation}) => {
                   placeholder="8~16자리 입력 / 영어, 숫자, 특수문자 조합"
                   placeholderTextColor="#B9B9B9"
                   secureTextEntry
-                  value={inputPassword} // 상태를 연결해주어야 합니다.
+                  value={inputPassword}
                   onChangeText={handlePasswordChange}
                 />
                 <TouchableOpacity
@@ -481,6 +491,11 @@ const SignUpScreen = ({navigation}) => {
               </LinearGradient>
             </TouchableOpacity>
           </View>
+          <ModalComponent
+            modalVisible={modalVisible}
+            setModalVisible={setModalVisible}
+            modalMessage={modalMessage}
+          />
         </View>
       </SafeAreaView>
     </>
@@ -496,7 +511,8 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
   const [selectedDepartment, setSelectedDepartment] = useState(
     department || '',
   );
-  const [modalVisible, setModalVisible] = useState(false);
+  const [departModalVisible, setDepartModalVisible] = useState(false);
+  const [departModalMessage, setDepartModalMessage] = useState('');
   const [colleges, setColleges] = useState(
     collegeData.map(item => ({label: item.college, value: item.college})),
   );
@@ -516,9 +532,11 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
     if (selectedCollege && selectedDepartment) {
       setCollege(selectedCollege);
       setDepartment(selectedDepartment);
-      setModalVisible(false);
+      setDepartModalVisible(false);
     } else {
-      alert('단과대학과 학과를 모두 선택해주세요.');
+      // alert('단과대학과 학과를 모두 선택해주세요.');
+      setDepartModalMessage('단과대학과 학과를 모두 선택해주세요.');
+      setDepartModalVisible(true);
     }
   };
 
@@ -530,7 +548,7 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
 
       <TouchableOpacity
         style={styles.inputBox}
-        onPress={() => setModalVisible(true)}>
+        onPress={() => setDepartModalVisible(true)}>
         <Text
           style={
             selectedDepartment ? styles.selectedText : styles.placeholderText
@@ -542,7 +560,10 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
       </TouchableOpacity>
 
       {/* 드롭다운 모달 */}
-      <Modal visible={modalVisible} transparent={true} animationType="slide">
+      <Modal
+        visible={departModalVisible}
+        transparent={true}
+        animationType="slide">
         <GestureHandlerRootView style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             {/* College Selection */}
@@ -550,7 +571,7 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
               <Text style={styles.modalTitle}>학과 등록</Text>
               <TouchableOpacity
                 style={styles.resetButton}
-                onPress={() => setModalVisible(false)}>
+                onPress={() => setDepartModalVisible(false)}>
                 <Image source={IMAGES.resetButton} style={styles.clearIcon} />
               </TouchableOpacity>
             </View>
