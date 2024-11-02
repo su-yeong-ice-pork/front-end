@@ -221,6 +221,7 @@ const ProfileScreen = ({navigation}) => {
           <ProfileFooter navigation={navigation} />
         </ScrollView>
         <BottomBar />
+
         <Modal
           animationType="slide"
           transparent={true}
@@ -255,6 +256,23 @@ const ProfileScreen = ({navigation}) => {
               <TouchableOpacity
                 style={styles.closeButton}
                 onPress={() => setShowBadgeModal(false)}>
+                <Text style={styles.closeButtonText}>닫기</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+        {/* 추기 기능 예정입니다 모달창 */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>{modalMessage}</Text>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}>
                 <Text style={styles.closeButtonText}>닫기</Text>
               </TouchableOpacity>
             </View>
