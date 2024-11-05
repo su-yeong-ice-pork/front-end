@@ -13,11 +13,13 @@ import {
   TextInput,
   Alert,
   Linking,
+  Platform,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import handleLogin, {autoLogin} from '../api/login';
 import {setItem, getItem} from '../api/asyncStorage';
 import Loader from '../components/Loader';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'; // KeyboardAwareScrollView 임포트
 
 const IMAGES = {
   blueGrass:
@@ -60,16 +62,14 @@ const LandingScreen = ({navigation}) => {
     checkAutoLogin();
   }, []);
 
-  //로그인 버튼을 누르면
+  // 로그인 버튼을 누르면
   const onLoginPress = async () => {
     setIsLoading(true); // 로딩 시작
     try {
       const response = await handleLogin(email, password);
       if (response.success) {
         // 로그인 성공 시
-
         const refreshToken = response.data.refreshToken;
-
         await setItem('refreshToken', refreshToken);
         if (isAutoLogin) {
           // 자동 로그인 정보 저장
@@ -93,6 +93,7 @@ const LandingScreen = ({navigation}) => {
       setIsLoading(false); // 로딩 종료
     }
   };
+
   const slides = [
     {
       key: 'slide1',
@@ -178,7 +179,7 @@ const LandingScreen = ({navigation}) => {
       }
       setCurrentIndex(nextIndex);
       scrollViewRef.current?.scrollTo({
-        x: nextIndex * Dimensions.get('window').width,
+        x: nextIndex * width,
         animated: true,
       });
     }, 3000);
@@ -188,7 +189,7 @@ const LandingScreen = ({navigation}) => {
 
   const handleScrollEnd = e => {
     const contentOffset = e.nativeEvent.contentOffset.x;
-    const index = Math.round(contentOffset / Dimensions.get('window').width);
+    const index = Math.round(contentOffset / width);
     setCurrentIndex(index);
   };
 
@@ -204,7 +205,6 @@ const LandingScreen = ({navigation}) => {
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         scrollEventThrottle={16}
-        contentContainerStyle={{flexGrow: 1}}
         onScroll={Animated.event(
           [{nativeEvent: {contentOffset: {x: scrollX}}}],
           {useNativeDriver: false},
@@ -216,11 +216,7 @@ const LandingScreen = ({navigation}) => {
       <View style={styles.paginationContainer}>
         {slides.map((_, i) => {
           let opacity = scrollX.interpolate({
-            inputRange: [
-              (i - 1) * Dimensions.get('window').width,
-              i * Dimensions.get('window').width,
-              (i + 1) * Dimensions.get('window').width,
-            ],
+            inputRange: [(i - 1) * width, i * width, (i + 1) * width],
             outputRange: [0.3, 1, 0.3],
             extrapolate: 'clamp',
           });
@@ -264,57 +260,72 @@ const LandingScreen = ({navigation}) => {
       )}
 
       {showLoginForm && (
-        <View style={styles.loginFormContainer}>
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>아이디</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="아이디를 입력해주세요."
-              placeholderTextColor="#B9B9B9"
-              value={email}
-              onChangeText={setEmail}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>비밀번호</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="비밀번호를 입력해주세요."
-              placeholderTextColor="#B9B9B9"
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-            />
-            <TouchableOpacity
-              style={styles.findTextContainer}
-              onPress={() =>
-                navigation.navigate('FindPassword', {title: '비밀번호 찾기'})
-              }>
-              <Text style={styles.findText}>비밀번호 찾기</Text>
-            </TouchableOpacity>
-
-            <View style={styles.autoLoginContainer}>
-              <TouchableOpacity
-                style={styles.customCheckboxContainer}
-                onPress={() => setIsAutoLogin(!isAutoLogin)}>
-                <View
-                  style={[
-                    styles.customCheckbox,
-                    isAutoLogin && styles.customCheckboxChecked,
-                  ]}>
-                  {isAutoLogin && <Text style={styles.checkmark}>✓</Text>}
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => setIsAutoLogin(!isAutoLogin)}>
-                <Text style={styles.optionText}>자동 로그인</Text>
-              </TouchableOpacity>
+        // KeyboardAwareScrollView로 로그인 폼 감싸기
+        <KeyboardAwareScrollView
+          contentContainerStyle={styles.loginFormContainer}
+          enableOnAndroid={true}
+          extraScrollHeight={20}
+          keyboardShouldPersistTaps="handled">
+          <View style={styles.loginFormInnerContainer}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>아이디</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="아이디를 입력해주세요."
+                placeholderTextColor="#B9B9B9"
+                value={email}
+                onChangeText={setEmail}
+                returnKeyType="next"
+                onSubmitEditing={() => {
+                  this.passwordInput.focus();
+                }}
+                blurOnSubmit={false}
+              />
             </View>
-          </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>비밀번호</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="비밀번호를 입력해주세요."
+                placeholderTextColor="#B9B9B9"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+                ref={input => (this.passwordInput = input)}
+                returnKeyType="done"
+                onSubmitEditing={onLoginPress}
+              />
+              <TouchableOpacity
+                style={styles.findTextContainer}
+                onPress={() =>
+                  navigation.navigate('FindPassword', {title: '비밀번호 찾기'})
+                }>
+                <Text style={styles.findText}>비밀번호 찾기</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity style={styles.loginButton} onPress={onLoginPress}>
-            <Text style={styles.loginButtonText}>잔디 심기</Text>
-          </TouchableOpacity>
-        </View>
+              <View style={styles.autoLoginContainer}>
+                <TouchableOpacity
+                  style={styles.customCheckboxContainer}
+                  onPress={() => setIsAutoLogin(!isAutoLogin)}>
+                  <View
+                    style={[
+                      styles.customCheckbox,
+                      isAutoLogin && styles.customCheckboxChecked,
+                    ]}>
+                    {isAutoLogin && <Text style={styles.checkmark}>✓</Text>}
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => setIsAutoLogin(!isAutoLogin)}>
+                  <Text style={styles.optionText}>자동 로그인</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <TouchableOpacity style={styles.loginButton} onPress={onLoginPress}>
+              <Text style={styles.loginButtonText}>잔디 심기</Text>
+            </TouchableOpacity>
+          </View>
+        </KeyboardAwareScrollView>
       )}
 
       {isLoading && <Loader />}
@@ -326,14 +337,12 @@ export default LandingScreen;
 
 const styles = StyleSheet.create({
   container: {
-    width: width,
-    height: height,
-    flex: 1,
+    flex: 1, // 고정된 width와 height 제거
     justifyContent: 'flex-start',
-    paddingHorizontal: 10,
+    paddingHorizontal: 0, // 패딩 제거
   },
   slide: {
-    width: width,
+    width: width, // 화면 전체 너비 사용
     justifyContent: 'center',
     paddingTop: 0,
     marginBottom: 0,
@@ -371,7 +380,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 0,
+    marginTop: 10,
     marginBottom: 10,
   },
   dot: {
@@ -430,14 +439,17 @@ const styles = StyleSheet.create({
   },
   loginFormContainer: {
     width: '100%',
-    alignItems: 'center',
     paddingHorizontal: 20,
     marginTop: 10,
     marginBottom: 10,
   },
+  loginFormInnerContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   inputContainer: {
     width: '100%',
-    marginBottom: 20, // 아래 여백 추가
+    marginBottom: 20, // 기본 여백 유지
   },
   inputLabel: {
     color: '#454545',
@@ -461,7 +473,7 @@ const styles = StyleSheet.create({
   },
   findTextContainer: {
     position: 'absolute',
-    bottom: -15, // 입력 필드 바로 아래에 위치하도록 조정
+    bottom: 10, // 입력 필드 바로 아래에 위치하도록 조정
     right: 0,
   },
   findText: {
@@ -474,11 +486,9 @@ const styles = StyleSheet.create({
   },
   // 자동 로그인 컨테이너
   autoLoginContainer: {
-    position: 'absolute',
-    bottom: -20, // 입력 필드 바로 아래에 위치하도록 조정
-    left: 0, // 좌측에 위치
     flexDirection: 'row',
     alignItems: 'center',
+    marginTop: 10,
   },
   customCheckboxContainer: {
     width: 16,

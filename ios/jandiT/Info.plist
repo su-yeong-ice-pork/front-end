@@ -31,8 +31,18 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>앱이 항상 위치 접근을 허용하도록 설정해주세요.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>앱 사용 중 위치 접근을 허용해주세요.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>프로필 사진 설정을 위해 앱이 앨범 접근을 허용하도록 설정해주세요.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>프로필 사진 설정을 위해 앱이 앨범 접근을 허용하도록 설정해주세요.</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>NanumSquareNeo-Variable.ttf</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -47,11 +57,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>UIAppFonts</key>
-	<array>
-		<string>NanumSquareNeo-Variable.ttf</string>
-	</array>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>앱이 항상 위치 접근을 허용하도록 설정해주세요.</string>
 </dict>
 </plist>

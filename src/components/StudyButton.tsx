@@ -8,24 +8,23 @@ interface StudyButtonProps {
 }
 
 const StudyButton: React.FC<StudyButtonProps> = ({isRecording, onPress}) => {
-  if (isRecording) {
-    // 기록 중인 경우
-    return (
-      <TouchableOpacity onPress={onPress}>
+  return (
+    <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
+      {isRecording ? (
         <View style={[styles.button, styles.recordingButton]}>
           <Image
             source={require('../../assets/images/icons/Clock.png')}
             style={styles.icon}
             resizeMode="contain"
           />
-          <Text style={styles.recordingText}>기록 잠시 멈추기</Text>
+          <Text
+            style={styles.recordingText}
+            numberOfLines={1}
+            ellipsizeMode="tail">
+            기록 잠시 멈추기
+          </Text>
         </View>
-      </TouchableOpacity>
-    );
-  } else {
-    // 기록 중이 아닌 경우
-    return (
-      <TouchableOpacity onPress={onPress}>
+      ) : (
         <LinearGradient
           colors={['#2CCDE4', '#25E798']}
           start={{x: 0, y: 0}}
@@ -36,11 +35,13 @@ const StudyButton: React.FC<StudyButtonProps> = ({isRecording, onPress}) => {
             style={styles.icon}
             resizeMode="contain"
           />
-          <Text style={styles.text}>공부 기록 시작하기</Text>
+          <Text style={styles.text} numberOfLines={1} ellipsizeMode="tail">
+            공부 기록 시작하기
+          </Text>
         </LinearGradient>
-      </TouchableOpacity>
-    );
-  }
+      )}
+    </TouchableOpacity>
+  );
 };
 
 export default StudyButton;
@@ -49,36 +50,35 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: 128,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 25,
+    minWidth: 160, // 최소 너비 설정
+    height: 30,
+    paddingHorizontal: 3, // 좌우 패딩 추가
+    borderRadius: 30,
     marginTop: 10,
+    marginLeft: -5,
+    justifyContent: 'center', // 내용 중앙 정렬
   },
   recordingButton: {
     backgroundColor: '#FE5B5B',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 5,
-    paddingHorizontal: 5,
-    borderRadius: 25,
-    marginTop: 10,
   },
   icon: {
     width: 23,
     height: 23,
-    marginRight: 3,
+    marginRight: 3, // 아이콘과 텍스트 사이 여백 조정
   },
   text: {
     color: '#FFFFFF',
-    fontSize: 10,
+    fontSize: 14, // 가독성을 위해 폰트 크기 약간 증가
     fontWeight: '700',
     fontFamily: 'NanumSquareNeo-Variable',
+    textAlign: 'center',
   },
   recordingText: {
     color: '#FFFFFF',
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '700',
     fontFamily: 'NanumSquareNeo-Variable',
+    textAlign: 'center',
+    flexShrink: 1,
   },
 });

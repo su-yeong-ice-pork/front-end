@@ -105,8 +105,8 @@ const ProfileScreen = ({navigation}) => {
   }, []);
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={{flex: 1}}>
+    <>
+      <SafeAreaView style={{flex: 1}}>
         <ScrollView
           style={styles.container}
           contentContainerStyle={{paddingBottom: 80}}>
@@ -278,8 +278,8 @@ const ProfileScreen = ({navigation}) => {
             </View>
           </View>
         </Modal>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </>
   );
 };
 
@@ -459,15 +459,14 @@ const ProfileFooter = ({navigation}) => {
 
   return (
     <View style={styles.footer}>
-      <TouchableOpacity style={styles.footerButton}>
+      <TouchableOpacity
+        style={styles.footerButton}
+        onPress={() =>
+          navigation.navigate('FindPassword', {title: '비밀번호 변경하기'})
+        }
+        activeOpacity={0.7}>
         <Image source={IMAGES.lockIcon} style={styles.footerIcon} />
-        <Text
-          style={styles.footerButtonText}
-          onPress={() =>
-            navigation.navigate('FindPassword', {title: '비밀번호 변경하기'})
-          }>
-          비밀번호 변경하기
-        </Text>
+        <Text style={styles.footerButtonText}>비밀번호 변경하기</Text>
       </TouchableOpacity>
       <View style={styles.footerDivider} />
       <TouchableOpacity
@@ -525,7 +524,9 @@ const ProfileFooter = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E4E4E7', // bg-zinc-200
+    backgroundColor: '#F5F5F5',
+    width: width,
+    height: height,
   },
   content: {
     paddingHorizontal: width * 0.05,
@@ -549,7 +550,7 @@ const styles = StyleSheet.create({
   },
   upperSection: {
     width: '100%',
-    height: 100, // 배너의 높이를 원하는 대로 조절하세요
+    height: 100, // 배너의 높이를 원하는 대로하세요 조절
     position: 'relative',
     flexDirection: 'row',
     alignItems: 'center',
@@ -793,6 +794,9 @@ const styles = StyleSheet.create({
     fontWeight: '800', // font-extrabold
     color: '#52525B', // text-neutral-600
     fontFamily: 'NanumSquareNeo-Variable',
+  },
+  scrollView: {
+    flex: 1,
   },
   highlightText: {
     color: '#0D9488', // text-teal-600
@@ -1056,15 +1060,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  modalView: {
-    width: width * 0.8,
-    maxHeight: height * 0.6,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    padding: width * 0.05,
-    alignItems: 'center',
-    elevation: 5,
-  },
+
   modalHeaderContainer: {
     flexDirection: 'row',
     alignItems: 'center',
