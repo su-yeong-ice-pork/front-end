@@ -19,7 +19,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import handleLogin, {autoLogin} from '../api/login';
 import {setItem, getItem} from '../api/asyncStorage';
 import Loader from '../components/Loader';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'; // KeyboardAwareScrollView 임포트
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const IMAGES = {
   blueGrass:
@@ -42,6 +42,7 @@ const LandingScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false); // 로딩 상태
+  const passwordInputRef = useRef(null); // useRef 추가
 
   useEffect(() => {
     const checkAutoLogin = async () => {
@@ -198,137 +199,147 @@ const LandingScreen = ({navigation}) => {
       colors={['rgba(0, 255, 150, 1)', 'rgba(31, 209, 245, 1)']}
       start={{x: 0, y: 0}}
       end={{x: 0, y: 1}}
-      style={styles.container}>
-      <ScrollView
-        ref={scrollViewRef}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{nativeEvent: {contentOffset: {x: scrollX}}}],
-          {useNativeDriver: false},
-        )}
-        onMomentumScrollEnd={handleScrollEnd}>
-        {slides.map((item, index) => renderSlide({item, index}))}
-      </ScrollView>
+      style={styles.gradient}>
+      <KeyboardAwareScrollView
+        style={styles.keyboardAwareScrollView}
+        contentContainerStyle={styles.keyboardAwareScrollViewContent}
+        enableOnAndroid={true}
+        extraScrollHeight={20}
+        keyboardShouldPersistTaps="handled"
+        bounces={false} // 추가 스크롤 방지
+      >
+        <ScrollView
+          ref={scrollViewRef}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onScroll={Animated.event(
+            [{nativeEvent: {contentOffset: {x: scrollX}}}],
+            {useNativeDriver: false},
+          )}
+          onMomentumScrollEnd={handleScrollEnd}
+          bounces={false} // 추가 스크롤 방지
+        >
+          {slides.map((item, index) => renderSlide({item, index}))}
+        </ScrollView>
 
-      <View style={styles.paginationContainer}>
-        {slides.map((_, i) => {
-          let opacity = scrollX.interpolate({
-            inputRange: [(i - 1) * width, i * width, (i + 1) * width],
-            outputRange: [0.3, 1, 0.3],
-            extrapolate: 'clamp',
-          });
-          return <Animated.View key={i} style={[styles.dot, {opacity}]} />;
-        })}
-      </View>
+        <View style={styles.paginationContainer}>
+          {slides.map((_, i) => {
+            let opacity = scrollX.interpolate({
+              inputRange: [(i - 1) * width, i * width, (i + 1) * width],
+              outputRange: [0.3, 1, 0.3],
+              extrapolate: 'clamp',
+            });
+            return <Animated.View key={i} style={[styles.dot, {opacity}]} />;
+          })}
+        </View>
 
-      {!showLoginForm && (
-        // 로그인 폼이 보이지 않을 때만 버튼들을 렌더링합니다.
-        <>
-          <View style={styles.buttonsContainer}>
-            <TouchableOpacity
-              style={styles.rectangle4380}
-              onPress={() => navigation.navigate('SignUp')}>
-              <Text style={styles.signUpText}>회원가입</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.rectangle4381}
-              onPress={() => setShowLoginForm(true)}>
-              <Text style={styles.loginText}>기존 계정으로 로그인하기</Text>
-            </TouchableOpacity>
-          </View>
-
-          <Text
-            style={styles.footerText}
-            numberOfLines={1}
-            adjustsFontSizeToFit>
-            계정 생성 시 잔디의{' '}
-            <Text
-              style={[styles.footerText, styles.underline]}
-              onPress={() =>
-                Linking.openURL(
-                  'https://sites.google.com/view/jandi-privacy/%ED%99%88',
-                )
-              }>
-              개인정보처리방침
-            </Text>{' '}
-            및 이용약관에 동의하게 됩니다.
-          </Text>
-        </>
-      )}
-
-      {showLoginForm && (
-        // KeyboardAwareScrollView로 로그인 폼 감싸기
-        <KeyboardAwareScrollView
-          contentContainerStyle={styles.loginFormContainer}
-          enableOnAndroid={true}
-          extraScrollHeight={20}
-          keyboardShouldPersistTaps="handled">
-          <View style={styles.loginFormInnerContainer}>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>아이디</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="아이디를 입력해주세요."
-                placeholderTextColor="#B9B9B9"
-                value={email}
-                onChangeText={setEmail}
-                returnKeyType="next"
-                onSubmitEditing={() => {
-                  this.passwordInput.focus();
-                }}
-                blurOnSubmit={false}
-              />
-            </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>비밀번호</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="비밀번호를 입력해주세요."
-                placeholderTextColor="#B9B9B9"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-                ref={input => (this.passwordInput = input)}
-                returnKeyType="done"
-                onSubmitEditing={onLoginPress}
-              />
+        {!showLoginForm && (
+          <>
+            <View style={styles.buttonsContainer}>
               <TouchableOpacity
-                style={styles.findTextContainer}
-                onPress={() =>
-                  navigation.navigate('FindPassword', {title: '비밀번호 찾기'})
-                }>
-                <Text style={styles.findText}>비밀번호 찾기</Text>
+                style={styles.rectangle4380}
+                onPress={() => navigation.navigate('SignUp')}>
+                <Text style={styles.signUpText}>회원가입</Text>
               </TouchableOpacity>
-
-              <View style={styles.autoLoginContainer}>
-                <TouchableOpacity
-                  style={styles.customCheckboxContainer}
-                  onPress={() => setIsAutoLogin(!isAutoLogin)}>
-                  <View
-                    style={[
-                      styles.customCheckbox,
-                      isAutoLogin && styles.customCheckboxChecked,
-                    ]}>
-                    {isAutoLogin && <Text style={styles.checkmark}>✓</Text>}
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setIsAutoLogin(!isAutoLogin)}>
-                  <Text style={styles.optionText}>자동 로그인</Text>
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity
+                style={styles.rectangle4381}
+                onPress={() => setShowLoginForm(true)}>
+                <Text style={styles.loginText}>기존 계정으로 로그인하기</Text>
+              </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={styles.loginButton} onPress={onLoginPress}>
-              <Text style={styles.loginButtonText}>잔디 심기</Text>
-            </TouchableOpacity>
-          </View>
-        </KeyboardAwareScrollView>
-      )}
+            <Text
+              style={styles.footerText}
+              numberOfLines={1}
+              adjustsFontSizeToFit>
+              계정 생성 시 잔디의{' '}
+              <Text
+                style={[styles.footerText, styles.underline]}
+                onPress={() =>
+                  Linking.openURL(
+                    'https://sites.google.com/view/jandi-privacy/%ED%99%88',
+                  )
+                }>
+                개인정보처리방침
+              </Text>{' '}
+              및 이용약관에 동의하게 됩니다.
+            </Text>
+          </>
+        )}
 
-      {isLoading && <Loader />}
+        {showLoginForm && (
+          <View style={styles.loginFormContainer}>
+            <View style={styles.loginFormInnerContainer}>
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>아이디</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="아이디를 입력해주세요."
+                  placeholderTextColor="#B9B9B9"
+                  value={email}
+                  onChangeText={setEmail}
+                  returnKeyType="next"
+                  onSubmitEditing={() => {
+                    passwordInputRef.current?.focus();
+                  }}
+                  blurOnSubmit={false}
+                />
+              </View>
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputLabel}>비밀번호</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="비밀번호를 입력해주세요."
+                  placeholderTextColor="#B9B9B9"
+                  secureTextEntry
+                  value={password}
+                  onChangeText={setPassword}
+                  ref={passwordInputRef}
+                  returnKeyType="done"
+                  onSubmitEditing={onLoginPress}
+                />
+                <TouchableOpacity
+                  style={styles.findTextContainer}
+                  onPress={() =>
+                    navigation.navigate('FindPassword', {
+                      title: '비밀번호 찾기',
+                    })
+                  }>
+                  <Text style={styles.findText}>비밀번호 찾기</Text>
+                </TouchableOpacity>
+
+                <View style={styles.autoLoginContainer}>
+                  <TouchableOpacity
+                    style={styles.customCheckboxContainer}
+                    onPress={() => setIsAutoLogin(!isAutoLogin)}>
+                    <View
+                      style={[
+                        styles.customCheckbox,
+                        isAutoLogin && styles.customCheckboxChecked,
+                      ]}>
+                      {isAutoLogin && <Text style={styles.checkmark}>✓</Text>}
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => setIsAutoLogin(!isAutoLogin)}>
+                    <Text style={styles.optionText}>자동 로그인</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <TouchableOpacity
+                style={styles.loginButton}
+                onPress={onLoginPress}>
+                <Text style={styles.loginButtonText}>잔디 심기</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
+        {isLoading && <Loader />}
+      </KeyboardAwareScrollView>
     </LinearGradient>
   );
 };
@@ -336,13 +347,24 @@ const LandingScreen = ({navigation}) => {
 export default LandingScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1, // 고정된 width와 height 제거
+  gradient: {
+    flex: 1,
+  },
+  keyboardAwareScrollView: {
+    flex: 1,
+    backgroundColor: 'transparent', // LinearGradient가 배경을 담당하므로 투명하게 설정
+  },
+  keyboardAwareScrollViewContent: {
+    flexGrow: 1,
     justifyContent: 'flex-start',
-    paddingHorizontal: 0, // 패딩 제거
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    paddingHorizontal: 0,
   },
   slide: {
-    width: width, // 화면 전체 너비 사용
+    width: width,
     justifyContent: 'center',
     paddingTop: 0,
     marginBottom: 0,
@@ -370,7 +392,7 @@ const styles = StyleSheet.create({
   },
   slideImage: {
     width: '90%',
-    height: '35%',
+    height: 200, // 고정 높이 설정 (필요에 따라 조정)
     resizeMode: 'contain',
     marginTop: 10,
     marginBottom: 0,
@@ -440,8 +462,8 @@ const styles = StyleSheet.create({
   loginFormContainer: {
     width: '100%',
     paddingHorizontal: 20,
-    marginTop: 10,
-    marginBottom: 10,
+    marginTop: 20,
+    marginBottom: 20,
   },
   loginFormInnerContainer: {
     alignItems: 'center',
@@ -456,7 +478,7 @@ const styles = StyleSheet.create({
     fontFamily: 'NanumSquareNeo-Variable',
     fontWeight: '700',
     fontSize: 13,
-    lineHeight: 40,
+    lineHeight: 20, // 줄 높이 조정
     letterSpacing: 3,
   },
   input: {

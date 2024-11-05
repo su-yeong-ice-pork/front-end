@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -6,9 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Dimensions,
-  ScrollView,
   TextInput,
-  TouchableWithoutFeedback,
   Image,
   Alert,
 } from 'react-native';
@@ -24,7 +22,7 @@ import Header from '../components/Header';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
-
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {collegeData} from '../constants/departData.js';
 import handleSignup from '../api/signup';
 import checkCode from '../api/checkCode';
@@ -47,11 +45,11 @@ const SignUpScreen = ({navigation}) => {
   const [isActive, setIsActive] = useState(false);
   const [showCodeInput, setShowCodeInput] = useState(false);
 
-  //이메일 등록
+  // 이메일 등록
   const [emailErrorMessage, setEmailErrorMessage] = useState('');
   const [isEmailSent, setIsEmailSent] = useState(false);
 
-  //이메일 코드
+  // 이메일 코드
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [codeErrorMessage, setCodeErrorMessage] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
@@ -72,6 +70,12 @@ const SignUpScreen = ({navigation}) => {
   // 모달창 관리
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+
+  // Refs for input fields to manage focus
+  const emailInputRef = useRef(null);
+  const codeInputRef = useRef(null);
+  const passwordInputRef = useRef(null);
+  const nameInputRef = useRef(null);
 
   useEffect(() => {
     let timer;
@@ -103,7 +107,7 @@ const SignUpScreen = ({navigation}) => {
       return;
     }
 
-    //이메일 형식 검증
+    // 이메일 형식 검증
     const emailRegex = /^[A-Za-z0-9._%+-]+@pusan\.ac\.kr$/;
     if (!emailRegex.test(email)) {
       setEmailErrorMessage('pusan.ac.kr 계정을 사용해주세요.');
@@ -148,8 +152,7 @@ const SignUpScreen = ({navigation}) => {
     }
   };
 
-  //코드 확인
-
+  // 코드 확인
   const verifyCode = async () => {
     if (!verificationCode) {
       setCodeErrorMessage('인증 코드를 입력해주세요.');
@@ -256,7 +259,7 @@ const SignUpScreen = ({navigation}) => {
 
   // 잔디 심으러 가기 버튼 클릭
   const submitSignUp = async () => {
-    if (!email || !inputPassword || !name) {
+    if (!email || !inputPassword || !name || !college || !department) {
       setModalMessage('모든 필드를 입력해주세요.');
       setModalVisible(true);
       return;
@@ -266,6 +269,18 @@ const SignUpScreen = ({navigation}) => {
       setModalMessage(
         '비밀번호는 8~16자 영문, 숫자, 특수문자를 포함해야 합니다.',
       );
+      setModalVisible(true);
+      return;
+    }
+
+    if (!isEmailVerified) {
+      setModalMessage('이메일 인증을 완료해주세요.');
+      setModalVisible(true);
+      return;
+    }
+
+    if (!isNameAvailable) {
+      setModalMessage('이름 중복 확인을 완료해주세요.');
       setModalVisible(true);
       return;
     }
@@ -296,16 +311,19 @@ const SignUpScreen = ({navigation}) => {
   };
 
   return (
-    <>
-      <SafeAreaView style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
+      <GestureHandlerRootView style={{flex: 1}}>
         <View style={styles.container}>
           {/* 헤더 */}
           <Header Title={'회원가입'} />
 
           {/* 입력 폼 */}
-          <ScrollView
+          <KeyboardAwareScrollView
             contentContainerStyle={styles.formContainer}
-            style={{backgroundColor: '#E1E6E8'}}>
+            style={{backgroundColor: '#E1E6E8'}}
+            enableOnAndroid={true}
+            extraScrollHeight={100} // Increased to provide more space
+            keyboardShouldPersistTaps="handled">
             <View style={styles.container}>
               <Text style={styles.welcomeText}>환영합니다!</Text>
               <View style={styles.inlineText}>
@@ -337,11 +355,23 @@ const SignUpScreen = ({navigation}) => {
               </Text>
               <View style={styles.inputWrapper}>
                 <TextInput
-                  style={[styles.inputBox]}
+                  ref={emailInputRef}
+                  style={styles.inputBox}
                   placeholder="학교 이메일을 입력해주세요."
                   placeholderTextColor="#B9B9B9"
                   value={email}
                   onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  returnKeyType="next"
+                  onSubmitEditing={() => {
+                    if (showCodeInput) {
+                      codeInputRef.current?.focus();
+                    } else {
+                      handleRequire();
+                    }
+                  }}
+                  blurOnSubmit={false}
                 />
                 <TouchableOpacity
                   style={styles.codeButton}
@@ -365,6 +395,12 @@ const SignUpScreen = ({navigation}) => {
                   </Text>
                 </View>
               )}
+              {emailErrorMessage ? (
+                <View style={styles.iconAndTextContainer}>
+                  <Image source={IMAGES.iIcon} style={styles.setiIcon} />
+                  <Text style={styles.activeText}>{emailErrorMessage}</Text>
+                </View>
+              ) : null}
             </View>
 
             {/* 인증 코드 입력 */}
@@ -376,6 +412,7 @@ const SignUpScreen = ({navigation}) => {
                     {borderBottomWidth: 1.5, borderBottomColor: '#A9A9A9'},
                   ]}>
                   <TextInput
+                    ref={codeInputRef}
                     style={{flex: 1}}
                     placeholder="메일로 전송된 코드를 입력해주세요."
                     value={verificationCode}
@@ -384,6 +421,11 @@ const SignUpScreen = ({navigation}) => {
                       setVerificationCode(text);
                       setCodeErrorMessage('');
                     }}
+                    returnKeyType="next"
+                    onSubmitEditing={() => {
+                      passwordInputRef.current?.focus();
+                    }}
+                    blurOnSubmit={false}
                   />
                   <Text style={styles.timerText}>{formatTime(timeLeft)}</Text>
                   <TouchableOpacity
@@ -416,28 +458,35 @@ const SignUpScreen = ({navigation}) => {
               </Text>
               <View style={styles.inputWrapper}>
                 <TextInput
+                  ref={passwordInputRef}
                   style={styles.inputBox}
                   placeholder="8~16자리 입력 / 영어, 숫자, 특수문자 조합"
                   placeholderTextColor="#B9B9B9"
                   secureTextEntry
                   value={inputPassword}
                   onChangeText={handlePasswordChange}
+                  returnKeyType="next"
+                  onSubmitEditing={() => nameInputRef.current?.focus()}
+                  blurOnSubmit={false}
                 />
-                <TouchableOpacity
-                  style={styles.resetButton}
-                  onPress={deletePassword}>
-                  <Image source={IMAGES.resetButton} style={styles.clearIcon} />
-                </TouchableOpacity>
+                {inputPassword.length > 0 && (
+                  <TouchableOpacity
+                    style={styles.resetButton}
+                    onPress={deletePassword}>
+                    <Image
+                      source={IMAGES.resetButton}
+                      style={styles.clearIcon}
+                    />
+                  </TouchableOpacity>
+                )}
               </View>
 
-              <View style={styles.iconAndTextContainer}>
-                {errorMessage ? (
-                  <View style={styles.iconAndTextContainer}>
-                    <Image source={IMAGES.iIcon} style={styles.setiIcon} />
-                    <Text style={styles.activeText}>{errorMessage}</Text>
-                  </View>
-                ) : null}
-              </View>
+              {errorMessage ? (
+                <View style={styles.iconAndTextContainer}>
+                  <Image source={IMAGES.iIcon} style={styles.setiIcon} />
+                  <Text style={styles.activeText}>{errorMessage}</Text>
+                </View>
+              ) : null}
             </View>
 
             {/* 이름 입력 */}
@@ -447,6 +496,7 @@ const SignUpScreen = ({navigation}) => {
               </Text>
               <View style={styles.inputWrapper}>
                 <TextInput
+                  ref={nameInputRef}
                   style={styles.inputBox}
                   placeholder="1~8자리 입력 / 한글, 영어, 숫자 조합"
                   placeholderTextColor="#B9B9B9"
@@ -456,6 +506,8 @@ const SignUpScreen = ({navigation}) => {
                     setIsNameAvailable(false);
                     setNameErrorMessage('');
                   }}
+                  returnKeyType="done"
+                  onSubmitEditing={chkDuplicate}
                 />
                 <TouchableOpacity
                   style={styles.codeButton}
@@ -470,35 +522,32 @@ const SignUpScreen = ({navigation}) => {
                 </View>
               ) : null}
             </View>
-          </ScrollView>
 
-          {/* 하단 버튼 */}
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.signUpButton}
-              onPress={submitSignUp}>
-              <LinearGradient
-                colors={['rgba(31, 209, 245, 1)', 'rgba(0, 255, 150, 1)']}
-                style={{
-                  flex: 1,
-                  borderRadius: 30,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                start={{x: 0, y: 0}}
-                end={{x: 1, y: 1}}>
-                <Text style={styles.signUpButtonText}>잔디 심으러 가기</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
+            {/* 잔디 심으러 가기 버튼 */}
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.signUpButton}
+                onPress={submitSignUp}>
+                <LinearGradient
+                  colors={['rgba(31, 209, 245, 1)', 'rgba(0, 255, 150, 1)']}
+                  style={styles.gradientButton}
+                  start={{x: 0, y: 0}}
+                  end={{x: 1, y: 1}}>
+                  <Text style={styles.signUpButtonText}>잔디 심으러 가기</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </KeyboardAwareScrollView>
+
+          {/* 모달창 */}
           <ModalComponent
             modalVisible={modalVisible}
             setModalVisible={setModalVisible}
             modalMessage={modalMessage}
           />
         </View>
-      </SafeAreaView>
-    </>
+      </GestureHandlerRootView>
+    </SafeAreaView>
   );
 };
 
@@ -577,7 +626,7 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
             </View>
 
             <View style={styles.modalContainer2}>
-              <View style={{zIndex: openCollege ? 1000 : 1}}>
+              <View style={{zIndex: openCollege ? 1000 : 1, flex: 1}}>
                 <DropDownPicker
                   open={openCollege}
                   value={selectedCollege}
@@ -595,7 +644,6 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
                   onOpen={() => setOpenDepartment(false)}
                   containerStyle={{
                     height: 40,
-                    width: width * 0.35,
                     marginBottom: 10,
                   }}
                   style={{
@@ -621,7 +669,7 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
                 />
               </View>
 
-              <View style={{zIndex: openDepartment ? 1000 : 1}}>
+              <View style={{zIndex: openDepartment ? 1000 : 1, flex: 1}}>
                 <DropDownPicker
                   open={openDepartment}
                   value={selectedDepartment}
@@ -640,7 +688,6 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
                   }}
                   containerStyle={{
                     height: 40,
-                    width: width * 0.35,
                     marginBottom: 10,
                   }}
                   style={{
@@ -681,6 +728,9 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
 };
 
 const styles = StyleSheet.create({
+  gradient: {
+    flex: 1,
+  },
   container: {
     flex: 1,
   },
@@ -710,6 +760,7 @@ const styles = StyleSheet.create({
   },
   formContainer: {
     paddingHorizontal: width * 0.05,
+    paddingBottom: height * 0.3, // Increased to ensure space for the button
   },
   inlineText: {
     flexDirection: 'row',
@@ -720,6 +771,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     position: 'relative',
     justifyContent: 'center',
+    width: '100%',
   },
   codeButton: {
     position: 'absolute',
@@ -784,6 +836,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 12,
     color: '#000000',
+    width: '100%',
   },
   placeholderText: {
     color: '#B9B9B9',
@@ -810,7 +863,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     padding: 10,
     borderRadius: 10,
-    maxHeight: 300,
+    maxHeight: 400,
   },
   modalContainer2: {
     flexDirection: 'row',
@@ -874,7 +927,7 @@ const styles = StyleSheet.create({
   iconAndTextContainer: {
     flexDirection: 'row', // 가로로 정렬
     alignItems: 'center', // 이미지와 텍스트를 수직 중앙 정렬
-    marginTop: height * 0.0005,
+    marginTop: height * 0.005,
   },
   setiIcon: {
     width: width * 0.03,
@@ -911,14 +964,23 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   buttonContainer: {
-    backgroundColor: '#E1E6E8', // 여백 부분에 색상 채움
+    // Removed backgroundColor to prevent overlapping colors
     alignItems: 'center', // 버튼을 가운데 정렬
+    marginTop: height * 0.02, // 추가 상단 마진
   },
   signUpButton: {
     height: height * 0.07,
-    width: width * 0.5,
+    width: width * 0.8, // Increased width for better touch area
     marginBottom: height * 0.02,
     backgroundColor: '#E1E6E8',
+    borderRadius: 30,
+    overflow: 'hidden', // Ensure the gradient stays within the button
+  },
+  gradientButton: {
+    flex: 1,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   signUpButtonText: {
     color: '#FFFFFF',

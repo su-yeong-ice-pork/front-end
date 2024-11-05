@@ -1,5 +1,6 @@
 // FindPassword.tsx
-import React, {useState, useEffect} from 'react';
+
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -7,10 +8,12 @@ import {
   Modal,
   StyleSheet,
   TouchableOpacity,
-  ScrollView,
   Dimensions,
   TextInput,
   SafeAreaView,
+  Platform,
+  KeyboardAvoidingView,
+  ScrollView,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import checkCode from '../api/checkCode';
@@ -19,7 +22,6 @@ import resetPassword from '../api/resetPassword';
 import {CancelAccount} from '../api/leaveAccount';
 import {useRecoilValue} from 'recoil';
 import authState from '../recoil/authAtom';
-import userState from '../recoil/userAtom';
 import {NAME_REGEX, EMAIL_REGEX, PASSWORD_REGEX} from '../constants/regex';
 
 const IMAGES = {
@@ -41,30 +43,21 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
   const [askCode, setAskCode] = useState<string>('코드 요청');
   const [timeLeft, setTimeLeft] = useState<number>(300);
   const [isActive, setIsActive] = useState<boolean>(false);
-
-  // 기존 이름
   const [name, setName] = useState<string>('');
-
-  // 이메일 인증 완료 확인 변수
   const [chkEmail, setChkEmail] = useState<boolean>(false);
-
-  // 비밀번호 재설정
   const [resetPasswordInput, setResetPasswordInput] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
-
-  // 인증 코드
   const [code, setCode] = useState<string>('');
   const [isCodeVerified, setIsCodeVerified] = useState<boolean>(false);
-
-  // 이름 유효성 검사 결과
   const [nameError, setNameError] = useState<string>('');
-  // 이메일 유효성 검사 결과
   const [emailError, setEmailError] = useState<string>('');
 
-  // 헤더 제목 설정
   const headerTitle = route.params?.title || '비밀번호 찾기';
 
-  // 기존 이름 입력
+  // 입력 참조 (필요 시 사용)
+  const passwordInputRef = useRef<TextInput>(null);
+
+  // 이름 유효성 검사
   const handleNameChange = (text: string) => {
     setName(text);
     if (!NAME_REGEX.test(text)) {
@@ -74,13 +67,12 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
     }
   };
 
-  // 기존 이름 지우기
   const deleteName = () => {
     setName('');
     setNameError('이름을 입력해주세요.');
   };
 
-  // 이메일 입력
+  // 이메일 유효성 검사
   const handleEmailChange = (text: string) => {
     setEmail(text);
     if (!EMAIL_REGEX.test(text)) {
@@ -90,7 +82,6 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
     }
   };
 
-  // 이메일 지우기
   const deleteEmail = () => {
     setEmail('');
     setEmailError('유효한 부산대 이메일을 입력해주세요.');
@@ -107,13 +98,12 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
     validationPassword(password);
   };
 
-  // 비밀번호 지우기
   const deletePassword = () => {
     setResetPasswordInput('');
     setErrorMessage('비밀번호를 다시 설정해주세요!');
   };
 
-  // 비밀번호 조건 확인
+  // 비밀번호 유효성 검사
   const validationPassword = (password: string) => {
     if (!PASSWORD_REGEX.test(password)) {
       setErrorMessage('비밀번호를 다시 설정해주세요!');
@@ -122,21 +112,22 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
     }
   };
 
+  // 타이머 설정
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (isActive && timeLeft > 0) {
       timer = setInterval(() => {
         setTimeLeft(prevTime => prevTime - 1);
-      }, 1000); // 1초마다 감소
+      }, 1000);
     } else if (timeLeft === 0) {
       clearInterval(timer);
-      setAskCode('코드 요청'); // 타이머 종료 시 버튼 텍스트 초기화
-      setIsActive(false); // 타이머 비활성화
+      setAskCode('코드 요청');
+      setIsActive(false);
     }
-    return () => clearInterval(timer); // 컴포넌트 언마운트 시 타이머 클리어
+    return () => clearInterval(timer);
   }, [isActive, timeLeft]);
 
-  // 초를 분:초 형식으로 변환하는 함수
+  // 시간 형식 변환
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -146,6 +137,7 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
     )}`;
   };
 
+  // 코드 요청 핸들러
   const handleRequire = async () => {
     if (nameError || emailError || !name || !email) {
       setErrorMessage('이름과 이메일을 올바르게 입력해주세요.');
@@ -156,8 +148,8 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
       const response = await checkPasswordEmail({name, email});
       if (response.success) {
         setAskCode('재요청');
-        setIsActive(true); // 타이머 시작
-        setTimeLeft(300); // 타이머 리셋
+        setIsActive(true);
+        setTimeLeft(300);
         setErrorMessage('');
       } else {
         setErrorMessage('이름 또는 이메일을 확인해주세요.');
@@ -167,6 +159,7 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
     }
   };
 
+  // 이메일 인증 확인 핸들러
   const verifiedEmail = async () => {
     if (timeLeft <= 0) {
       setErrorMessage('인증 시간이 만료되었습니다. 코드를 재요청해주세요.');
@@ -186,10 +179,9 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
     }
   };
 
-  // 비밀번호 재설정 API 호출
+  // 비밀번호 재설정 핸들러
   const submitResetPassword = async () => {
     if (errorMessage || !resetPasswordInput) {
-      // 에러 메시지가 있을 경우 진행하지 않음
       return;
     }
     try {
@@ -199,7 +191,6 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
         password: resetPasswordInput,
       });
       if (response.success) {
-        // 비밀번호 재설정 성공 시 로그인 페이지로 이동
         navigation.navigate('Landing');
       } else {
         setErrorMessage('비밀번호 재설정에 실패했습니다.');
@@ -210,8 +201,11 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={styles.container}>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#F5F5F5'}}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}>
         {/* 헤더 */}
         <View style={styles.signUpHeader}>
           <TouchableOpacity
@@ -225,8 +219,8 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
         {/* 입력 폼 */}
         <ScrollView
           contentContainerStyle={styles.formContainer}
-          style={{backgroundColor: '#E1E6E8'}}>
-          {/* 기존 이름 입력하기 */}
+          keyboardShouldPersistTaps="handled">
+          {/* 기존 이름 입력 */}
           <View style={styles.inputContainer2}>
             <Text style={styles.inputLabel}>
               기존 이름 입력 <Text style={styles.starmark}>*</Text>
@@ -262,7 +256,7 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
             </Text>
             <View style={styles.inputWrapper}>
               <TextInput
-                style={[styles.inputBox]}
+                style={styles.inputBox}
                 placeholder="학교 이메일을 입력해주세요."
                 placeholderTextColor="#B9B9B9"
                 value={email}
@@ -306,7 +300,7 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
                   {borderBottomWidth: 1.5, borderBottomColor: '#A9A9A9'},
                 ]}>
                 <TextInput
-                  style={{flex: 1}}
+                  style={styles.codeInputBox}
                   placeholder="메일로 전송된 코드를 입력해주세요."
                   placeholderTextColor="#B9B9B9"
                   value={code}
@@ -322,6 +316,7 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
             </View>
           )}
 
+          {/* 에러 메시지 */}
           {errorMessage && !errorMessage.startsWith('비밀번호') ? (
             <View style={styles.iconAndTextContainer}>
               <Image source={IMAGES.iIcon} style={styles.setiIcon} />
@@ -329,6 +324,7 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
             </View>
           ) : null}
 
+          {/* 비밀번호 재설정 */}
           {isCodeVerified && (
             <View style={styles.inputContainer2}>
               <Text style={styles.inputLabel}>
@@ -363,8 +359,8 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
             </View>
           )}
 
-          {/*회원 탈퇴 컴포넌트*/}
-          {headerTitle == '비밀번호 변경하기' && (
+          {/* 회원 탈퇴 컴포넌트 */}
+          {headerTitle === '비밀번호 변경하기' && (
             <LeaveAccount navigation={navigation} />
           )}
         </ScrollView>
@@ -376,19 +372,17 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
             onPress={submitResetPassword}>
             <LinearGradient
               colors={['rgba(31, 209, 245, 1)', 'rgba(0, 255, 150, 1)']}
-              style={{
-                flex: 1,
-                borderRadius: 30,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
+              style={styles.signUpButtonGradient}
               start={{x: 0, y: 0}}
               end={{x: 1, y: 1}}>
               <Text style={styles.signUpButtonText}>다시 잔디 심으러 가기</Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
-      </View>
+
+        {/* 로딩 컴포넌트 (필요 시 추가) */}
+        {/* {isLoading && <Loader />} */}
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -496,16 +490,21 @@ const LeaveAccountModal = ({
 };
 
 const styles = StyleSheet.create({
-  // 기존 스타일 그대로 사용
+  // 전체 컨테이너 스타일
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
   },
+  // 헤더 스타일
+  signUpHeader: {
+    justifyContent: 'center',
+    marginTop: height * 0.005,
+    marginBottom: height * 0.02,
+  },
   backButtonWrapper: {
     position: 'absolute',
-    top: height * 0.01,
-    left: width * 0.03,
-    zIndex: 1,
+    top: 0,
+    left: 0,
     padding: 10,
   },
   setBackButton: {
@@ -513,26 +512,19 @@ const styles = StyleSheet.create({
     width: width * 0.05,
     height: width * 0.05,
   },
-  signUpHeader: {
-    justifyContent: 'center',
-    marginTop: height * 0.005,
-  },
   headerText: {
     fontFamily: 'NanumSquareNeo-cBd',
     fontSize: 17,
     color: '#454545',
     fontWeight: 'bold',
     textAlign: 'center',
-    marginVertical: height * 0.02,
   },
-  clearIcon: {
-    width: width * 0.04,
-    height: height * 0.02,
-    borderRadius: 10,
-  },
+  // 폼 컨테이너 스타일
   formContainer: {
     paddingHorizontal: width * 0.05,
+    backgroundColor: '#F5F5F5',
   },
+  // 입력 컨테이너 스타일
   inputContainer: {
     marginTop: 0,
     marginBottom: height * 0.005,
@@ -553,11 +545,19 @@ const styles = StyleSheet.create({
   },
   inputBox: {
     height: height * 0.06,
-    backgroundColor: '#F4F4F4',
+    backgroundColor: '#FFFFFF', // 흰색으로 유지
     borderRadius: 6,
     paddingHorizontal: 10,
     justifyContent: 'center',
     color: '#000000',
+  },
+  codeInputBox: {
+    flex: 1,
+    backgroundColor: '#FFFFFF', // 흰색으로 유지
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    height: 40,
+    justifyContent: 'center',
   },
   inputRow: {
     flexDirection: 'row',
@@ -604,15 +604,6 @@ const styles = StyleSheet.create({
     color: '#009499',
     fontSize: 11,
   },
-  textWrapper: {
-    alignSelf: 'flex-end',
-    marginTop: 10,
-    marginRight: 10,
-  },
-  underlineText: {
-    textDecorationLine: 'underline',
-    color: '#B9B9B9',
-  },
   setiIcon: {
     width: width * 0.03,
     height: height * 0.03,
@@ -637,15 +628,23 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: 'right',
   },
+  // 버튼 컨테이너 스타일
   buttonContainer: {
-    backgroundColor: '#E1E6E8',
+    backgroundColor: '#F5F5F5',
     alignItems: 'center',
   },
   signUpButton: {
     height: height * 0.07,
     width: width * 0.5,
-    marginBottom: height * 0.02,
-    backgroundColor: '#E1E6E8',
+    marginBottom: 0, // 여백 제거
+    borderRadius: 30,
+    overflow: 'hidden', // LinearGradient가 버튼 영역을 벗어나지 않도록
+  },
+  signUpButtonGradient: {
+    flex: 1,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   signUpButtonText: {
     color: '#FFFFFF',
@@ -654,12 +653,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
-
   // 모달 스타일
   logoutModalOverlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   logoutModalView: {
     width: width * 0.8,
@@ -723,6 +722,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 10,
+    backgroundColor: '#FFFFFF', // 입력 필드 흰색 유지
   },
   logoutModalButtonText: {
     color: 'white',
@@ -730,73 +730,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'NanumSquareNeo-Variable',
   },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalView: {
-    width: width * 0.8,
-    maxHeight: height * 0.6,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    padding: width * 0.05,
-    alignItems: 'center',
-    elevation: 5,
-  },
-  modalHeaderContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
-    marginBottom: height * 0.02,
-  },
-  modalHeaderText: {
-    fontSize: width * 0.045,
-    fontWeight: 'bold',
-    color: '#000',
-    textAlign: 'left',
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  modalHeaderHighlight: {
-    fontSize: width * 0.04,
-    fontWeight: 'bold',
-    color: '#1AA5AA',
-    paddingHorizontal: 5,
-    borderRadius: 3,
-    marginTop: 3,
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  modalScrollView: {
-    width: '100%',
-    marginBottom: height * 0.02,
-  },
-  modalBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-    backgroundColor: '#E0E0E0',
-    borderRadius: 5,
-    padding: 10,
-  },
-  modalBadgeImage: {
-    width: 60,
-    height: 60,
+  // 회원 탈퇴 텍스트 스타일
+  textWrapper: {
+    alignSelf: 'flex-end',
+    marginTop: 10,
     marginRight: 10,
-    resizeMode: 'contain',
   },
-  modalBadgeInfo: {
-    flex: 1,
-  },
-  modalBadgeName: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  modalBadgeDescription: {
-    fontSize: 12,
-    marginTop: 5,
-    color: '#555',
-    fontFamily: 'NanumSquareNeo-Variable',
+  underlineText: {
+    textDecorationLine: 'underline',
+    color: '#B9B9B9',
   },
 });

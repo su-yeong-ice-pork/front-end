@@ -1,4 +1,6 @@
-import React, {useRef, useState, useEffect} from 'react';
+// EditProfileScreen.tsx
+
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,9 +9,9 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  ScrollView,
   Dimensions,
   SafeAreaView,
+  ScrollView,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {launchImageLibrary} from 'react-native-image-picker';
@@ -22,9 +24,11 @@ import sendDefaultImg from '../api/sendDefaultImg';
 import {updateProfileImage} from '../api/profileImg';
 import changeMessage from '../api/changeMessage';
 
-import {useRecoilState, useRecoilValue} from 'recoil';
+import {useRecoilValue} from 'recoil';
 import userState from '../recoil/userAtom';
 import authState from '../recoil/authAtom';
+
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view'; // Importing KeyboardAwareScrollView
 
 const {width, height} = Dimensions.get('window');
 
@@ -115,74 +119,82 @@ const EditProfileScreen = ({navigation, route}) => {
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={styles.container}>
-        {/* 헤더 */}
+    <>
+      <SafeAreaView style={styles.safeArea}>
         <Header Title={'프로필/배너 꾸미기'} />
+        <KeyboardAwareScrollView
+          contentContainerStyle={styles.container}
+          enableOnAndroid={true}
+          extraScrollHeight={20}
+          keyboardShouldPersistTaps="handled">
+          {/* 헤더 */}
 
-        <View style={styles.titleContainer}>
-          <Text style={styles.titleText}>
-            나의{' '}
-            <Text style={{color: '#00AAB0', fontWeight: '800'}}>
-              잔디 프로필
+          {/* 타이틀 */}
+          <View style={styles.titleContainer}>
+            <Text style={styles.titleText}>
+              나의{' '}
+              <Text style={{color: '#00AAB0', fontWeight: '800'}}>
+                잔디 프로필
+              </Text>
+              을{'\n'}원하는 대로 예쁘게 꾸며봐요!
             </Text>
-            을{'\n'}원하는 대로 예쁘게 꾸며봐요!
-          </Text>
-        </View>
+          </View>
 
-        <ScrollView
-          contentContainerStyle={styles.formContainer}
-          style={{backgroundColor: '#E1E6E8'}}>
-          <View style={styles.titleContainer}></View>
+          {/* 입력 폼 */}
+          <View style={styles.formContainer}>
+            <ChangeProfileImage
+              defaultImages={defaultProfile}
+              customImages={customProfileImages}
+              selectedImage={selectedImage}
+              handleDefaultImageSelect={handleDefaultImageSelect}
+              ShowPicker={() =>
+                ShowPicker(
+                  setSelectedImage,
+                  setIsCustomImage,
+                  setCustomProfileImages,
+                )
+              }
+            />
+            <ChangeBannerImage
+              defaultBanners={defaultBanner}
+              customImages={customBannerImages}
+              selectedBanner={selectedBanner}
+              handleDefaultBannerSelect={handleDefaultBannerSelect}
+              ShowPicker={() =>
+                ShowPicker(
+                  setSelectedBanner,
+                  setIsCustomBanner,
+                  setCustomBannerImages,
+                )
+              }
+            />
+            <ChangeMessage
+              currentMessage={currentMessage}
+              setCurrentMessage={setCurrentMessage}
+            />
+          </View>
 
-          <ChangeProfileImage
-            defaultImages={defaultProfile}
-            customImages={customProfileImages}
-            selectedImage={selectedImage}
-            handleDefaultImageSelect={handleDefaultImageSelect}
-            ShowPicker={() =>
-              ShowPicker(
-                setSelectedImage,
-                setIsCustomImage,
-                setCustomProfileImages,
-              )
-            }
-          />
-          <ChangeBannerImage
-            defaultBanners={defaultBanner}
-            customImages={customBannerImages}
-            selectedBanner={selectedBanner}
-            handleDefaultBannerSelect={handleDefaultBannerSelect}
-            ShowPicker={() =>
-              ShowPicker(
-                setSelectedBanner,
-                setIsCustomBanner,
-                setCustomBannerImages,
-              )
-            }
-          />
-          <ChangeMessage
-            currentMessage={currentMessage}
-            setCurrentMessage={setCurrentMessage}
-          />
-        </ScrollView>
-        <SaveButton
-          selectedProfile={selectedImage}
-          selectedBanner={selectedBanner}
-          isCustomImage={isCustomImage}
-          isCustomBanner={isCustomBanner}
-          setSelectedImage={setSelectedImage}
-          setSelectedBanner={setSelectedBanner}
+          {/* 하단 버튼 */}
+          <View style={styles.buttonContainer}>
+            <SaveButton
+              selectedProfile={selectedImage}
+              selectedBanner={selectedBanner}
+              isCustomImage={isCustomImage}
+              isCustomBanner={isCustomBanner}
+              setSelectedImage={setSelectedImage}
+              setSelectedBanner={setSelectedBanner}
+              setUploadSuccess={setUploadSuccess}
+              id={id}
+              currentMessage={currentMessage}
+            />
+          </View>
+        </KeyboardAwareScrollView>
+        <SuccessModal
+          uploadSuccess={uploadSuccess}
           setUploadSuccess={setUploadSuccess}
-          id={id}
-          currentMessage={currentMessage}
         />
-      </View>
-      <SuccessModal
-        uploadSuccess={uploadSuccess}
-        setUploadSuccess={setUploadSuccess}
-      />
-    </SafeAreaView>
+      </SafeAreaView>
+    </>
   );
 };
 
@@ -388,6 +400,7 @@ const SaveButton = ({
     const authToken = authInfo.authToken;
     let successProfile = false;
     let successBanner = false;
+    let successMessage = false; // 상태 메시지 성공 여부 추가
 
     // 프로필 이미지 업로드
     if (selectedProfile) {
@@ -496,24 +509,15 @@ const SaveButton = ({
   };
 
   return (
-    <View style={styles.buttonContainer}>
-      <TouchableOpacity
-        style={styles.signUpButton}
-        onPress={submitDefaultImage}>
-        <LinearGradient
-          colors={['rgba(31, 209, 245, 1)', 'rgba(0, 255, 150, 1)']}
-          style={{
-            flex: 1,
-            borderRadius: 30,
-            justifyContent: 'center',
-            alignContent: 'center',
-          }}
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 1}}>
-          <Text style={styles.signUpButtonText}>저장하기</Text>
-        </LinearGradient>
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity style={styles.signUpButton} onPress={submitDefaultImage}>
+      <LinearGradient
+        colors={['rgba(31, 209, 245, 1)', 'rgba(0, 255, 150, 1)']}
+        style={styles.signUpButtonGradient}
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 1}}>
+        <Text style={styles.signUpButtonText}>저장하기</Text>
+      </LinearGradient>
+    </TouchableOpacity>
   );
 };
 
@@ -545,40 +549,51 @@ const SuccessModal = ({uploadSuccess, setUploadSuccess}) => {
 };
 
 const styles = StyleSheet.create({
-  // 기존 스타일 그대로 유지
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#F5F5F5', // 전체 배경색 설정
   },
-  formContainer: {
+  container: {
+    flexGrow: 1,
     paddingHorizontal: width * 0.05,
+    backgroundColor: '#F5F5F5',
+    justifyContent: 'space-between', // 콘텐츠와 버튼 사이 공간 분배
   },
   titleContainer: {
-    backgroundColor: '#E1E6E8',
     paddingTop: 20,
     paddingLeft: 20,
+    backgroundColor: '#F5F5F5', // 배경색 일관성 유지
   },
   titleText: {
     fontSize: 27,
     fontWeight: '600',
   },
+  formContainer: {
+    backgroundColor: '#F5F5F5', // 배경색 일관성 유지
+  },
   buttonContainer: {
-    backgroundColor: '#E1E6E8',
+    backgroundColor: '#F5F5F5', // 흰색 배경 제거 후 #F5F5F5로 변경
     alignItems: 'center',
+    paddingVertical: height * 0.02,
   },
   signUpButton: {
     height: height * 0.07,
     width: width * 0.5,
-    marginBottom: height * 0.02,
-    backgroundColor: '#E1E6E8',
+    borderRadius: 30,
+    overflow: 'hidden', // LinearGradient가 버튼 영역을 벗어나지 않도록
+    alignSelf: 'center', // 버튼을 중앙 정렬
+  },
+  signUpButtonGradient: {
+    flex: 1,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   signUpButtonText: {
     color: '#FFFFFF',
-    justifyContent: 'center',
-    fontSize: height * 0.025,
+    fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
-    lineHeight: height * 0.07,
   },
   changeContainer: {
     marginTop: 10,
@@ -601,6 +616,8 @@ const styles = StyleSheet.create({
     width: width,
     height: height * 0.15,
     marginHorizontal: -width * 0.05,
+    paddingLeft: width * 0.05, // 스크롤 시작점 조정
+    paddingRight: width * 0.05, // 스크롤 끝점 조정
   },
   buttonStyle: {
     borderRadius: 5,
@@ -631,9 +648,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   selectedImageBorder: {
-    width: width * 0.25,
-    height: width * 0.25,
-    borderRadius: (width * 0.25) / 2,
     borderWidth: 2,
     borderColor: '#00AAB0',
   },
@@ -646,9 +660,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   selectedBannerBorder: {
-    width: width * 0.25,
-    height: height * 0.12,
-    borderRadius: 10,
     borderWidth: 2,
     borderColor: '#00AAB0',
   },
@@ -662,8 +673,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // 반투명 배경
   },
   modalView: {
     width: width * 0.8,
@@ -712,7 +722,7 @@ const styles = StyleSheet.create({
   },
   inputBox: {
     height: height * 0.06,
-    backgroundColor: '#F4F4F4',
+    backgroundColor: '#FFFFFF', // 입력 필드 흰색 유지
     borderRadius: 6,
     paddingHorizontal: 10,
     justifyContent: 'center',
