@@ -241,10 +241,12 @@ const HomeScreen = ({navigation}) => {
                 </TouchableOpacity>
               </View>
 
-              <Text style={styles.frozenNote}>
-                <Image source={IMAGES.iIcon} style={styles.setiIcon} /> 프리즈는
-                잔디를 대신 채워줄 수 있는 잔디 채우기권입니다!
-              </Text>
+              <View style={styles.iconAndTextContainer}>
+                <Image source={IMAGES.iIcon} style={styles.setiIcon} />
+                <Text style={styles.activeText}>
+                  프리즈는 잔디를 대신 채워줄 수 있는 잔디 채우기권입니다!
+                </Text>
+              </View>
             </View>
           )}
           {/* 현재 일수 표시 */}
@@ -527,18 +529,21 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     marginRight: width * 0.01,
   },
-  frozenNote: {
-    fontSize: width * 0.03,
-    color: '#009499',
-    flexDirection: 'row', // 가로로 정렬
+  iconAndTextContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    fontFamily: 'NanumSquareNeo-Variable',
+    marginTop: height * 0.0005,
   },
   setiIcon: {
     width: width * 0.03,
     height: height * 0.03,
     resizeMode: 'contain',
-    marginRight: width * 0.03,
+    marginRight: width * 0.02,
+  },
+  activeText: {
+    fontFamily: 'NanumSquareNeo-aLt',
+    color: '#009499',
+    fontSize: 11,
   },
 
   // 모달 스타일

@@ -386,10 +386,12 @@ const FreezeSummary = ({freezeCount, onPress}) => {
       </View>
 
       {/* 안내 문구 */}
-      <Text style={styles.frozenNote}>
-        <Image source={IMAGES.iIcon} style={styles.setiIcon} /> 프리즈는 잔디를
-        대신 채워줄 수 있는 잔디 채우기권입니다!
-      </Text>
+      <View style={styles.iconAndTextContainer}>
+        <Image source={IMAGES.iIcon} style={styles.setiIcon} />
+        <Text style={styles.activeText}>
+          프리즈는 잔디를 대신 채워줄 수 있는 잔디 채우기권입니다!
+        </Text>
+      </View>
     </View>
   );
 };
@@ -763,6 +765,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: height * 0.055,
   },
+  iconAndTextContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: height * 0.0005,
+  },
+  activeText: {
+    fontFamily: 'NanumSquareNeo-aLt',
+    color: '#009499',
+    fontSize: 11,
+  },
   useFrozenButtonText: {
     color: '#FFFFFF',
     fontSize: width * 0.028,
@@ -784,7 +796,7 @@ const styles = StyleSheet.create({
     width: width * 0.03,
     height: height * 0.03,
     resizeMode: 'contain',
-    marginRight: width * 0.01,
+    marginRight: width * 0.02,
   },
   grassSection: {
     marginTop: 56, // mt-14

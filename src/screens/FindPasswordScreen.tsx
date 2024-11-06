@@ -23,6 +23,7 @@ import {CancelAccount} from '../api/leaveAccount';
 import {useRecoilValue} from 'recoil';
 import authState from '../recoil/authAtom';
 import {NAME_REGEX, EMAIL_REGEX, PASSWORD_REGEX} from '../constants/regex';
+import Header from '../components/Header';
 
 const IMAGES = {
   backButton: require('../../assets/images/icons/backButton.png'),
@@ -207,14 +208,7 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}>
         {/* 헤더 */}
-        <View style={styles.signUpHeader}>
-          <TouchableOpacity
-            style={styles.backButtonWrapper}
-            onPress={() => navigation.goBack()}>
-            <Image source={IMAGES.backButton} style={styles.setBackButton} />
-          </TouchableOpacity>
-          <Text style={styles.headerText}>{headerTitle}</Text>
-        </View>
+        <Header Title={headerTitle} />
 
         {/* 입력 폼 */}
         <ScrollView
@@ -262,13 +256,6 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
                 value={email}
                 onChangeText={handleEmailChange}
               />
-              {email.length > 0 && (
-                <TouchableOpacity
-                  style={styles.resetButton}
-                  onPress={deleteEmail}>
-                  <Image source={IMAGES.resetButton} style={styles.clearIcon} />
-                </TouchableOpacity>
-              )}
               <TouchableOpacity
                 style={styles.codeButton}
                 onPress={handleRequire}>
@@ -551,6 +538,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     color: '#000000',
   },
+  clearIcon: {
+    width: width * 0.04,
+    height: height * 0.02,
+    borderRadius: 10,
+  },
   codeInputBox: {
     flex: 1,
     backgroundColor: '#FFFFFF', // 흰색으로 유지
@@ -636,7 +628,7 @@ const styles = StyleSheet.create({
   signUpButton: {
     height: height * 0.07,
     width: width * 0.5,
-    marginBottom: 0, // 여백 제거
+    marginBottom: 20,
     borderRadius: 30,
     overflow: 'hidden', // LinearGradient가 버튼 영역을 벗어나지 않도록
   },
