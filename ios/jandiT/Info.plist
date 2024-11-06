@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>jandiT</string>
+	<string>JANDI</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -22,6 +22,8 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -32,9 +34,9 @@
 		<true/>
 	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>앱이 항상 위치 접근을 허용하도록 설정해주세요.</string>
+	<string>도서관 위치 인증 및 도서관 공부 시간 기록 중 도서관임을 인증하기 위해 항상 위치 접근을 허용하도록 설정해주세요.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>앱 사용 중 위치 접근을 허용해주세요.</string>
+	<string>도서관 위치 인증을 위해 앱 사용 중 위치 접근을 허용해주세요.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>프로필 사진 설정을 위해 앱이 앨범 접근을 허용하도록 설정해주세요.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -52,8 +54,6 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
