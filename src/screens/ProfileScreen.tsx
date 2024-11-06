@@ -187,6 +187,7 @@ const ProfileScreen = ({navigation}) => {
               subTitle="현재 나의 잔디 친구"
               iconSrc={IMAGES.coloredFriendsIcon}
               count={user.friendCount}
+              countText="명"
               text="의 잔디친구들과 공부 중입니다!"
               buttonSrc={IMAGES.friendsIcon}
               buttonText="친구목록 보기"
@@ -196,6 +197,7 @@ const ProfileScreen = ({navigation}) => {
               subTitle="현재 나의 잔디 스터디그룹"
               iconSrc={IMAGES.coloredGroupIcon}
               count={user.studyCount}
+              countText="개"
               text="의 잔디그룹에 소속되어있습니다!"
               buttonSrc={IMAGES.groupsIcon}
               buttonText="그룹목록 보기"
@@ -227,7 +229,10 @@ const ProfileScreen = ({navigation}) => {
           transparent={true}
           visible={showBadgeModal}
           onRequestClose={() => setShowBadgeModal(false)}>
-          <View style={styles.modalOverlay}>
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPress={() => setShowBadgeModal(false)}>
             <View style={styles.modalView}>
               {/* 모달 헤더 */}
               <View style={styles.modalHeaderContainer}>
@@ -259,7 +264,7 @@ const ProfileScreen = ({navigation}) => {
                 <Text style={styles.closeButtonText}>닫기</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </TouchableOpacity>
         </Modal>
         {/* 추기 기능 예정입니다 모달창 */}
         <Modal
@@ -267,7 +272,10 @@ const ProfileScreen = ({navigation}) => {
           transparent={true}
           visible={modalVisible}
           onRequestClose={() => setModalVisible(false)}>
-          <View style={styles.modalOverlay}>
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPress={() => setModalVisible(false)}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>{modalMessage}</Text>
               <TouchableOpacity
@@ -276,7 +284,7 @@ const ProfileScreen = ({navigation}) => {
                 <Text style={styles.closeButtonText}>닫기</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </TouchableOpacity>
         </Modal>
       </SafeAreaView>
     </>
@@ -289,6 +297,7 @@ export default ProfileScreen;
 const InfoCard = ({
   iconSrc,
   count,
+  countText,
   text,
   buttonSrc,
   buttonText,
@@ -307,7 +316,10 @@ const InfoCard = ({
         <View style={styles.infoCard}>
           <Image source={iconSrc} style={styles.infoCardIcon} />
           <Text style={styles.infoCardText}>
-            <Text style={styles.infoCardCount}>{count}명</Text>
+            <Text style={styles.infoCardCount}>
+              {count}
+              {countText}
+            </Text>
             {text}
           </Text>
         </View>

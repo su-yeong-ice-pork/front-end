@@ -260,7 +260,10 @@ const HomeScreen = ({navigation}) => {
           transparent={true}
           visible={showModal}
           onRequestClose={() => setShowModal(false)}>
-          <View style={styles.modalOverlay}>
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPress={() => setShowModal(false)}>
             <View style={styles.modalView}>
               {/* 모달 헤더 */}
               <View style={styles.modalHeaderContainer}>
@@ -292,7 +295,7 @@ const HomeScreen = ({navigation}) => {
                 <Text style={styles.closeButtonText}>닫기</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </TouchableOpacity>
         </Modal>
         {/* 인증 결과 모달 */}
         <Modal
@@ -302,7 +305,10 @@ const HomeScreen = ({navigation}) => {
           onRequestClose={() => {
             setModalVisible(!modalVisible);
           }}>
-          <View style={styles.modalOverlay}>
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPress={() => setModalVisible(false)}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>{modalMessage}</Text>
               <TouchableOpacity
@@ -311,7 +317,7 @@ const HomeScreen = ({navigation}) => {
                 <Text style={styles.closeButtonText}>닫기</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </TouchableOpacity>
         </Modal>
         {isLoading && <Loader />}
       </SafeAreaView>

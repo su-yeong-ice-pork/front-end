@@ -536,14 +536,17 @@ const SuccessModal = ({uploadSuccess, setUploadSuccess}) => {
       transparent={true}
       visible={uploadSuccess}
       onRequestClose={handleClose}>
-      <View style={styles.centeredView}>
+      <TouchableOpacity
+        style={styles.centeredView}
+        activeOpacity={1}
+        onPress={handleClose}>
         <View style={styles.modalView}>
           <Text style={styles.modalText}>변경이 완료되었습니다!</Text>
           <TouchableOpacity style={styles.buttonClose} onPress={handleClose}>
             <Text style={styles.textStyle2}>닫기</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </TouchableOpacity>
     </Modal>
   );
 };

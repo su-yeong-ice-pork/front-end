@@ -23,7 +23,10 @@ const NoticeModal: React.FC<NoticeModalProps> = ({
 }) => {
   return (
     <Modal visible={visible} transparent={true} animationType="fade">
-      <View style={styles.modalBackground}>
+      <TouchableOpacity
+        style={styles.modalBackground}
+        activeOpacity={1}
+        onPress={onClose}>
         <View style={styles.modalContainer}>
           {/* 닫기 버튼 */}
           <TouchableOpacity style={styles.modalCloseButton} onPress={onClose}>
@@ -42,7 +45,7 @@ const NoticeModal: React.FC<NoticeModalProps> = ({
           </View>
           <Text style={styles.modalSubtitle}>{message}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
     </Modal>
   );
 };
