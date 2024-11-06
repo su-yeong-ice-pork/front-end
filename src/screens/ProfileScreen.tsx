@@ -496,7 +496,10 @@ const ProfileFooter = ({navigation}) => {
         transparent={true}
         visible={showLogOut}
         onRequestClose={() => setShowLogOut(false)}>
-        <View style={styles.logoutModalOverlay}>
+        <TouchableOpacity
+          style={styles.logoutModalOverlay}
+          activeOpacity={1}
+          onPress={() => setShowLogOut(false)}>
           <View style={styles.logoutModalView}>
             <View style={styles.logoutModalHeader}>
               <Image
@@ -529,7 +532,7 @@ const ProfileFooter = ({navigation}) => {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
     </View>
   );
@@ -1012,6 +1015,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   logoutModalView: {
     width: width * 0.8,

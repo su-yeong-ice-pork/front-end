@@ -17,6 +17,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {useNavigation} from '@react-navigation/native';
 import Header from '../components/Header';
+import Loader from '../components/Loader';
 
 import {GetDefaultImages, DefaultImg} from '../api/defaultImages';
 import sendDefaultImg from '../api/sendDefaultImg';
@@ -61,6 +62,7 @@ const EditProfileScreen = ({navigation, route}) => {
 
   // 상태 메시지 확인
   const [currentMessage, setCurrentMessage] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchDefaultImages = async () => {
@@ -186,6 +188,7 @@ const EditProfileScreen = ({navigation, route}) => {
               setUploadSuccess={setUploadSuccess}
               id={id}
               currentMessage={currentMessage}
+              setIsLoading={setIsLoading}
             />
           </View>
         </KeyboardAwareScrollView>
@@ -193,6 +196,7 @@ const EditProfileScreen = ({navigation, route}) => {
           uploadSuccess={uploadSuccess}
           setUploadSuccess={setUploadSuccess}
         />
+        {isLoading && <Loader />}
       </SafeAreaView>
     </>
   );
@@ -393,6 +397,7 @@ const SaveButton = ({
   setUploadSuccess,
   id,
   currentMessage,
+  setIsLoading,
 }) => {
   const authInfo = useRecoilValue(authState);
 
@@ -401,6 +406,7 @@ const SaveButton = ({
     let successProfile = false;
     let successBanner = false;
     let successMessage = false; // 상태 메시지 성공 여부 추가
+    setIsLoading(true);
 
     // 프로필 이미지 업로드
     if (selectedProfile) {
@@ -506,18 +512,24 @@ const SaveButton = ({
     } else {
       console.log('이미지 업로드 실패');
     }
+
+    setIsLoading(false);
   };
 
   return (
-    <TouchableOpacity style={styles.signUpButton} onPress={submitDefaultImage}>
-      <LinearGradient
-        colors={['rgba(31, 209, 245, 1)', 'rgba(0, 255, 150, 1)']}
-        style={styles.signUpButtonGradient}
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 1}}>
-        <Text style={styles.signUpButtonText}>저장하기</Text>
-      </LinearGradient>
-    </TouchableOpacity>
+    <View>
+      <TouchableOpacity
+        style={styles.signUpButton}
+        onPress={submitDefaultImage}>
+        <LinearGradient
+          colors={['rgba(31, 209, 245, 1)', 'rgba(0, 255, 150, 1)']}
+          style={styles.signUpButtonGradient}
+          start={{x: 0, y: 0}}
+          end={{x: 1, y: 1}}>
+          <Text style={styles.signUpButtonText}>저장하기</Text>
+        </LinearGradient>
+      </TouchableOpacity>
+    </View>
   );
 };
 
