@@ -99,7 +99,10 @@ const BottomBar = () => {
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}>
-        <View style={styles.modalOverlay}>
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setModalVisible(false)}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>{modalMessage}</Text>
             <TouchableOpacity
@@ -108,7 +111,7 @@ const BottomBar = () => {
               <Text style={styles.closeButtonText}>닫기</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
     </View>
   );

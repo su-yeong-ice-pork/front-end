@@ -1,5 +1,9 @@
-// resetPassword.ts
-import apiClient from './axiosInstance';
+import axios from 'axios';
+
+const apiClientWithoutAuth = axios.create({
+  baseURL:
+    'https://grass-server-fua8cyfhabacbgbn.koreasouth-01.azurewebsites.net/api/v1',
+});
 
 export interface ResetPasswordData {
   name: string;
@@ -14,16 +18,19 @@ export interface ResetPasswordResponse {
 }
 
 const resetPassword = async (
-  data: ResetPasswordData,
+  ResetPasswordData: ResetPasswordData,
 ): Promise<ResetPasswordResponse> => {
   try {
-    const response = await apiClient.patch<ResetPasswordResponse>(
+    const response = await apiClientWithoutAuth.patch<ResetPasswordResponse>(
       '/members',
-      data,
+      ResetPasswordData,
     );
     return response.data;
   } catch (error: any) {
-    throw new Error('에러가 발생했습니다.');
+    const errorMessage =
+      error.response?.data?.error?.message || '에러가 발생했습니다.';
+    console.log('에러가 발생했습니다:', errorMessage);
+    throw new Error(errorMessage);
   }
 };
 

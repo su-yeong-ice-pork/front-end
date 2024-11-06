@@ -182,16 +182,14 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
 
   // 비밀번호 재설정 핸들러
   const submitResetPassword = async () => {
-    if (errorMessage || !resetPasswordInput) {
-      return;
-    }
     try {
       const response = await resetPassword({
-        name,
-        email,
+        name: name,
+        email: email,
         password: resetPasswordInput,
       });
       if (response.success) {
+        console.log('비밀번호 재설정 성공');
         navigation.navigate('Landing');
       } else {
         setErrorMessage('비밀번호 재설정에 실패했습니다.');
