@@ -34,7 +34,7 @@
 		<true/>
 	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>도서관 위치 인증 및 도서관 공부 시간 기록 중 도서관임을 인증하기 위해 항상 위치 접근을 허용하도록 설정해주세요.</string>
+	<string>도서관 공부 시간 기록 중 도서관임을 인증하기 위해 항상 위치 접근을 허용하도록 설정해주세요.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>도서관 위치 인증을 위해 앱 사용 중 위치 접근을 허용해주세요.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

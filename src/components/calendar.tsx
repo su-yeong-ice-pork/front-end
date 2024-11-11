@@ -146,8 +146,8 @@ const CalendarScreen = ({userId}: {userId: number}) => {
     setIsLoading(false);
   };
   const getJandiImage = (studyHour: number, grassScore: number) => {
-    if (grassScore === 10 && studyHour === 0) return IMAGES.jandi;
-    else if (studyHour === 0) return null;
+    if (grassScore >= 10 && studyHour === 0) return IMAGES.jandi;
+    else if (studyHour === 0 || grassScore < 10) return null;
     else if (studyHour >= 1 && studyHour <= 2) return IMAGES.jandi1;
     else if (studyHour >= 3 && studyHour <= 4) return IMAGES.jandi2;
     else if (studyHour >= 5 && studyHour <= 6) return IMAGES.jandi3;

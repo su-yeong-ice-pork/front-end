@@ -13,6 +13,7 @@ import {
   TextInput,
   Alert,
   Linking,
+  BackHandler,
   Platform,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -62,7 +63,23 @@ const LandingScreen = ({navigation}) => {
     };
     checkAutoLogin();
   }, []);
+  useEffect(() => {
+    // 기존의 useEffect 훅은 유지하고, 새로운 useEffect 훅을 추가합니다.
+    const backAction = () => {
+      if (showLoginForm) {
+        setShowLoginForm(false);
+        return true;
+      }
+      return false;
+    };
 
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, [showLoginForm]);
   // 로그인 버튼을 누르면
   const onLoginPress = async () => {
     setIsLoading(true); // 로딩 시작

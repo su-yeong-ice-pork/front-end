@@ -49,10 +49,14 @@ const HomeScreen = ({navigation}) => {
   };
 
   const BADGES = [
+    require('../../assets/images/badge/badge0.png'),
     require('../../assets/images/badge/badge1.png'),
     require('../../assets/images/badge/badge2.png'),
     require('../../assets/images/badge/badge3.png'),
+    require('../../assets/images/badge/badge4.png'),
+    require('../../assets/images/badge/badge5.png'),
   ];
+
   const handleNotUseableModal = () => {
     setModalMessage('추가 예정인 기능입니다.');
     setModalVisible(true);
