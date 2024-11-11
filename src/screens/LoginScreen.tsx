@@ -1,11 +1,13 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Slides from '../components/Slides';
 import LoginForm from '../components/LoginForm';
+import Loader from '../components/Loader';
 
 const LoginScreen = ({navigation}) => {
+  const [isLoading, setIsLoading] = useState(false);
   return (
     <LinearGradient
       colors={['rgba(0, 255, 150, 1)', 'rgba(31, 209, 245, 1)']}
@@ -20,8 +22,9 @@ const LoginScreen = ({navigation}) => {
         keyboardShouldPersistTaps="handled"
         bounces={false}>
         <Slides />
-        <LoginForm />
+        <LoginForm setIsLoading={setIsLoading} />
       </KeyboardAwareScrollView>
+      {isLoading && <Loader />}
     </LinearGradient>
   );
 };

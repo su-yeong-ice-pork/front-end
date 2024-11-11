@@ -492,7 +492,7 @@ const SignUpScreen = ({navigation}) => {
             {/* 이름 입력 */}
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>
-                이름 입력 <Text style={styles.starmark}>*</Text>
+                이름(닉네임) 입력 <Text style={styles.starmark}>*</Text>
               </Text>
               <View style={styles.inputWrapper}>
                 <TextInput

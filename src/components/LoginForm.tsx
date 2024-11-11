@@ -14,13 +14,12 @@ import handleLogin from '../api/login';
 import {setItem} from '../api/asyncStorage';
 import Loader from './Loader';
 
-const LoginForm = () => {
+const LoginForm = ({setIsLoading}) => {
   const navigation = useNavigation();
   const setAuthState = useSetRecoilState(authState);
   const [isAutoLogin, setIsAutoLogin] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const passwordInputRef = useRef(null);
 
   const onLoginPress = async () => {
@@ -55,10 +54,10 @@ const LoginForm = () => {
     <View style={styles.loginFormContainer}>
       <View style={styles.loginFormInnerContainer}>
         <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>아이디</Text>
+          <Text style={styles.inputLabel}>이메일</Text>
           <TextInput
             style={styles.input}
-            placeholder="아이디를 입력해주세요."
+            placeholder="이메일을 입력해주세요."
             placeholderTextColor="#B9B9B9"
             value={email}
             onChangeText={setEmail}
@@ -114,7 +113,6 @@ const LoginForm = () => {
           <Text style={styles.loginButtonText}>잔디 심기</Text>
         </TouchableOpacity>
       </View>
-      {isLoading && <Loader />}
     </View>
   );
 };
