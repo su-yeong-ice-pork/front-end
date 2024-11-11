@@ -14,6 +14,7 @@ import ProfileScreen from './src/screens/ProfileScreen';
 import EditProfileScreen from './src/screens/EditProfileScreen';
 import FriendsProfile from './src/screens/FriendsProfile';
 import SplashScreen from 'react-native-splash-screen';
+import LoginScreen from './src/screens/LoginScreen';
 
 const Stack = createStackNavigator();
 
@@ -30,6 +31,7 @@ const App = () => {
           initialRouteName="Landing"
           screenOptions={{headerShown: false}}>
           <Stack.Screen name="Landing" component={LandingScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="Study" component={StudyScreen} />
           <Stack.Screen name="StudyDetail" component={StudyDetailScreen} />
