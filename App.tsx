@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import {RecoilRoot} from 'recoil';
+import {View, StatusBar, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import LandingScreen from './src/screens/LandingScreen';
@@ -22,10 +23,11 @@ const App = () => {
   useEffect(() => {
     setTimeout(() => {
       SplashScreen.hide();
-    }, 1000); //스플래시 활성화 시간
+    }, 1000);
   });
   return (
     <RecoilRoot>
+      <StatusBar />
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName="Landing"
