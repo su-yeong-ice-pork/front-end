@@ -140,7 +140,7 @@ const CalendarScreen = ({userId}: {userId: number}) => {
   };
   const handleTabPressYearly = (mode: 'yearly') => {
     setViewMode(mode);
-    setIsLoading(true);
+    // setIsLoading(true);
   };
   const handleYearlyDataLoad = () => {
     setIsLoading(false);

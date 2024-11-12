@@ -24,6 +24,7 @@ import {useRecoilValue} from 'recoil';
 import authState from '../recoil/authAtom';
 import {NAME_REGEX, EMAIL_REGEX, PASSWORD_REGEX} from '../constants/regex';
 import Header from '../components/Header';
+import Loader from '../components/Loader';
 
 const IMAGES = {
   backButton: require('../../assets/images/icons/backButton.png'),
@@ -52,6 +53,7 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
   const [isCodeVerified, setIsCodeVerified] = useState<boolean>(false);
   const [nameError, setNameError] = useState<string>('');
   const [emailError, setEmailError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const headerTitle = route.params?.title || '비밀번호 찾기';
 
@@ -145,6 +147,8 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
       return;
     }
 
+    setIsLoading(true);
+
     try {
       const response = await checkPasswordEmail({name, email});
       if (response.success) {
@@ -157,6 +161,8 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
       }
     } catch (error: any) {
       setErrorMessage(error.message || '에러가 발생했습니다.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -182,6 +188,7 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
 
   // 비밀번호 재설정 핸들러
   const submitResetPassword = async () => {
+    setIsLoading(true);
     try {
       const response = await resetPassword({
         name: name,
@@ -191,6 +198,7 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
       if (response.success) {
         console.log('비밀번호 재설정 성공');
         navigation.navigate('Landing');
+        setIsLoading(false);
       } else {
         setErrorMessage('비밀번호 재설정에 실패했습니다.');
       }
@@ -366,7 +374,7 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
         </View>
 
         {/* 로딩 컴포넌트 (필요 시 추가) */}
-        {/* {isLoading && <Loader />} */}
+        {isLoading && <Loader />}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

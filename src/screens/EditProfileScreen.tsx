@@ -63,9 +63,11 @@ const EditProfileScreen = ({navigation, route}) => {
   // 상태 메시지 확인
   const [currentMessage, setCurrentMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [imageIsLoading, setImageIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchDefaultImages = async () => {
+      setImageIsLoading(true);
       try {
         const defaultProfileImgs = await GetDefaultImages(
           authInfo.authToken,
@@ -94,6 +96,7 @@ const EditProfileScreen = ({navigation, route}) => {
       } catch (error) {
         console.log('데이터를 불러오는 중 오류가 발생했습니다.');
       }
+      setImageIsLoading(false);
     };
     fetchDefaultImages();
   }, []);
@@ -149,6 +152,7 @@ const EditProfileScreen = ({navigation, route}) => {
               customImages={customProfileImages}
               selectedImage={selectedImage}
               handleDefaultImageSelect={handleDefaultImageSelect}
+              imageIsLoading={imageIsLoading}
               ShowPicker={() =>
                 ShowPicker(
                   setSelectedImage,
@@ -162,6 +166,7 @@ const EditProfileScreen = ({navigation, route}) => {
               customImages={customBannerImages}
               selectedBanner={selectedBanner}
               handleDefaultBannerSelect={handleDefaultBannerSelect}
+              imageIsLoading={imageIsLoading}
               ShowPicker={() =>
                 ShowPicker(
                   setSelectedBanner,
@@ -211,6 +216,7 @@ const ChangeProfileImage = ({
   selectedImage,
   handleDefaultImageSelect,
   ShowPicker,
+  imageIsLoading,
 }) => {
   return (
     <View style={styles.changeContainer}>
@@ -269,6 +275,11 @@ const ChangeProfileImage = ({
               );
             })}
         </ScrollView>
+        {imageIsLoading && (
+          <View style={styles.loaderOverlay}>
+            <Loader />
+          </View>
+        )}
       </View>
     </View>
   );
@@ -281,6 +292,7 @@ const ChangeBannerImage = ({
   selectedBanner,
   handleDefaultBannerSelect,
   ShowPicker,
+  imageIsLoading,
 }) => {
   return (
     <View style={styles.changeContainer}>
@@ -653,6 +665,19 @@ const styles = StyleSheet.create({
     width: width * 0.25,
     height: width * 0.25,
     borderRadius: (width * 0.25) / 2,
+  },
+  imageListContainer: {
+    position: 'relative', // 오버레이를 위해 position을 relative로 설정
+  },
+  loaderOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%', // 가로로 긴 바 전체를 덮도록 설정
+    height: '100%', // 세로 길이도 부모의 높이에 맞춤
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.7)', // 로더 뒤에 반투명 배경 추가 (선택 사항)
   },
   imageContainer: {
     width: width * 0.25,
