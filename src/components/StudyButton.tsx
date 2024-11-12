@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    minWidth: 160, // 최소 너비 설정
+    minWidth: 130, // 최소 너비 설정
     height: 30,
     paddingHorizontal: 3, // 좌우 패딩 추가
     borderRadius: 30,
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: '#FFFFFF',
-    fontSize: 14, // 가독성을 위해 폰트 크기 약간 증가
+    fontSize: 11, // 가독성을 위해 폰트 크기 약간 증가
     fontWeight: '700',
     fontFamily: 'NanumSquareNeo-Variable',
     textAlign: 'center',
