@@ -19,6 +19,7 @@ import Svg, {
   TSpan,
 } from 'react-native-svg';
 import Header from '../components/Header';
+import Loader from '../components/Loader.tsx';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
@@ -70,6 +71,7 @@ const SignUpScreen = ({navigation}) => {
   // 모달창 관리
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   // Refs for input fields to manage focus
   const emailInputRef = useRef(null);
@@ -102,6 +104,8 @@ const SignUpScreen = ({navigation}) => {
   };
 
   const handleRequire = async () => {
+    setIsLoading(true);
+
     if (!email) {
       setEmailErrorMessage('이메일을 입력해주세요');
       return;
@@ -143,17 +147,20 @@ const SignUpScreen = ({navigation}) => {
           );
         }
         setIsEmailSent(false);
+        setIsLoading(false);
       }
     } catch (error) {
       setEmailErrorMessage(
         error.message || '이메일 전송 중 오류가 발생했습니다.',
       );
       setIsEmailSent(false);
+      setIsLoading(false);
     }
   };
 
   // 코드 확인
   const verifyCode = async () => {
+    setIsLoading(true);
     if (!verificationCode) {
       setCodeErrorMessage('인증 코드를 입력해주세요.');
       return;
@@ -172,6 +179,7 @@ const SignUpScreen = ({navigation}) => {
         setShowCodeInput(false);
         setIsEmailVerified(true);
         setIsActive(false); // 타이머 중지
+        setIsLoading(false);
       } else {
         // 오류 발생 시 상태 코드에 따라 메시지 처리
         if (response.error?.status === 400) {
@@ -189,10 +197,12 @@ const SignUpScreen = ({navigation}) => {
           );
         }
         setIsEmailVerified(false);
+        setIsLoading(false);
       }
     } catch (error) {
       setCodeErrorMessage(error.message || '인증 중 오류가 발생했습니다.');
       setIsEmailVerified(false);
+      setIsLoading(false);
     }
   };
 
@@ -492,7 +502,7 @@ const SignUpScreen = ({navigation}) => {
             {/* 이름 입력 */}
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>
-                이름 입력 <Text style={styles.starmark}>*</Text>
+                이름(닉네임) 입력 <Text style={styles.starmark}>*</Text>
               </Text>
               <View style={styles.inputWrapper}>
                 <TextInput
@@ -547,6 +557,7 @@ const SignUpScreen = ({navigation}) => {
           />
         </View>
       </GestureHandlerRootView>
+      {isLoading && <Loader />}
     </SafeAreaView>
   );
 };

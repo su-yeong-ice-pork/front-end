@@ -31,9 +31,6 @@ const IMAGES = {
   logo: require('../../assets/images/illustration/logo.png'),
   friendsIcon: require('../../assets/images/icons/friendsIcon.png'),
   groupsIcon: require('../../assets/images/icons/groupsIcon.png'),
-  badge1: require('../../assets/images/badge/badge1.png'),
-  badge2: require('../../assets/images/badge/badge2.png'),
-  badge3: require('../../assets/images/badge/badge3.png'),
   freeze: require('../../assets/images/illustration/freeze.png'),
   lockIcon: require('../../assets/images/icons/lockIcon.png'),
   logoutIcon: require('../../assets/images/icons/logoutIcon.png'),
@@ -48,7 +45,6 @@ const IMAGES = {
   closeLogout: require('../../assets/images/icons/closeLogout.png'),
   iIcon: require('../../assets/images/icons/iIcon.png'),
 };
-
 const BADGES = [
   require('../../assets/images/badge/badge0.png'),
   require('../../assets/images/badge/badge1.png'),
@@ -232,12 +228,14 @@ const ProfileScreen = ({navigation}) => {
           transparent={true}
           visible={showBadgeModal}
           onRequestClose={() => setShowBadgeModal(false)}>
-          <TouchableOpacity
-            style={styles.modalOverlay}
-            activeOpacity={1}
-            onPress={() => setShowBadgeModal(false)}>
+          <View style={styles.modalOverlay}>
+            <TouchableOpacity
+              style={styles.overlayTouchable}
+              activeOpacity={1}
+              onPress={() => setShowBadgeModal(false)}
+            />
+
             <View style={styles.modalView}>
-              {/* 모달 헤더 */}
               <View style={styles.modalHeaderContainer}>
                 <Text style={styles.modalHeaderText}>프로필 뱃지 </Text>
                 <Text style={styles.modalHeaderHighlight}>
@@ -267,7 +265,7 @@ const ProfileScreen = ({navigation}) => {
                 <Text style={styles.closeButtonText}>닫기</Text>
               </TouchableOpacity>
             </View>
-          </TouchableOpacity>
+          </View>
         </Modal>
         {/* 추기 기능 예정입니다 모달창 */}
         <Modal
@@ -986,11 +984,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.4)',
   },
   modalView: {
+    width: width * 0.8,
+    maxHeight: height * 0.6,
     backgroundColor: 'white',
     borderRadius: 8,
-    padding: 35,
+    padding: width * 0.05,
     alignItems: 'center',
-    width: '80%',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
     elevation: 5,
   },
   modalText: {
@@ -1056,6 +1062,13 @@ const styles = StyleSheet.create({
   logoutModalCloseButton: {
     position: 'absolute',
     right: 10,
+  },
+  overlayTouchable: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   logoutModalCloseIcon: {
     width: 20,

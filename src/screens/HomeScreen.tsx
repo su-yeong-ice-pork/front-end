@@ -56,6 +56,7 @@ const HomeScreen = ({navigation}) => {
     require('../../assets/images/badge/badge4.png'),
     require('../../assets/images/badge/badge5.png'),
   ];
+
   const handleNotUseableModal = () => {
     setModalMessage('추가 예정인 기능입니다.');
     setModalVisible(true);
@@ -258,17 +259,19 @@ const HomeScreen = ({navigation}) => {
           <View>{member && <CalendarScreen userId={member.id} />}</View>
         </ScrollView>
         <BottomBar />
+        {/* 뱃지 모달 */}
         <Modal
           animationType="slide"
           transparent={true}
           visible={showModal}
           onRequestClose={() => setShowModal(false)}>
-          <TouchableOpacity
-            style={styles.modalOverlay}
-            activeOpacity={1}
-            onPress={() => setShowModal(false)}>
+          <View style={styles.modalOverlay}>
+            <TouchableOpacity
+              style={styles.overlayTouchable}
+              activeOpacity={1}
+              onPress={() => setShowModal(false)}
+            />
             <View style={styles.modalView}>
-              {/* 모달 헤더 */}
               <View style={styles.modalHeaderContainer}>
                 <Text style={styles.modalHeaderText}>프로필 뱃지 </Text>
                 <Text style={styles.modalHeaderHighlight}>
@@ -298,30 +301,9 @@ const HomeScreen = ({navigation}) => {
                 <Text style={styles.closeButtonText}>닫기</Text>
               </TouchableOpacity>
             </View>
-          </TouchableOpacity>
+          </View>
         </Modal>
-        {/* 인증 결과 모달 */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            setModalVisible(!modalVisible);
-          }}>
-          <TouchableOpacity
-            style={styles.modalOverlay}
-            activeOpacity={1}
-            onPress={() => setModalVisible(false)}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>{modalMessage}</Text>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setModalVisible(!modalVisible)}>
-                <Text style={styles.closeButtonText}>닫기</Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        </Modal>
+
         {isLoading && <Loader />}
       </SafeAreaView>
     </>
@@ -564,9 +546,16 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  overlayTouchable: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   modalView: {
     width: width * 0.8,

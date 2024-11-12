@@ -115,10 +115,7 @@ const StudyRecordScreen = () => {
           return;
         }
       } else {
-        // Alert.alert('출석 정보를 가져올 수 없습니다.');
-        setModalTitle('출석 정보를 가져올 수 없습니다.');
-        setModalMessage('');
-        setModalVisible(true);
+        Alert.alert('출석 정보를 가져올 수 없습니다.');
         return;
       }
 
@@ -126,10 +123,7 @@ const StudyRecordScreen = () => {
         // 위치 권한 확인 및 현재 위치 가져오기
         const hasPermission = await requestLocationPermission();
         if (!hasPermission) {
-          // Alert.alert('위치 권한이 필요합니다.');
-          setModalTitle('위치 권한이 필요합니다.');
-          setModalMessage('');
-          setModalVisible(true);
+          Alert.alert('위치 권한이 필요합니다.');
           return;
         }
 
@@ -146,10 +140,7 @@ const StudyRecordScreen = () => {
             return;
           }
         } catch (error) {
-          // Alert.alert('위치 정보를 가져올 수 없습니다.');
-          setModalTitle('위치 정보를 가져올 수 없습니다.');
-          setModalMessage('');
-          setModalVisible(true);
+          Alert.alert('위치 정보를 가져올 수 없습니다.');
           return;
         }
       }
@@ -278,10 +269,7 @@ const StudyRecordScreen = () => {
       }
       const hasPermission = await requestLocationPermission();
       if (!hasPermission) {
-        // Alert.alert('위치 권한이 필요합니다.');
-        setModalTitle('위치 권한이 필요합니다.');
-        setModalMessage('');
-        setModalVisible(true);
+        Alert.alert('위치 권한이 필요합니다.');
         stopRecording();
         return;
       }
@@ -300,10 +288,7 @@ const StudyRecordScreen = () => {
         }
       } catch (error) {
         console.error('Error getting location:', error);
-        // Alert.alert('위치 정보를 가져올 수 없습니다.');
-        setModalTitle('위치 정보를 가져올 수 없습니다.');
-        setModalMessage('');
-        setModalVisible(true);
+        Alert.alert('위치 정보를 가져올 수 없습니다.');
         stopRecording();
       }
     }, 10 * 60 * 1000); // 10분마다 체크

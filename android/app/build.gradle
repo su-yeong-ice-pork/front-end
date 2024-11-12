@@ -82,9 +82,9 @@ android {
         applicationId "com.jandit"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 6
+        versionCode 7
         multiDexEnabled true
-        versionName "1.0.5"
+        versionName "1.0.6"
     }
     signingConfigs {
         debug {

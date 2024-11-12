@@ -168,6 +168,7 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
 
   // 이메일 인증 확인 핸들러
   const verifiedEmail = async () => {
+    setIsLoading(true);
     if (timeLeft <= 0) {
       setErrorMessage('인증 시간이 만료되었습니다. 코드를 재요청해주세요.');
       return;
@@ -178,6 +179,7 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
         setChkEmail(true);
         setIsCodeVerified(true);
         setErrorMessage('');
+        setIsLoading(false);
       } else {
         setErrorMessage('인증 코드가 올바르지 않습니다.');
       }

@@ -3,6 +3,7 @@ import axios from 'axios';
 import {getItem, setItem} from './asyncStorage';
 import {Alert} from 'react-native';
 import {NavigationContainerRef} from '@react-navigation/native';
+import {updateAuthToken} from '../recoil/authAtom';
 
 // 네비게이션 객체를 저장할 변수 선언
 let navigator: NavigationContainerRef<any> | null = null;
@@ -32,7 +33,10 @@ apiClient.interceptors.response.use(
       const refreshToken = await getItem('refreshToken'); // 저장된 리프레시 토큰 가져오기
       if (!refreshToken) {
         // 리프레시 토큰이 없을 경우 처리
-        Alert.alert('로그인을 다시 시도해주세요.');
+        if (originalRequest.url !== '/members/login') {
+          Alert.alert('오류가 발생했습니다. 다시 시도해주세요.');
+        }
+
         await setItem('refreshToken', '');
         await setItem('autoLogin', '');
         // 네비게이션을 사용하여 로그인 화면으로 이동
@@ -47,18 +51,20 @@ apiClient.interceptors.response.use(
 
       try {
         // 리프레시 토큰을 사용하여 액세스 토큰 갱신
-        const response = await axios.post(
-          'https://grass-server-fua8cyfhabacbgbn.koreasouth-01.azurewebsites.net/members/auto-login',
-          {refreshToken},
-        );
-
-        const newAccessToken = response.data.response.accessToken; // 새로운 액세스 토큰 받아오기
+        const response = await apiClient.post('/members/auto-login', {
+          refreshToken,
+        });
+        console.log(response);
+        const newAccessToken = response.headers['authorization']; // 새로운 액세스 토큰 받아오기
+        console.log(newAccessToken);
         originalRequest.headers['Authorization'] = newAccessToken; // 새로운 액세스 토큰을 요청 헤더에 설정
-
+        updateAuthToken(newAccessToken);
         return apiClient(originalRequest); // 원래 요청 재시도
       } catch (err) {
         // 토큰 갱신 실패 시 처리
-        Alert.alert('로그인을 다시 시도해주세요.');
+        if (originalRequest.url !== '/members/login') {
+          Alert.alert('오류가 발생했습니다. 다시 시도해주세요.');
+        }
         await setItem('refreshToken', '');
         await setItem('autoLogin', '');
         if (navigator) {
