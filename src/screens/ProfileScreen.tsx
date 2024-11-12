@@ -228,12 +228,14 @@ const ProfileScreen = ({navigation}) => {
           transparent={true}
           visible={showBadgeModal}
           onRequestClose={() => setShowBadgeModal(false)}>
-          <TouchableOpacity
-            style={styles.modalOverlay}
-            activeOpacity={1}
-            onPress={() => setShowBadgeModal(false)}>
+          <View style={styles.modalOverlay}>
+            <TouchableOpacity
+              style={styles.overlayTouchable}
+              activeOpacity={1}
+              onPress={() => setShowBadgeModal(false)}
+            />
+
             <View style={styles.modalView}>
-              {/* 모달 헤더 */}
               <View style={styles.modalHeaderContainer}>
                 <Text style={styles.modalHeaderText}>프로필 뱃지 </Text>
                 <Text style={styles.modalHeaderHighlight}>
@@ -263,7 +265,7 @@ const ProfileScreen = ({navigation}) => {
                 <Text style={styles.closeButtonText}>닫기</Text>
               </TouchableOpacity>
             </View>
-          </TouchableOpacity>
+          </View>
         </Modal>
         {/* 추기 기능 예정입니다 모달창 */}
         <Modal
@@ -1060,6 +1062,13 @@ const styles = StyleSheet.create({
   logoutModalCloseButton: {
     position: 'absolute',
     right: 10,
+  },
+  overlayTouchable: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   logoutModalCloseIcon: {
     width: 20,
