@@ -124,10 +124,12 @@ const CalendarScreen = ({userId}: {userId: number}) => {
   };
 
   useEffect(() => {
-    const year = moment(displayedDate).year();
-    const month = moment(displayedDate).month() + 1; // month() returns 0-based month index
-    fetchMonthlyGrassData(year, month);
-  }, [displayedDate]);
+    if (viewMode === 'monthly') {
+      const year = moment(displayedDate).year();
+      const month = moment(displayedDate).month() + 1;
+      fetchMonthlyGrassData(year, month);
+    }
+  }, [displayedDate, viewMode]);
 
   const onDayPress = (day: DateData) => {
     setSelectedDate(day.dateString);
@@ -158,10 +160,12 @@ const CalendarScreen = ({userId}: {userId: number}) => {
   const CustomDay = ({
     date,
     state,
+    grassData,
   }: {
     date: DateData;
     state: string;
     marking: any;
+    grassData: any;
   }) => {
     const isSelected = state === 'selected';
     const isToday = moment(date.dateString).isSame(moment(), 'day');
@@ -180,7 +184,6 @@ const CalendarScreen = ({userId}: {userId: number}) => {
         onPress={() => onDayPress(date)}
         disabled={state === 'disabled'}>
         {jandiImage && <Image source={jandiImage} style={styles.dayImage} />}
-
         <Text style={[styles.dayText, isToday && styles.todayText]}>
           {date.day}
         </Text>
@@ -259,7 +262,6 @@ const CalendarScreen = ({userId}: {userId: number}) => {
       {viewMode === 'monthly' ? (
         <View style={styles.monthlyContainer}>
           <Calendar
-            key={displayedDate}
             current={displayedDate}
             onDayPress={onDayPress}
             renderArrow={() => null}
@@ -302,8 +304,14 @@ const CalendarScreen = ({userId}: {userId: number}) => {
             firstDay={0}
             hideExtraDays={true}
             dayComponent={({date, state, marking}) => (
-              <CustomDay date={date} state={state} marking={marking} />
+              <CustomDay
+                date={date}
+                state={state}
+                marking={marking}
+                grassData={grassData}
+              />
             )}
+            extraData={grassData}
           />
           <View style={styles.statsContainer}>
             {userRecord ? (
