@@ -47,35 +47,4 @@ export const autoLogin = async (refreshToken: string) => {
   }
 };
 
-axios.interceptors.response.use(
-  response => response,
-  async error => {
-    const originalRequest = error.config;
-    const setAuthState = useSetRecoilState(authState);
-
-    if (
-      (error.response.status === 401 || error.response.status === 403) &&
-      !originalRequest._retry
-    ) {
-      originalRequest._retry = true;
-
-      const refreshToken = await getItem('refreshToken');
-      if (refreshToken) {
-        try {
-          const response = await apiClient.post('/members/auto-login', {
-            refreshToken,
-          });
-          const newAuthToken = response.headers['authorization'];
-          originalRequest.headers['Authorization'] = `${newAuthToken}`;
-          setAuthState({email: '', authToken: newAuthToken});
-          return apiClient(originalRequest);
-        } catch (err) {
-          //예외 처리 방식 생각해봐야함 !
-        }
-      }
-    }
-
-    return Promise.reject(error);
-  },
-);
 export default handleLogin;
