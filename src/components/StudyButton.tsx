@@ -65,20 +65,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 3, // 좌우 패딩 추가
     borderRadius: 30,
     marginTop: 10,
-    marginLeft: -5,
+    marginLeft: -6,
     justifyContent: 'center', // 내용 중앙 정렬
   },
   recordingButton: {
     backgroundColor: '#FE5B5B',
   },
   icon: {
-    width: 23,
+    width: 20,
     height: 23,
     marginRight: 3, // 아이콘과 텍스트 사이 여백 조정
   },
   text: {
     color: '#FFFFFF',
-    fontSize: 14, // 가독성을 위해 폰트 크기 약간 증가
+    fontSize: 12, // 가독성을 위해 폰트 크기 약간 증가
     fontWeight: '700',
     fontFamily: 'NanumSquareNeo-Variable',
     textAlign: 'center',

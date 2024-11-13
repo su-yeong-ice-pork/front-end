@@ -26,6 +26,7 @@ import {NAME_REGEX, EMAIL_REGEX, PASSWORD_REGEX} from '../constants/regex';
 import Header from '../components/Header';
 import Loader from '../components/Loader';
 import {setItem} from '../api/asyncStorage';
+
 const IMAGES = {
   backButton: require('../../assets/images/icons/backButton.png'),
   resetButton: require('../../assets/images/icons/resetButton.png'),
@@ -83,11 +84,6 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
     } else {
       setEmailError('');
     }
-  };
-
-  const deleteEmail = () => {
-    setEmail('');
-    setEmailError('유효한 부산대 이메일을 입력해주세요.');
   };
 
   // 인증 코드 입력
@@ -160,7 +156,7 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
         setErrorMessage('이름 또는 이메일을 확인해주세요.');
       }
     } catch (error: any) {
-      setErrorMessage(error.message || '에러가 발생했습니다.');
+      setErrorMessage(error.message || '이름 또는 이메일을 확인해주세요.');
     } finally {
       setIsLoading(false);
     }
@@ -184,7 +180,9 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
         setErrorMessage('인증 코드가 올바르지 않습니다.');
       }
     } catch (error: any) {
-      setErrorMessage(error.message || '에러가 발생했습니다.');
+      setErrorMessage(error.message || '인증 코드가 올바른지 확인해주세요.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -200,12 +198,16 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
       if (response.success) {
         console.log('비밀번호 재설정 성공');
         navigation.navigate('Landing');
-        setIsLoading(false);
       } else {
         setErrorMessage('비밀번호 재설정에 실패했습니다.');
       }
     } catch (error: any) {
-      setErrorMessage(error.message || '에러가 발생했습니다.');
+      setErrorMessage(
+        error.message ||
+          '에러가 발생했습니다. 재설정할 비밀번호가 조건에 맞는지 확인해주세요',
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -375,7 +377,7 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
           </TouchableOpacity>
         </View>
 
-        {/* 로딩 컴포넌트 (필요 시 추가) */}
+        {/* 로딩 컴포넌트 */}
         {isLoading && <Loader />}
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -387,7 +389,6 @@ export default FindPassword;
 // 회원탈퇴 컴포넌트
 const LeaveAccount = ({navigation}) => {
   const [showLeaveAccount, setShowLeaveAccount] = useState<boolean>(false);
-
   return (
     <View>
       <TouchableOpacity
