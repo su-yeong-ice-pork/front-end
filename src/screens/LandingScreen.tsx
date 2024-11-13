@@ -6,7 +6,6 @@ import {useSetRecoilState} from 'recoil';
 import authState from '../recoil/authAtom';
 import {getItem} from '../api/asyncStorage';
 import {autoLogin} from '../api/login';
-import Loader from '../components/Loader';
 import Slides from '../components/Slides';
 
 const LandingScreen = ({navigation}) => {
@@ -75,8 +74,6 @@ const LandingScreen = ({navigation}) => {
           </Text>{' '}
           및 이용약관에 동의하게 됩니다.
         </Text>
-
-        {isLoading && <Loader />}
       </KeyboardAwareScrollView>
     </LinearGradient>
   );
