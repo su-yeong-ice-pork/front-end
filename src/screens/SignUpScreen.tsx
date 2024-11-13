@@ -115,6 +115,7 @@ const SignUpScreen = ({navigation}) => {
     const emailRegex = /^[A-Za-z0-9._%+-]+@pusan\.ac\.kr$/;
     if (!emailRegex.test(email)) {
       setEmailErrorMessage('pusan.ac.kr 계정을 사용해주세요.');
+      setIsLoading(false);
       return;
     }
     try {
@@ -155,6 +156,8 @@ const SignUpScreen = ({navigation}) => {
         error.message || '이메일 전송 중 오류가 발생했습니다.',
       );
       setIsEmailSent(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -163,6 +166,7 @@ const SignUpScreen = ({navigation}) => {
     setIsLoading(true);
     if (!verificationCode) {
       setCodeErrorMessage('인증 코드를 입력해주세요.');
+      setIsLoading(false);
       return;
     }
 
@@ -202,6 +206,8 @@ const SignUpScreen = ({navigation}) => {
     } catch (error) {
       setCodeErrorMessage(error.message || '인증 중 오류가 발생했습니다.');
       setIsEmailVerified(false);
+      setIsLoading(false);
+    } finally {
       setIsLoading(false);
     }
   };
