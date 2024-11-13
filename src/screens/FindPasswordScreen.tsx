@@ -25,7 +25,7 @@ import authState from '../recoil/authAtom';
 import {NAME_REGEX, EMAIL_REGEX, PASSWORD_REGEX} from '../constants/regex';
 import Header from '../components/Header';
 import Loader from '../components/Loader';
-
+import {setItem} from '../api/asyncStorage';
 const IMAGES = {
   backButton: require('../../assets/images/icons/backButton.png'),
   resetButton: require('../../assets/images/icons/resetButton.png'),
@@ -426,6 +426,8 @@ const LeaveAccountModal = ({
     try {
       const response = await CancelAccount(authToken, currentPassword);
       if (response && response.success) {
+        await setItem('refreshToken', '');
+        await setItem('autoLogin', '');
         setShowLeaveAccount(false);
         navigation.navigate('Landing');
       } else {
