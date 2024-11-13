@@ -188,6 +188,10 @@ const FindPassword: React.FC<FindPasswordProps> = ({navigation, route}) => {
 
   // 비밀번호 재설정 핸들러
   const submitResetPassword = async () => {
+    if (!PASSWORD_REGEX.test(resetPasswordInput)) {
+      setErrorMessage('비밀번호를 다시 설정해주세요!');
+      return;
+    }
     setIsLoading(true);
     try {
       const response = await resetPassword({
