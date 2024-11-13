@@ -124,6 +124,7 @@ const SignUpScreen = ({navigation}) => {
         setEmailErrorMessage('');
         setShowCodeInput(true);
         setIsEmailSent(true); // 이메일 전송 상태 업데이트
+        setIsLoading(false);
         setAskCode('재요청');
         setIsActive(true); // 타이머 시작
         setTimeLeft(300); // 타이머 리셋
@@ -154,7 +155,6 @@ const SignUpScreen = ({navigation}) => {
         error.message || '이메일 전송 중 오류가 발생했습니다.',
       );
       setIsEmailSent(false);
-      setIsLoading(false);
     }
   };
 
