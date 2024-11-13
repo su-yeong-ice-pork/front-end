@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    minWidth: 130, // 최소 너비 설정
+    minWidth: 160, // 최소 너비 설정
     width: width * 0.38,
     height: 30,
     paddingHorizontal: 3, // 좌우 패딩 추가
