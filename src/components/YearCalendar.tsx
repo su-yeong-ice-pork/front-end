@@ -35,7 +35,7 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
   const [grassData, setGrassData] = useState<GrassData>({});
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const dayLabels = ['일', '월', '화', '수', '목', '금', '토'];
-
+  const dayLabelMargin = Platform.OS === 'ios' ? 4.5 : 0;
   const scrollViewRef = useRef<ScrollView>(null);
 
   // 현재 날짜 기준으로 시작 날짜를 설정 (1년 전)
@@ -146,8 +146,8 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
   };
 
   const getColorForActivity = (studyHour: number, grassScore: number) => {
-    if (grassScore === 10 && studyHour === 0) return '#DCE1CB';
-    else if (studyHour === 0) return '#ebedf0';
+    if (grassScore >= 10 && studyHour === 0) return '#DCE1CB';
+    else if (studyHour === 0 || grassScore < 10) return '#ebedf0';
     else if (studyHour >= 1 && studyHour <= 2) return '#c6e48b'; // 연한 초록
     else if (studyHour >= 3 && studyHour <= 4) return '#7bc96f'; // 중간 초록
     else if (studyHour >= 5 && studyHour <= 6) return '#239a3b'; // 진한 초록
@@ -178,7 +178,10 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
       {dayLabels.map((day, index) => (
         <Text
           key={index}
-          style={[styles.dayLabelText, {marginTop: index === 0 ? 15 : 0}]}>
+          style={[
+            styles.dayLabelText,
+            {marginTop: index === 0 ? 15 : dayLabelMargin},
+          ]}>
           {day}
         </Text>
       ))}
