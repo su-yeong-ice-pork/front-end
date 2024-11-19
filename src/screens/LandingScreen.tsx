@@ -5,7 +5,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useSetRecoilState} from 'recoil';
 import authState from '../recoil/authAtom';
 import {getItem} from '../api/asyncStorage';
-import {autoLogin} from '../api/login';
+import {autoLogin} from '../api/login/LoginApi';
 import Slides from '../components/Slides';
 
 const LandingScreen = ({navigation}) => {
