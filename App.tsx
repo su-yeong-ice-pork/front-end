@@ -16,8 +16,14 @@ import EditProfileScreen from './src/screens/EditProfileScreen';
 import FriendsProfile from './src/screens/FriendsProfile';
 import SplashScreen from 'react-native-splash-screen';
 import LoginScreen from './src/screens/LoginScreen';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 
 const Stack = createStackNavigator();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {retry: 0, staleTime: 1000 * 60, gcTime: 1000 * 60 * 60 * 24},
+  },
+});
 
 const App = () => {
   useEffect(() => {
@@ -26,27 +32,29 @@ const App = () => {
     }, 1000);
   });
   return (
-    <RecoilRoot>
-      <StatusBar />
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="Landing"
-          screenOptions={{headerShown: false}}>
-          <Stack.Screen name="Landing" component={LandingScreen} />
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="SignUp" component={SignUpScreen} />
-          <Stack.Screen name="Study" component={StudyScreen} />
-          <Stack.Screen name="StudyDetail" component={StudyDetailScreen} />
-          <Stack.Screen name="Alarm" component={AlarmScreen} />
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Log" component={StudyRecordScreen} />
-          <Stack.Screen name="FindPassword" component={FindPassword} />
-          <Stack.Screen name="Profile" component={ProfileScreen} />
-          <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-          <Stack.Screen name="FriendsProfile" component={FriendsProfile} />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </RecoilRoot>
+    <QueryClientProvider client={queryClient}>
+      <RecoilRoot>
+        <StatusBar />
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="Landing"
+            screenOptions={{headerShown: false}}>
+            <Stack.Screen name="Landing" component={LandingScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="SignUp" component={SignUpScreen} />
+            <Stack.Screen name="Study" component={StudyScreen} />
+            <Stack.Screen name="StudyDetail" component={StudyDetailScreen} />
+            <Stack.Screen name="Alarm" component={AlarmScreen} />
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Log" component={StudyRecordScreen} />
+            <Stack.Screen name="FindPassword" component={FindPassword} />
+            <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+            <Stack.Screen name="FriendsProfile" component={FriendsProfile} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </RecoilRoot>
+    </QueryClientProvider>
   );
 };
 
