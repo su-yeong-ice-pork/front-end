@@ -1,11 +1,7 @@
-//login.ts
-import {useSetRecoilState} from 'recoil';
-import {getItem} from './asyncStorage';
-import apiClient from './axiosInstance';
-import axios from 'axios';
-import authState from '../recoil/authAtom';
+import apiClient from '../axiosInstance';
+import {LoginPropsType} from './loginPropsType';
 
-const handleLogin = async (email: string, password: string) => {
+const handleLogin = async ({email, password}: LoginPropsType) => {
   try {
     const response = await apiClient.post('/members/login', {
       email,

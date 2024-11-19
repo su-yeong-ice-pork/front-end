@@ -402,7 +402,6 @@ const LeaveAccount = ({navigation}) => {
         }}>
         <Text style={styles.underlineText}>회원탈퇴</Text>
       </TouchableOpacity>
-
       <LeaveAccountModal
         showLeaveAccount={showLeaveAccount}
         setShowLeaveAccount={setShowLeaveAccount}

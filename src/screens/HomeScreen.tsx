@@ -17,8 +17,8 @@ import BottomBar from '../components/BottomBar';
 const {width, height} = Dimensions.get('window');
 import CalendarScreen from '../components/calendar';
 import Loader from '../components/Loader';
-import {getMemberData, Member} from '../api/profile';
-import {getBadges, Badge} from '../api/badge';
+import {Member} from '../api/profile';
+import {Badge} from '../api/badge';
 import {postGrass} from '../api/grass';
 import {
   requestLocationPermission,
@@ -28,6 +28,10 @@ import {SERVICE_AREA, isPointInPolygon, Coordinate} from '../utils/serviceArea';
 import {useRecoilState, useRecoilValue} from 'recoil';
 import userState from '../recoil/userAtom';
 import authState from '../recoil/authAtom';
+import AuthButtons from '../components/AuthButtons';
+import {getUserDataApi} from '../api/user/getUserDataApi';
+import {getBadgesApi} from '../api/badge/getBadgesApi';
+import {useQuery} from '@tanstack/react-query';
 
 const HomeScreen = ({navigation}) => {
   const authInfo = useRecoilValue(authState);
@@ -38,24 +42,44 @@ const HomeScreen = ({navigation}) => {
   const [badges, setBadges] = useState<Badge[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState(false);
-  const IMAGES = {
-    profile: require('../../assets/images/illustration/typeThree.png'),
-    logo: require('../../assets/images/illustration/logo.png'),
-    self: require('../../assets/images/illustration/typeTwo.png'),
-    together: require('../../assets/images/illustration/typeOne.png'),
-    freeze: require('../../assets/images/illustration/freeze.png'),
-    iIcon: require('../../assets/images/icons/iIcon.png'),
-    moreIcon: require('../../assets/images/icons/moreIcon2.png'),
-  };
 
-  const BADGES = [
-    require('../../assets/images/badge/badge0.png'),
-    require('../../assets/images/badge/badge1.png'),
-    require('../../assets/images/badge/badge2.png'),
-    require('../../assets/images/badge/badge3.png'),
-    require('../../assets/images/badge/badge4.png'),
-    require('../../assets/images/badge/badge5.png'),
-  ];
+  const {
+    data: memberData,
+    error: memberDataError,
+    isLoading: memberDataLoading,
+  } = useQuery({
+    queryKey: ['member'],
+    queryFn: () => getUserDataApi(authInfo.authToken),
+  });
+
+  const {
+    data: badgesData,
+    error: badgesDataError,
+    isLoading: badgesDataLoading,
+  } = useQuery({
+    queryKey: ['badges', memberData?.id],
+    queryFn: () => getBadgesApi(memberData.id, authInfo.authToken),
+    enabled: !!memberData,
+  });
+
+  useEffect(() => {
+    if (memberData) {
+      setMember(memberData);
+      setUser(memberData);
+    } else if (memberDataError) {
+      setModalMessage('프로필을 불러오는 데 실패했습니다.');
+      setModalVisible(true);
+    }
+  }, [memberData, memberDataError]);
+
+  useEffect(() => {
+    if (badgesData) {
+      setBadges(badgesData);
+    } else if (badgesDataError) {
+      setModalMessage('뱃지를 불러오는 데 실패했습니다.');
+      setModalVisible(true);
+    }
+  }, [badgesData, badgesDataError]);
 
   const handleNotUseableModal = () => {
     setModalMessage('추가 예정인 기능입니다.');
@@ -108,34 +132,23 @@ const HomeScreen = ({navigation}) => {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    const fetchMember = async () => {
-      try {
-        const memberData = await getMemberData(authInfo.authToken);
-        if (memberData) {
-          setMember(memberData);
-          setUser(memberData);
-          const badgesData = await getBadges(memberData.id, authInfo.authToken);
-          if (badgesData) {
-            setBadges(badgesData);
-          } else {
-            setModalMessage('뱃지를 불러오는 데 실패했습니다.');
-            setModalVisible(true);
-          }
-        } else {
-          setModalMessage('프로필을 불러오는 데 실패했습니다.');
-          setModalVisible(true);
-        }
-      } catch (error) {
-        setModalMessage('데이터를 불러오는 중 오류가 발생했습니다.');
-        setModalVisible(true);
-      }
-    };
-
-    const unsubscribe = navigation.addListener('focus', fetchMember);
-    return unsubscribe;
-  }, [navigation]);
+  const IMAGES = {
+    profile: require('../../assets/images/illustration/typeThree.png'),
+    logo: require('../../assets/images/illustration/logo.png'),
+    self: require('../../assets/images/illustration/typeTwo.png'),
+    together: require('../../assets/images/illustration/typeOne.png'),
+    freeze: require('../../assets/images/illustration/freeze.png'),
+    iIcon: require('../../assets/images/icons/iIcon.png'),
+    moreIcon: require('../../assets/images/icons/moreIcon2.png'),
+  };
+  const BADGES = [
+    require('../../assets/images/badge/badge0.png'),
+    require('../../assets/images/badge/badge1.png'),
+    require('../../assets/images/badge/badge2.png'),
+    require('../../assets/images/badge/badge3.png'),
+    require('../../assets/images/badge/badge4.png'),
+    require('../../assets/images/badge/badge5.png'),
+  ];
 
   return (
     <>
@@ -204,21 +217,7 @@ const HomeScreen = ({navigation}) => {
           )}
 
           {/* 인증하기 버튼들 */}
-          <View style={styles.buttonSection}>
-            <TouchableOpacity
-              style={styles.certifyButton}
-              onPress={handleSelfCertify}>
-              <Text style={styles.buttonText}>혼자 인증하기</Text>
-              <Image source={IMAGES.self} style={styles.buttons} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.certifyButton2}
-              onPress={handleNotUseableModal}>
-              <Text style={styles.buttonText}>함께 인증하기</Text>
-              <Image source={IMAGES.together} style={styles.buttons} />
-            </TouchableOpacity>
-          </View>
+          <AuthButtons />
 
           {/* 보유 프리즈 및 현재 일수 */}
           {member && (

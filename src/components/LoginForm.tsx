@@ -4,15 +4,14 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Alert,
   StyleSheet,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useSetRecoilState} from 'recoil';
 import authState from '../recoil/authAtom';
-import handleLogin from '../api/login';
+import handleLogin from '../api/login/LoginApi';
 import {setItem} from '../api/asyncStorage';
-import Loader from './Loader';
+import {useMutation} from '@tanstack/react-query';
 
 const LoginForm = ({setIsLoading}) => {
   const navigation = useNavigation();
@@ -22,29 +21,45 @@ const LoginForm = ({setIsLoading}) => {
   const [password, setPassword] = useState('');
   const passwordInputRef = useRef(null);
 
+  const mutation = useMutation({
+    mutationFn: ({email, password}: LoginPropsType) =>
+      handleLogin({email, password}),
+  });
+
   const onLoginPress = async () => {
     setIsLoading(true);
     try {
-      const response = await handleLogin(email, password);
-      if (response.success) {
-        const refreshToken = response.data.refreshToken;
-        await setItem('refreshToken', refreshToken);
-        if (isAutoLogin) {
-          await setItem('autoLogin', 'Y');
-        } else {
-          await setItem('autoLogin', '');
-        }
-        const authToken = response.headers['authorization'];
-        setAuthState({email, authToken});
-        navigation.reset({
-          index: 0,
-          routes: [{name: 'Home'}],
-        });
-      } else if (response.error) {
-        Alert.alert(response.error.error.message);
-      }
-    } catch (error) {
-      console.log('오류', error.message || '로그인 중 오류가 발생했습니다.');
+      mutation.mutate(
+        {
+          email: email,
+          password: password,
+        },
+        {
+          onSuccess: async data => {
+            console.log(data);
+            const refreshToken = data?.data?.refreshToken;
+            console.log(refreshToken);
+            await setItem('refreshToken', refreshToken);
+            if (isAutoLogin) {
+              await setItem('autoLogin', 'Y');
+            } else {
+              await setItem('autoLogin', '');
+            }
+            const authToken = data.headers['authorization'];
+            setAuthState({email, authToken});
+            navigation.reset({
+              index: 0,
+              routes: [{name: 'Home'}],
+            });
+          },
+          onError: error => {
+            console.log(
+              '오류',
+              error.message || '로그인 중 오류가 발생했습니다.',
+            );
+          },
+        },
+      );
     } finally {
       setIsLoading(false);
     }
@@ -109,7 +124,9 @@ const LoginForm = ({setIsLoading}) => {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.loginButton} onPress={onLoginPress}>
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={() => onLoginPress()}>
           <Text style={styles.loginButtonText}>잔디 심기</Text>
         </TouchableOpacity>
       </View>
