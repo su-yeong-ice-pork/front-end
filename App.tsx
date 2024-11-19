@@ -1,4 +1,6 @@
 import React, {useEffect} from 'react';
+import '@/global.css';
+import {GluestackUIProvider} from '@/components/ui/gluestack-ui-provider';
 import {RecoilRoot} from 'recoil';
 import {View, StatusBar, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
@@ -32,29 +34,31 @@ const App = () => {
     }, 1000);
   });
   return (
-    <QueryClientProvider client={queryClient}>
-      <RecoilRoot>
-        <StatusBar />
-        <NavigationContainer>
-          <Stack.Navigator
-            initialRouteName="Landing"
-            screenOptions={{headerShown: false}}>
-            <Stack.Screen name="Landing" component={LandingScreen} />
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="SignUp" component={SignUpScreen} />
-            <Stack.Screen name="Study" component={StudyScreen} />
-            <Stack.Screen name="StudyDetail" component={StudyDetailScreen} />
-            <Stack.Screen name="Alarm" component={AlarmScreen} />
-            <Stack.Screen name="Home" component={HomeScreen} />
-            <Stack.Screen name="Log" component={StudyRecordScreen} />
-            <Stack.Screen name="FindPassword" component={FindPassword} />
-            <Stack.Screen name="Profile" component={ProfileScreen} />
-            <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-            <Stack.Screen name="FriendsProfile" component={FriendsProfile} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </RecoilRoot>
-    </QueryClientProvider>
+    <GluestackUIProvider>
+      <QueryClientProvider client={queryClient}>
+        <RecoilRoot>
+          <StatusBar />
+          <NavigationContainer>
+            <Stack.Navigator
+              initialRouteName="Landing"
+              screenOptions={{headerShown: false}}>
+              <Stack.Screen name="Landing" component={LandingScreen} />
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="SignUp" component={SignUpScreen} />
+              <Stack.Screen name="Study" component={StudyScreen} />
+              <Stack.Screen name="StudyDetail" component={StudyDetailScreen} />
+              <Stack.Screen name="Alarm" component={AlarmScreen} />
+              <Stack.Screen name="Home" component={HomeScreen} />
+              <Stack.Screen name="Log" component={StudyRecordScreen} />
+              <Stack.Screen name="FindPassword" component={FindPassword} />
+              <Stack.Screen name="Profile" component={ProfileScreen} />
+              <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+              <Stack.Screen name="FriendsProfile" component={FriendsProfile} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </RecoilRoot>
+      </QueryClientProvider>
+    </GluestackUIProvider>
   );
 };
 
