@@ -24,7 +24,6 @@ const CheerupText = () => {
   return (
     <View style={styles.supportTextSection}>
       <Text style={styles.sectionTitle}>응원텍스트</Text>
-
       <View style={styles.textInputContainer}>
         <TextInput
           style={styles.textInputPlaceholder}
@@ -43,7 +42,6 @@ const CheerupText = () => {
           <Text style={styles.sendButtonText}>보내기</Text>
         </TouchableOpacity>
       </View>
-
       <Text style={styles.infoText}>
         응원 텍스트는 최대 20자 입력, 매일 하루 2개씩 가능합니다!
       </Text>

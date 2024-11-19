@@ -92,7 +92,6 @@ const BottomBar = () => {
         <Image source={images.profile} style={styles.icon} />
         <Text style={getLabelStyle('Profile')}>프로필</Text>
       </TouchableOpacity>
-
       {/* Modal Component */}
       <Modal
         animationType="slide"

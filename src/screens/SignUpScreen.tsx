@@ -610,7 +610,6 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
       <Text style={styles.inputLabel}>
         학과 등록 <Text style={styles.starmark}>*</Text>
       </Text>
-
       <TouchableOpacity
         style={styles.inputBox}
         onPress={() => setDepartModalVisible(true)}>
@@ -623,7 +622,6 @@ const RegisterDepart = ({college, department, setCollege, setDepartment}) => {
             : '대학 소속학과를 등록해주세요'}
         </Text>
       </TouchableOpacity>
-
       {/* 드롭다운 모달 */}
       <Modal
         visible={departModalVisible}

@@ -206,7 +206,6 @@ const CalendarScreen = ({userId}: {userId: number}) => {
         </Text>
       )}
       {isLoading && <Loader />}
-
       <View style={styles.tabContainer}>
         {/* 월간 잔디밭 탭 */}
         <TouchableOpacity
@@ -258,7 +257,6 @@ const CalendarScreen = ({userId}: {userId: number}) => {
           </View>
         </TouchableOpacity>
       </View>
-
       {viewMode === 'monthly' ? (
         <View style={styles.monthlyContainer}>
           <Calendar
@@ -385,7 +383,6 @@ const CalendarScreen = ({userId}: {userId: number}) => {
           </View>
         </View>
       )}
-
       {/* 날짜 클릭 시 모달 */}
       <Modal
         visible={modalVisible}
