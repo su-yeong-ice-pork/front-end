@@ -23,7 +23,8 @@ import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
 import userState from '../recoil/userAtom';
 import authState from '../recoil/authAtom';
 import {setItem} from '../api/asyncStorage';
-
+import Profile from '../components/Profile';
+import ListViewBox from '../components/ListViewBox';
 const {width, height} = Dimensions.get('window');
 
 const IMAGES = {
@@ -103,191 +104,160 @@ const ProfileScreen = ({navigation}) => {
     fetchMember();
   }, []);
 
-  return (<>
-    <SafeAreaView style={{flex: 1}}>
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={{paddingBottom: 80}}>
-        <View style={styles.logoSection}>
-          <View style={styles.logoInfo}>
-            <Image source={IMAGES.logo} style={styles.logoImage} />
+  return (
+    <>
+      <SafeAreaView style={{flex: 1}}>
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={{paddingBottom: 80}}>
+          <View style={styles.logoSection}>
+            <View style={styles.logoInfo}>
+              <Image source={IMAGES.logo} style={styles.logoImage} />
+            </View>
           </View>
-        </View>
 
-        {member?.mainBanner ? (
-          // 배너 이미지가 있을 때 ImageBackground를 렌더링
-          (<ImageBackground
-            source={{uri: member.mainBanner}}
-            style={styles.upperSection}
-            resizeMode="cover">
-            <TouchableOpacity
-              style={styles.backButtonWrapper}
-              onPress={() => navigation.goBack()}>
-              <Image
-                source={IMAGES.profileBackButton}
-                style={styles.profileBackButton}
-              />
-            </TouchableOpacity>
-            <View style={styles.profileInfo}>
-              <Image
-                source={
-                  member?.profileImage
-                    ? {uri: member.profileImage}
-                    : IMAGES.profile
-                }
-                style={styles.profileImage}
-              />
+          {member?.mainBanner ? (
+            // 배너 이미지가 있을 때 ImageBackground를 렌더링
+            <Profile />
+          ) : (
+            // 배너 이미지가 없을 때 View를 렌더링하고 배경색을 적용
+            <View style={styles.upperSection}>
               <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('EditProfile', {id: member?.id})
-                }>
-                <Image source={IMAGES.editProfile} style={styles.editIcon} />
+                style={styles.backButtonWrapper}
+                onPress={() => navigation.goBack()}>
+                <Image
+                  source={IMAGES.profileBackButton}
+                  style={styles.profileBackButton}
+                />
               </TouchableOpacity>
+              <View style={styles.profileInfo}>
+                <Image
+                  source={
+                    member?.profileImage
+                      ? {uri: member.profileImage}
+                      : IMAGES.profile
+                  }
+                  style={styles.profileImage}
+                />
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('EditProfile', {id: member?.id})
+                  }>
+                  <Image source={IMAGES.editProfile} style={styles.editIcon} />
+                </TouchableOpacity>
+              </View>
             </View>
-          </ImageBackground>)
-        ) : (
-          // 배너 이미지가 없을 때 View를 렌더링하고 배경색을 적용
-          (<View style={styles.upperSection}>
+          )}
+
+          <View style={styles.content}>
+            <InfoCard
+              subTitle="현재 나의 잔디 친구"
+              iconSrc={IMAGES.coloredFriendsIcon}
+              count={user.friendCount}
+              countText="명"
+              text="의 잔디친구들과 공부 중입니다!"
+              buttonSrc={IMAGES.friendsIcon}
+              buttonText="친구목록 보기"
+              onButtonPress={handleNotUseableModal}
+            />
+            <InfoCard
+              subTitle="현재 나의 잔디 스터디그룹"
+              iconSrc={IMAGES.coloredGroupIcon}
+              count={user.studyCount}
+              countText="개"
+              text="의 잔디그룹에 소속되어있습니다!"
+              buttonSrc={IMAGES.groupsIcon}
+              buttonText="그룹목록 보기"
+              onButtonPress={handleNotUseableModal}
+            />
+            <BadgeSection
+              badges={badges}
+              onMorePress={() => setShowBadgeModal(true)}
+            />
+            <FreezeSummary
+              freezeCount={member?.freezeCount}
+              onPress={handleNotUseableModal}
+            />
+            <GrassSummary name={member?.name} totalDays={totalDays} />
+            <GrassButton
+              startDate={createDate}
+              totalDays={totalDays}
+              totalTime={totalTime}
+              ImgSrc1={IMAGES.jandi1}
+              ImgSrc2={IMAGES.jandi2}
+            />
+          </View>
+          <ProfileFooter navigation={navigation} />
+        </ScrollView>
+        <BottomBar />
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={showBadgeModal}
+          onRequestClose={() => setShowBadgeModal(false)}>
+          <View style={styles.modalOverlay}>
             <TouchableOpacity
-              style={styles.backButtonWrapper}
-              onPress={() => navigation.goBack()}>
-              <Image
-                source={IMAGES.profileBackButton}
-                style={styles.profileBackButton}
-              />
-            </TouchableOpacity>
-            <View style={styles.profileInfo}>
-              <Image
-                source={
-                  member?.profileImage
-                    ? {uri: member.profileImage}
-                    : IMAGES.profile
-                }
-                style={styles.profileImage}
-              />
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('EditProfile', {id: member?.id})
-                }>
-                <Image source={IMAGES.editProfile} style={styles.editIcon} />
-              </TouchableOpacity>
-            </View>
-          </View>)
-        )}
+              style={styles.overlayTouchable}
+              activeOpacity={1}
+              onPress={() => setShowBadgeModal(false)}
+            />
 
-        <View style={styles.profileTextContainer}>
-          <Text style={styles.nickname}>{member?.mainTitle}</Text>
-          <Text style={styles.username}>{member?.name}</Text>
-        </View>
-
-        <View style={styles.content}>
-          <InfoCard
-            subTitle="현재 나의 잔디 친구"
-            iconSrc={IMAGES.coloredFriendsIcon}
-            count={user.friendCount}
-            countText="명"
-            text="의 잔디친구들과 공부 중입니다!"
-            buttonSrc={IMAGES.friendsIcon}
-            buttonText="친구목록 보기"
-            onButtonPress={handleNotUseableModal}
-          />
-          <InfoCard
-            subTitle="현재 나의 잔디 스터디그룹"
-            iconSrc={IMAGES.coloredGroupIcon}
-            count={user.studyCount}
-            countText="개"
-            text="의 잔디그룹에 소속되어있습니다!"
-            buttonSrc={IMAGES.groupsIcon}
-            buttonText="그룹목록 보기"
-            onButtonPress={handleNotUseableModal}
-          />
-          <BadgeSection
-            badges={badges}
-            onMorePress={() => setShowBadgeModal(true)}
-          />
-          <FreezeSummary
-            freezeCount={member?.freezeCount}
-            onPress={handleNotUseableModal}
-          />
-          <GrassSummary name={member?.name} totalDays={totalDays} />
-          <GrassButton
-            startDate={createDate}
-            totalDays={totalDays}
-            totalTime={totalTime}
-            ImgSrc1={IMAGES.jandi1}
-            ImgSrc2={IMAGES.jandi2}
-          />
-        </View>
-        <ProfileFooter navigation={navigation} />
-      </ScrollView>
-      <BottomBar />
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showBadgeModal}
-        onRequestClose={() => setShowBadgeModal(false)}>
-        <View style={styles.modalOverlay}>
-          <TouchableOpacity
-            style={styles.overlayTouchable}
-            activeOpacity={1}
-            onPress={() => setShowBadgeModal(false)}
-          />
-
-          <View style={styles.modalView}>
-            <View style={styles.modalHeaderContainer}>
-              <Text style={styles.modalHeaderText}>프로필 뱃지 </Text>
-              <Text style={styles.modalHeaderHighlight}>
-                총 {badges ? badges.length : 0}개 보유 중
-              </Text>
-            </View>
-            <ScrollView style={styles.modalScrollView}>
-              {badges &&
-                badges.map(badge => (
-                  <View key={badge.id} style={styles.modalBadge}>
-                    <Image
-                      source={BADGES[Number(badge.fileName)]}
-                      style={styles.modalBadgeImage}
-                    />
-                    <View style={styles.modalBadgeInfo}>
-                      <Text style={styles.modalBadgeName}>{badge.name}</Text>
-                      <Text style={styles.modalBadgeDescription}>
-                        {badge.description}
-                      </Text>
+            <View style={styles.modalView}>
+              <View style={styles.modalHeaderContainer}>
+                <Text style={styles.modalHeaderText}>프로필 뱃지 </Text>
+                <Text style={styles.modalHeaderHighlight}>
+                  총 {badges ? badges.length : 0}개 보유 중
+                </Text>
+              </View>
+              <ScrollView style={styles.modalScrollView}>
+                {badges &&
+                  badges.map(badge => (
+                    <View key={badge.id} style={styles.modalBadge}>
+                      <Image
+                        source={BADGES[Number(badge.fileName)]}
+                        style={styles.modalBadgeImage}
+                      />
+                      <View style={styles.modalBadgeInfo}>
+                        <Text style={styles.modalBadgeName}>{badge.name}</Text>
+                        <Text style={styles.modalBadgeDescription}>
+                          {badge.description}
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                ))}
-            </ScrollView>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setShowBadgeModal(false)}>
-              <Text style={styles.closeButtonText}>닫기</Text>
-            </TouchableOpacity>
+                  ))}
+              </ScrollView>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setShowBadgeModal(false)}>
+                <Text style={styles.closeButtonText}>닫기</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </Modal>
-      {/* 추기 기능 예정입니다 모달창 */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}>
-        <TouchableOpacity
-          style={styles.modalOverlay}
-          activeOpacity={1}
-          onPress={() => setModalVisible(false)}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>{modalMessage}</Text>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setModalVisible(false)}>
-              <Text style={styles.closeButtonText}>닫기</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </Modal>
-    </SafeAreaView>
-  </>);
+        </Modal>
+        {/* 추기 기능 예정입니다 모달창 */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}>
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPress={() => setModalVisible(false)}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>{modalMessage}</Text>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}>
+                <Text style={styles.closeButtonText}>닫기</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </Modal>
+      </SafeAreaView>
+    </>
+  );
 };
 
 export default ProfileScreen;
