@@ -14,7 +14,6 @@ import {
 import Header from '../components/Header';
 import DashLine from '../components/DashLine';
 import BottomBar from '../components/BottomBar';
-import ProfileCard from '../components/ProfileCard';
 import {useNavigation} from '@react-navigation/native';
 import NoticeModal from '../components/NoticeModal';
 import Loader from '../components/Loader';
@@ -31,6 +30,7 @@ import {isPointInPolygon, SERVICE_AREA} from '../utils/serviceArea';
 import {useRecoilValue} from 'recoil';
 import userState from '../recoil/userAtom';
 import authState from '../recoil/authAtom';
+import ProfileCardSection from '../components/ProfileCardSection';
 
 const {width} = Dimensions.get('window');
 
@@ -330,26 +330,21 @@ const StudyRecordScreen = () => {
             </View>
 
             {/* 프로필 카드 */}
-            <View style={styles.profileCardContainer}>
-              <Text style={styles.profileCardTitle}>
-                라이벌의 <Text style={styles.highlightText}>잔디</Text>가{'\n'}
-                무럭무럭 자라고 있어요!
-              </Text>
-              <ProfileCard
-                title={user?.mainTitle || ''}
-                name={user?.name || ''}
-                profileImage={user?.profileImage || null}
-                studyMessage={user?.message || '중간고사 화이팅!'}
-                timerValue={
-                  isRecording
-                    ? formatTime(todayStudyTime + timeElapsed)
-                    : formatTime(todayStudyTime)
-                }
-                totalTimeValue={formatTime(totalStudyTime)}
-                isRecording={isRecording}
-                onStudyButtonPress={handleStudyButtonPress}
-              />
-            </View>
+
+            <ProfileCardSection
+              title={user?.mainTitle || ''}
+              name={user?.name || ''}
+              profileImage={user?.profileImage || 'null'}
+              studyMessage={user?.message || '중간고사 화이팅!'}
+              timerValue={
+                isRecording
+                  ? formatTime(todayStudyTime + timeElapsed)
+                  : formatTime(todayStudyTime)
+              }
+              totalTimeValue={formatTime(totalStudyTime)}
+              isRecording={isRecording}
+              onStudyButtonPress={handleStudyButtonPress}
+            />
 
             {/* 점선 */}
             <DashLine />
@@ -437,29 +432,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 16,
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  profileCardContainer: {
-    width: width - 40,
-    backgroundColor: '#FFFFFF',
-    padding: 20,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    borderTopLeftRadius: 0,
-    borderTopRightRadius: 0,
-    alignSelf: 'center',
-  },
-  profileCardTitle: {
-    fontSize: 22,
-    fontWeight: '900',
-    color: '#4b5563',
-    marginBottom: 20,
-    lineHeight: 30,
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  highlightText: {
-    color: '#15D58A',
-    fontWeight: '900',
     fontFamily: 'NanumSquareNeo-Variable',
   },
   // 점선
