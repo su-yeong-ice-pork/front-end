@@ -177,13 +177,6 @@ const ProfileScreen = ({navigation}) => {
               onPress={handleNotUseableModal}
             />
             <GrassCard name={member?.name} totalDays={totalDays} />
-            <GrassButton
-              startDate={createDate}
-              totalDays={totalDays}
-              totalTime={totalTime}
-              ImgSrc1={IMAGES.jandi1}
-              ImgSrc2={IMAGES.jandi2}
-            />
           </View>
           <ProfileFooter navigation={navigation} />
         </ScrollView>
