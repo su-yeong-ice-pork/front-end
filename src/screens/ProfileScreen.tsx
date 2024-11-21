@@ -25,6 +25,7 @@ import authState from '../recoil/authAtom';
 import {setItem} from '../api/asyncStorage';
 import Profile from '../components/Profile';
 import ListViewBox from '../components/ListViewBox';
+import GrassCard from '../components/GrassCard';
 const {width, height} = Dimensions.get('window');
 
 const IMAGES = {
@@ -175,7 +176,7 @@ const ProfileScreen = ({navigation}) => {
               freezeCount={member?.freezeCount}
               onPress={handleNotUseableModal}
             />
-            <GrassSummary name={member?.name} totalDays={totalDays} />
+            <GrassCard name={member?.name} totalDays={totalDays} />
             <GrassButton
               startDate={createDate}
               totalDays={totalDays}
