@@ -26,6 +26,7 @@ import {setItem} from '../api/asyncStorage';
 import Profile from '../components/Profile';
 import ListViewBox from '../components/ListViewBox';
 import GrassCard from '../components/GrassCard';
+import ProfileAction from '../components/ProfileAction';
 const {width, height} = Dimensions.get('window');
 
 const IMAGES = {
@@ -178,7 +179,7 @@ const ProfileScreen = ({navigation}) => {
             />
             <GrassCard name={member?.name} totalDays={totalDays} />
           </View>
-          <ProfileFooter navigation={navigation} />
+          <ProfileAction />
         </ScrollView>
         <BottomBar />
 
@@ -446,6 +447,7 @@ const ProfileFooter = ({navigation}) => {
         <Image source={IMAGES.logoutIcon} style={styles.footerIcon} />
         <Text style={styles.footerButtonText}>로그아웃</Text>
       </TouchableOpacity>
+
       {/* 로그아웃 팝업창 */}
       <Modal
         animationType="slide"
