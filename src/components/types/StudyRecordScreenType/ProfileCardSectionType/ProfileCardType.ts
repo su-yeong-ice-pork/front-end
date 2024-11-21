@@ -8,3 +8,17 @@ export type ProfileCardProps = {
   isRecording: boolean;
   onStudyButtonPress: () => void;
 };
+
+export type ProfileCardLeftSectionProps = {
+  title: string;
+  name: string;
+  studyMessage: string;
+  profileImage: string;
+};
+
+export type ProfileCardRightSectionProps = {
+  timerValue: string;
+  totalTimeValue: string;
+  isRecording: boolean;
+  onStudyButtonPress: () => void;
+};
