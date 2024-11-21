@@ -150,25 +150,22 @@ const ProfileScreen = ({navigation}) => {
           )}
 
           <View style={styles.content}>
-            <InfoCard
-              subTitle="현재 나의 잔디 친구"
-              iconSrc={IMAGES.coloredFriendsIcon}
-              count={user.friendCount}
-              countText="명"
-              text="의 잔디친구들과 공부 중입니다!"
-              buttonSrc={IMAGES.friendsIcon}
+            <ListViewBox
+              boxTitle="현재 나의 잔디 친구"
+              friendCount={user.friendCount}
+              type="coloredFriendsIcon"
+              type2="명"
+              buttontype="friendsIcon"
               buttonText="친구목록 보기"
-              onButtonPress={handleNotUseableModal}
             />
-            <InfoCard
-              subTitle="현재 나의 잔디 스터디그룹"
-              iconSrc={IMAGES.coloredGroupIcon}
-              count={user.studyCount}
-              countText="개"
-              text="의 잔디그룹에 소속되어있습니다!"
-              buttonSrc={IMAGES.groupsIcon}
+
+            <ListViewBox
+              boxTitle="현재 나의 잔디 스터디그룹"
+              friendCount={user.studyCount}
+              type="coloredGroupIcon"
+              type2="개"
+              buttontype="groupsIcon"
               buttonText="그룹목록 보기"
-              onButtonPress={handleNotUseableModal}
             />
             <BadgeSection
               badges={badges}
