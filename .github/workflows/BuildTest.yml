@@ -1,27 +1,50 @@
 name: react-native-android-build-apk
+
 on:
   push:
     branches:
       - development
+
 jobs:
   install-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
       - name: Install npm dependencies
         run: |
           npm install
+
   build-android:
     needs: install-and-test
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v3
+
       - name: Install npm dependencies
         run: |
           npm install
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Cache Gradle files
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       - name: Build Android Release
         run: |
           cd android && ./gradlew assembleRelease
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
