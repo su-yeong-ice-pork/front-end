@@ -9,7 +9,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import StudyList from '../components/StudyList';
-import BottomBar from '../components/BottomBar';
+import BottomBar from '../components/BottomBar/index';
 import Header from '../components/Header';
 
 const {width} = Dimensions.get('window');
