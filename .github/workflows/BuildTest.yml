@@ -18,13 +18,13 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'yarn'
+          cache: 'npm'
 
       - name: Install yarn
         run: npm install -g yarn
 
       - name: Install node_modules
-        run: yarn ci
+        run: npm ci
 
       - name: Version bump and publish release
         uses: nabeel-shakeel/react-native-version@main
