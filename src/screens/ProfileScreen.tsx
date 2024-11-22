@@ -152,23 +152,9 @@ const ProfileScreen = ({navigation}) => {
           )}
 
           <View style={styles.content}>
-            <ListViewBox
-              boxTitle="현재 나의 잔디 친구"
-              friendCount={user.friendCount}
-              type="coloredFriendsIcon"
-              type2="명"
-              buttontype="friendsIcon"
-              buttonText="친구목록 보기"
-            />
+            <ListViewBox type="friend" count={0} />
 
-            <ListViewBox
-              boxTitle="현재 나의 잔디 스터디그룹"
-              friendCount={user.studyCount}
-              type="coloredGroupIcon"
-              type2="개"
-              buttontype="groupsIcon"
-              buttonText="그룹목록 보기"
-            />
+            <ListViewBox type="group" count={0} />
             <BadgeSection
               badges={badges}
               onMorePress={() => setShowBadgeModal(true)}
