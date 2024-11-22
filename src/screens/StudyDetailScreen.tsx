@@ -12,7 +12,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import Header from '../components/Header';
-import BottomBar from '../components/BottomBar';
+import BottomBar from '../components/BottomBar/index';
 import DashLine from '../components/DashLine';
 
 const {width} = Dimensions.get('window');

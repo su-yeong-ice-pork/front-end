@@ -10,7 +10,7 @@ import {
 import NotificationList from '../components/NotificationList';
 import {NotificationData} from '../components/types/NotificationData';
 import Header from '../components/Header';
-import BottomBar from '../components/BottomBar';
+import BottomBar from '../components/BottomBar/index';
 
 const {width} = Dimensions.get('window');
 const todayNotifications: NotificationData[] = [

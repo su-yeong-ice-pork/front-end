@@ -13,7 +13,7 @@ import {
   SafeAreaView,
   Modal,
 } from 'react-native';
-import BottomBar from '../components/BottomBar';
+import BottomBar from '../components/BottomBar/index';
 const {width, height} = Dimensions.get('window');
 import CalendarScreen from '../components/calendar';
 import Loader from '../components/Loader';
