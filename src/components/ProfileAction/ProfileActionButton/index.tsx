@@ -34,18 +34,19 @@ const ProfileActionButton: React.FC<ProfileActionButtonProps> = ({
       <HStack
         style={{
           width: width,
+          height: height * 0.05,
           backgroundColor: '#fff',
           justifyContent: 'center',
           paddingVertical: 10,
         }}>
-        <Box style={{marginRight: 7}}>
+        <Box style={{marginRight: 7, height: 1, marginTop: 1, marginBottom: 1}}>
           <Image
             size="2xs"
             source={IMAGES[imageType]}
             alt="changePasswordIcon"
             style={{
-              width: 3,
-              height: 3,
+              width: 20,
+              height: 20,
               resizeMode: 'contain',
             }}
           />
