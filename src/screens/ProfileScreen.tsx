@@ -12,7 +12,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 
-import BottomBar from '../components/BottomBar';
+import BottomBar from '../components/BottomBar/index';
 import LinearGradient from 'react-native-linear-gradient';
 
 import {getMemberData, Member} from '../api/profile';
@@ -117,39 +117,83 @@ const ProfileScreen = ({navigation}) => {
               <Image source={IMAGES.logo} style={styles.logoImage} />
             </View>
           </View>
-
-          {member?.mainBanner ? (
-            // 배너 이미지가 있을 때 ImageBackground를 렌더링
-            <Profile />
-          ) : (
-            // 배너 이미지가 없을 때 View를 렌더링하고 배경색을 적용
-            <View style={styles.upperSection}>
-              <TouchableOpacity
-                style={styles.backButtonWrapper}
-                onPress={() => navigation.goBack()}>
-                <Image
-                  source={IMAGES.profileBackButton}
-                  style={styles.profileBackButton}
-                />
-              </TouchableOpacity>
-              <View style={styles.profileInfo}>
-                <Image
-                  source={
-                    member?.profileImage
-                      ? {uri: member.profileImage}
-                      : IMAGES.profile
-                  }
-                  style={styles.profileImage}
-                />
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate('EditProfile', {id: member?.id})
-                  }>
-                  <Image source={IMAGES.editProfile} style={styles.editIcon} />
-                </TouchableOpacity>
-              </View>
+  return (
+    <>
+      <SafeAreaView style={{flex: 1}}>
+        <ScrollView
+          style={styles.container}
+          contentContainerStyle={{paddingBottom: 80}}>
+          <View style={styles.logoSection}>
+            <View style={styles.logoInfo}>
+              <Image source={IMAGES.logo} style={styles.logoImage} />
             </View>
-          )}
+          </View>
+
+        {member?.mainBanner ? (
+          // 배너 이미지가 있을 때 ImageBackground를 렌더링
+          (<ImageBackground
+            source={{uri: member.mainBanner}}
+            style={styles.upperSection}
+            resizeMode="cover">
+            <TouchableOpacity
+              style={styles.backButtonWrapper}
+              onPress={() => navigation.goBack()}>
+              <Image
+                source={IMAGES.profileBackButton}
+                style={styles.profileBackButton}
+              />
+            </TouchableOpacity>
+            <View style={styles.profileInfo}>
+              <Image
+                source={
+                  member?.profileImage
+                    ? {uri: member.profileImage}
+                    : IMAGES.profile
+                }
+                style={styles.profileImage}
+              />
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('EditProfile', {id: member?.id})
+                }>
+                <Image source={IMAGES.editProfile} style={styles.editIcon} />
+              </TouchableOpacity>
+            </View>
+          </ImageBackground>)
+        ) : (
+          // 배너 이미지가 없을 때 View를 렌더링하고 배경색을 적용
+          (<View style={styles.upperSection}>
+            <TouchableOpacity
+              style={styles.backButtonWrapper}
+              onPress={() => navigation.goBack()}>
+              <Image
+                source={IMAGES.profileBackButton}
+                style={styles.profileBackButton}
+              />
+            </TouchableOpacity>
+            <View style={styles.profileInfo}>
+              <Image
+                source={
+                  member?.profileImage
+                    ? {uri: member.profileImage}
+                    : IMAGES.profile
+                }
+                style={styles.profileImage}
+              />
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('EditProfile', {id: member?.id})
+                }>
+                <Image source={IMAGES.editProfile} style={styles.editIcon} />
+              </TouchableOpacity>
+            </View>
+          </View>)
+        )}
+
+        <View style={styles.profileTextContainer}>
+          <Text style={styles.nickname}>{member?.mainTitle}</Text>
+          <Text style={styles.username}>{member?.name}</Text>
+        </View>
 
           <View style={styles.content}>
             <ListViewBox
@@ -194,7 +238,73 @@ const ProfileScreen = ({navigation}) => {
               activeOpacity={1}
               onPress={() => setShowBadgeModal(false)}
             />
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={showBadgeModal}
+          onRequestClose={() => setShowBadgeModal(false)}>
+          <View style={styles.modalOverlay}>
+            <TouchableOpacity
+              style={styles.overlayTouchable}
+              activeOpacity={1}
+              onPress={() => setShowBadgeModal(false)}
+            />
 
+            <View style={styles.modalView}>
+              <View style={styles.modalHeaderContainer}>
+                <Text style={styles.modalHeaderText}>프로필 뱃지 </Text>
+                <Text style={styles.modalHeaderHighlight}>
+                  총 {badges ? badges.length : 0}개 보유 중
+                </Text>
+              </View>
+              <ScrollView style={styles.modalScrollView}>
+                {badges &&
+                  badges.map(badge => (
+                    <View key={badge.id} style={styles.modalBadge}>
+                      <Image
+                        source={BADGES[Number(badge.fileName)]}
+                        style={styles.modalBadgeImage}
+                      />
+                      <View style={styles.modalBadgeInfo}>
+                        <Text style={styles.modalBadgeName}>{badge.name}</Text>
+                        <Text style={styles.modalBadgeDescription}>
+                          {badge.description}
+                        </Text>
+                      </View>
+                    </View>
+                  ))}
+              </ScrollView>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setShowBadgeModal(false)}>
+                <Text style={styles.closeButtonText}>닫기</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+        {/* 추기 기능 예정입니다 모달창 */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}>
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPress={() => setModalVisible(false)}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>{modalMessage}</Text>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}>
+                <Text style={styles.closeButtonText}>닫기</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </Modal>
+      </SafeAreaView>
+    </>
+  );
             <View style={styles.modalView}>
               <View style={styles.modalHeaderContainer}>
                 <Text style={styles.modalHeaderText}>프로필 뱃지 </Text>

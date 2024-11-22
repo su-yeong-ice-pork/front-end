@@ -21,12 +21,9 @@ const UpcomingModal: React.FC<UpcomingModalProps> = ({
   setShowModal,
   text,
 }) => {
+  const closeModal = () => setShowModal(false);
   return (
-    <Modal
-      isOpen={showModal}
-      onClose={() => {
-        setShowModal(false);
-      }}>
+    <Modal isOpen={showModal} onClose={closeModal}>
       <ModalBackdrop />
       <ModalContent style={UpcomingModalStyles.modalContent}>
         <ModalBody>

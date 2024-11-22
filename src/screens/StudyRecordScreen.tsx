@@ -13,7 +13,7 @@ import {
 
 import Header from '../components/Header';
 import DashLine from '../components/DashLine';
-import BottomBar from '../components/BottomBar';
+import BottomBar from '../components/BottomBar/index';
 import {useNavigation} from '@react-navigation/native';
 import NoticeModal from '../components/NoticeModal';
 import Loader from '../components/Loader';

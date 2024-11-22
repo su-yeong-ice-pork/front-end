@@ -9,7 +9,7 @@ import {
   ScrollView,
   SafeAreaView,
 } from 'react-native';
-import BottomBar from '../components/BottomBar';
+import BottomBar from '../components/BottomBar/index';
 import CalendarScreen from '../components/calendar';
 import Sticker from '../components/CheerupSticker';
 import CheerupWords from '../components/CheerupWords';
