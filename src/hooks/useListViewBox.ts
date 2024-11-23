@@ -3,6 +3,8 @@ import {useState, useEffect} from 'react';
 import {ImageSourcePropType} from 'react-native';
 import {ICONS} from '../constants/image/icons';
 
+import {LIST_VIEW_MESSAGE} from '../constants/ListViewBox/ListViewBox';
+
 type ListViewBoxData = {
   boxTitle: string;
   icon: ImageSourcePropType;
@@ -26,19 +28,19 @@ const useListViewBox = (type: 'friend' | 'group'): ListViewBoxData => {
 
   useEffect(() => {
     if (type === 'friend') {
-      setBoxTitle('현재 나의 잔디 친구');
+      setBoxTitle(LIST_VIEW_MESSAGE.FRIEND.BOX_TITLE);
       setIcon(ICONS.COLORED_FRIENDS_ICON);
       setButtonIcon(ICONS.FRIENDS_ICON);
-      setTypeLabel('명');
-      setButtonText('친구목록 보기');
-      setDescription('의 잔디 친구들과 공부 중입니다!');
+      setTypeLabel(LIST_VIEW_MESSAGE.FRIEND.TYPE_LABEL);
+      setButtonText(LIST_VIEW_MESSAGE.FRIEND.BUTTON_TEXT);
+      setDescription(LIST_VIEW_MESSAGE.FRIEND.DESCRIPTION);
     } else if (type === 'group') {
-      setBoxTitle('현재 나의 잔디 스터디 그룹');
+      setBoxTitle(LIST_VIEW_MESSAGE.GROUP.BOX_TITLE);
       setIcon(ICONS.COLORED_GROUP_ICON);
       setButtonIcon(ICONS.GROUPS_ICON);
-      setTypeLabel('개');
-      setButtonText('그룹목록 보기');
-      setDescription('의 잔디 그룹에서 활동 중입니다!');
+      setTypeLabel(LIST_VIEW_MESSAGE.GROUP.TYPE_LABEL);
+      setButtonText(LIST_VIEW_MESSAGE.GROUP.BUTTON_TEXT);
+      setDescription(LIST_VIEW_MESSAGE.GROUP.DESCRIPTION);
     }
   }, [type]);
 

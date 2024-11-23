@@ -3,13 +3,13 @@ import {Text} from '@/components/ui/text';
 import {HStack} from '@/components/ui/hstack';
 import {Heading} from '@/components/ui/heading';
 
-const ProfileName = ({nickName, name}) => {
+import {ProfileNameStyles} from './ProfileNameStyles';
+import {ProfileNameProps} from '../../types/ProfileType/ProfileNameType';
+
+const ProfileName = ({nickName, name}: ProfileNameProps) => {
   return (
-    <HStack className="ml-10">
-      <Text
-        size="xs"
-        bold="true"
-        style={{color: '#00A6AC', marginRight: 10, marginTop: 7}}>
+    <HStack style={ProfileNameStyles.profileNameHstack}>
+      <Text size="xs" bold={true} style={ProfileNameStyles.nickNameStyle}>
         {nickName}
       </Text>
       <Heading>{name}</Heading>

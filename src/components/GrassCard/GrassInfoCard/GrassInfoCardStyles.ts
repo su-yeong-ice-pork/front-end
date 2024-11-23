@@ -21,6 +21,7 @@ export const GrassCardInfoStyles = StyleSheet.create({
     marginTop: height * 0.01,
     marginBottom: height * 0.01,
   },
+  grassCardTextPoint: {fontSize: 15, color: '#009499'},
   grassCardImage: {
     width: width * 0.4,
     height: width * 0.25,

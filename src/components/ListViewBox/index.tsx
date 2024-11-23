@@ -7,11 +7,8 @@ import {Image} from '@/components/ui/image';
 import useListViewBox from '@/src/hooks/useListViewBox';
 
 import {ListViewBoxStyles} from './ListViewBoxStyels';
-
-type ListViewBoxProps = {
-  type: 'friend' | 'group';
-  count: number;
-};
+import {ListViewBoxProps} from '../types/ListViewBoxType/ListViewBoxType';
+import {ListViewBoxAltMessage} from '@/src/constants/ListViewBox/ListViewBox';
 
 const ListViewBox: React.FC<ListViewBoxProps> = ({type, count}) => {
   const {boxTitle, icon, buttonIcon, typeLabel, buttonText, description} =
@@ -19,31 +16,26 @@ const ListViewBox: React.FC<ListViewBoxProps> = ({type, count}) => {
 
   return (
     <Box>
-      <Box style={{marginTop: 20, marginBottom: 5}}>
-        <Text
-          size="2xs"
-          style={{color: '#B6B6B6', fontSize: 10, fontWeight: 'bold'}}>
+      <Box style={ListViewBoxStyles.ViewBoxTitleContainer}>
+        <Text size="2xs" style={ListViewBoxStyles.ViewBoxTitle}>
           {boxTitle}
         </Text>
       </Box>
 
       <HStack>
-        <Box style={ListViewBoxStyles.ViewBoxTitle}>
-          <HStack style={{alignItems: 'center'}}>
-            <Box style={{marginRight: 6}}>
+        <Box style={ListViewBoxStyles.ViewBoxText}>
+          <HStack style={ListViewBoxStyles.ViewBoxHStack}>
+            <Box style={ListViewBoxStyles.ViewBoxIconContainer}>
               <Image
                 size="2xs"
                 source={icon}
-                style={{
-                  width: 20,
-                  height: 20,
-                }}
+                style={ListViewBoxStyles.ViewBoxIcon}
                 resizeMode="contain"
-                alt={`${type} Icon`}
+                alt={ListViewBoxAltMessage.ICON}
               />
             </Box>
-            <Text style={{color: '#B6B6B6', fontSize: 12}}>
-              <Text bold style={{color: '#00A6AC', fontSize: 13}}>
+            <Text style={ListViewBoxStyles.ViewBoxDescription}>
+              <Text bold style={ListViewBoxStyles.ViewBoxIconContainer}>
                 {count}
                 {typeLabel}
               </Text>
@@ -56,9 +48,9 @@ const ListViewBox: React.FC<ListViewBoxProps> = ({type, count}) => {
           <Image
             size="2xs"
             source={buttonIcon}
-            style={{marginRight: 4}}
+            style={ListViewBoxStyles.ButtonIcon}
             resizeMode="contain"
-            alt={`${type} Button Icon`}
+            alt={ListViewBoxAltMessage.BUTTONICON}
           />
           <ButtonText>{buttonText}</ButtonText>
         </Button>
