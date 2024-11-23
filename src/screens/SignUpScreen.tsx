@@ -8,7 +8,6 @@ import {
   Dimensions,
   TextInput,
   Image,
-  Alert,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Svg, {
