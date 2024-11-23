@@ -3,9 +3,7 @@ import React, {useState} from 'react';
 import {Image} from 'react-native';
 import LocationModal from '../../Modal/LocationModal';
 import {SingleAuthStyles} from './SingleAuth';
-const IMAGES = {
-  self: require('../../../../assets/images/illustration/typeTwo.png'),
-};
+import {ILLUSTRATIONS} from '@/src/constants/image/illustrations';
 
 const SingleAuth = () => {
   const [showModal, setShowModal] = useState(false);
@@ -20,7 +18,10 @@ const SingleAuth = () => {
         style={SingleAuthStyles.button}
         onPress={handleModalOpen}>
         <ButtonIcon>
-          <Image source={IMAGES.self} style={SingleAuthStyles.icon} />
+          <Image
+            source={ILLUSTRATIONS.TYPE_TWO}
+            style={SingleAuthStyles.icon}
+          />
         </ButtonIcon>
         <ButtonText style={SingleAuthStyles.text}>혼자 인증하기</ButtonText>
       </Button>
