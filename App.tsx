@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import '@/global.css';
 import {GluestackUIProvider} from '@/components/ui/gluestack-ui-provider';
 import {RecoilRoot} from 'recoil';
-import {View, StatusBar, StyleSheet} from 'react-native';
+import {StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import LandingScreen from './src/screens/LandingScreen';
