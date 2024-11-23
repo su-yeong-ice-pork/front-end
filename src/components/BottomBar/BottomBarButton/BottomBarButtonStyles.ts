@@ -4,7 +4,7 @@ import {StyleSheet} from 'react-native';
 
 export const BottomBarButtonStyles = StyleSheet.create({
   iconContainer: {
-    padding: 10,
+    padding: 6,
     backgroundColor: '#fff',
     flexDirection: 'column',
     resizeMode: 'contain',
