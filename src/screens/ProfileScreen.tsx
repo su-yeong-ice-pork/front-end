@@ -23,7 +23,10 @@ import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
 import userState from '../recoil/userAtom';
 import authState from '../recoil/authAtom';
 import {setItem} from '../api/asyncStorage';
-
+import Profile from '../components/Profile';
+import ListViewBox from '../components/ListViewBox';
+import GrassCard from '../components/GrassCard';
+import ProfileAction from '../components/ProfileAction';
 const {width, height} = Dimensions.get('window');
 
 const IMAGES = {
@@ -117,35 +120,7 @@ const ProfileScreen = ({navigation}) => {
 
           {member?.mainBanner ? (
             // 배너 이미지가 있을 때 ImageBackground를 렌더링
-            <ImageBackground
-              source={{uri: member.mainBanner}}
-              style={styles.upperSection}
-              resizeMode="cover">
-              <TouchableOpacity
-                style={styles.backButtonWrapper}
-                onPress={() => navigation.goBack()}>
-                <Image
-                  source={IMAGES.profileBackButton}
-                  style={styles.profileBackButton}
-                />
-              </TouchableOpacity>
-              <View style={styles.profileInfo}>
-                <Image
-                  source={
-                    member?.profileImage
-                      ? {uri: member.profileImage}
-                      : IMAGES.profile
-                  }
-                  style={styles.profileImage}
-                />
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate('EditProfile', {id: member?.id})
-                  }>
-                  <Image source={IMAGES.editProfile} style={styles.editIcon} />
-                </TouchableOpacity>
-              </View>
-            </ImageBackground>
+            <Profile />
           ) : (
             // 배너 이미지가 없을 때 View를 렌더링하고 배경색을 적용
             <View style={styles.upperSection}>
@@ -176,32 +151,10 @@ const ProfileScreen = ({navigation}) => {
             </View>
           )}
 
-          <View style={styles.profileTextContainer}>
-            <Text style={styles.nickname}>{member?.mainTitle}</Text>
-            <Text style={styles.username}>{member?.name}</Text>
-          </View>
-
           <View style={styles.content}>
-            <InfoCard
-              subTitle="현재 나의 잔디 친구"
-              iconSrc={IMAGES.coloredFriendsIcon}
-              count={user.friendCount}
-              countText="명"
-              text="의 잔디친구들과 공부 중입니다!"
-              buttonSrc={IMAGES.friendsIcon}
-              buttonText="친구목록 보기"
-              onButtonPress={handleNotUseableModal}
-            />
-            <InfoCard
-              subTitle="현재 나의 잔디 스터디그룹"
-              iconSrc={IMAGES.coloredGroupIcon}
-              count={user.studyCount}
-              countText="개"
-              text="의 잔디그룹에 소속되어있습니다!"
-              buttonSrc={IMAGES.groupsIcon}
-              buttonText="그룹목록 보기"
-              onButtonPress={handleNotUseableModal}
-            />
+            <ListViewBox type="friend" count={0} />
+
+            <ListViewBox type="group" count={0} />
             <BadgeSection
               badges={badges}
               onMorePress={() => setShowBadgeModal(true)}
@@ -210,130 +163,148 @@ const ProfileScreen = ({navigation}) => {
               freezeCount={member?.freezeCount}
               onPress={handleNotUseableModal}
             />
-            <GrassSummary name={member?.name} totalDays={totalDays} />
-            <GrassButton
-              startDate={createDate}
-              totalDays={totalDays}
-              totalTime={totalTime}
-              ImgSrc1={IMAGES.jandi1}
-              ImgSrc2={IMAGES.jandi2}
-            />
+            <GrassCard name={member?.name} totalDays={totalDays} />
           </View>
-          <ProfileFooter navigation={navigation} />
+          <ProfileAction />
         </ScrollView>
         <BottomBar />
-
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={showBadgeModal}
-          onRequestClose={() => setShowBadgeModal(false)}>
-          <View style={styles.modalOverlay}>
-            <TouchableOpacity
-              style={styles.overlayTouchable}
-              activeOpacity={1}
-              onPress={() => setShowBadgeModal(false)}
-            />
-
-            <View style={styles.modalView}>
-              <View style={styles.modalHeaderContainer}>
-                <Text style={styles.modalHeaderText}>프로필 뱃지 </Text>
-                <Text style={styles.modalHeaderHighlight}>
-                  총 {badges ? badges.length : 0}개 보유 중
-                </Text>
-              </View>
-              <ScrollView style={styles.modalScrollView}>
-                {badges &&
-                  badges.map(badge => (
-                    <View key={badge.id} style={styles.modalBadge}>
-                      <Image
-                        source={BADGES[Number(badge.fileName)]}
-                        style={styles.modalBadgeImage}
-                      />
-                      <View style={styles.modalBadgeInfo}>
-                        <Text style={styles.modalBadgeName}>{badge.name}</Text>
-                        <Text style={styles.modalBadgeDescription}>
-                          {badge.description}
-                        </Text>
-                      </View>
-                    </View>
-                  ))}
-              </ScrollView>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setShowBadgeModal(false)}>
-                <Text style={styles.closeButtonText}>닫기</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
-        {/* 추기 기능 예정입니다 모달창 */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}>
-          <TouchableOpacity
-            style={styles.modalOverlay}
-            activeOpacity={1}
-            onPress={() => setModalVisible(false)}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>{modalMessage}</Text>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setModalVisible(false)}>
-                <Text style={styles.closeButtonText}>닫기</Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        </Modal>
       </SafeAreaView>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showBadgeModal}
+        onRequestClose={() => setShowBadgeModal(false)}>
+        <View style={styles.modalOverlay}>
+          <TouchableOpacity
+            style={styles.overlayTouchable}
+            activeOpacity={1}
+            onPress={() => setShowBadgeModal(false)}
+          />
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={showBadgeModal}
+            onRequestClose={() => setShowBadgeModal(false)}>
+            <View style={styles.modalOverlay}>
+              <TouchableOpacity
+                style={styles.overlayTouchable}
+                activeOpacity={1}
+                onPress={() => setShowBadgeModal(false)}
+              />
+
+              <View style={styles.modalView}>
+                <View style={styles.modalHeaderContainer}>
+                  <Text style={styles.modalHeaderText}>프로필 뱃지 </Text>
+                  <Text style={styles.modalHeaderHighlight}>
+                    총 {badges ? badges.length : 0}개 보유 중
+                  </Text>
+                </View>
+                <ScrollView style={styles.modalScrollView}>
+                  {badges &&
+                    badges.map(badge => (
+                      <View key={badge.id} style={styles.modalBadge}>
+                        <Image
+                          source={BADGES[Number(badge.fileName)]}
+                          style={styles.modalBadgeImage}
+                        />
+                        <View style={styles.modalBadgeInfo}>
+                          <Text style={styles.modalBadgeName}>
+                            {badge.name}
+                          </Text>
+                          <Text style={styles.modalBadgeDescription}>
+                            {badge.description}
+                          </Text>
+                        </View>
+                      </View>
+                    ))}
+                </ScrollView>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setShowBadgeModal(false)}>
+                  <Text style={styles.closeButtonText}>닫기</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
+          {/* 추기 기능 예정입니다 모달창 */}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => setModalVisible(false)}>
+            <TouchableOpacity
+              style={styles.modalOverlay}
+              activeOpacity={1}
+              onPress={() => setModalVisible(false)}>
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>{modalMessage}</Text>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setModalVisible(false)}>
+                  <Text style={styles.closeButtonText}>닫기</Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          </Modal>
+
+          <View style={styles.modalView}>
+            <View style={styles.modalHeaderContainer}>
+              <Text style={styles.modalHeaderText}>프로필 뱃지 </Text>
+              <Text style={styles.modalHeaderHighlight}>
+                총 {badges ? badges.length : 0}개 보유 중
+              </Text>
+            </View>
+            <ScrollView style={styles.modalScrollView}>
+              {badges &&
+                badges.map(badge => (
+                  <View key={badge.id} style={styles.modalBadge}>
+                    <Image
+                      source={BADGES[Number(badge.fileName)]}
+                      style={styles.modalBadgeImage}
+                    />
+                    <View style={styles.modalBadgeInfo}>
+                      <Text style={styles.modalBadgeName}>{badge.name}</Text>
+                      <Text style={styles.modalBadgeDescription}>
+                        {badge.description}
+                      </Text>
+                    </View>
+                  </View>
+                ))}
+            </ScrollView>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setShowBadgeModal(false)}>
+              <Text style={styles.closeButtonText}>닫기</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      {/* 추기 기능 예정입니다 모달창 */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}>
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setModalVisible(false)}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>{modalMessage}</Text>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(false)}>
+              <Text style={styles.closeButtonText}>닫기</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </>
   );
 };
 
 export default ProfileScreen;
-
-// InfoCard Component
-const InfoCard = ({
-  iconSrc,
-  count,
-  countText,
-  text,
-  buttonSrc,
-  buttonText,
-  subTitle,
-  onButtonPress,
-}) => {
-  return (
-    <>
-      {/* SubTitle Section */}
-      <View style={styles.subTitleContainer}>
-        <Text style={styles.subTitle}>{subTitle}</Text>
-      </View>
-
-      {/* Info Card Section */}
-      <View style={styles.infoCardContainer}>
-        <View style={styles.infoCard}>
-          <Image source={iconSrc} style={styles.infoCardIcon} />
-          <Text style={styles.infoCardText}>
-            <Text style={styles.infoCardCount}>
-              {count}
-              {countText}
-            </Text>
-            {text}
-          </Text>
-        </View>
-
-        {/* Button Section */}
-        <TouchableOpacity style={styles.infoCardButton} onPress={onButtonPress}>
-          <Image source={buttonSrc} style={styles.infoCardButtonIcon} />
-          <Text style={styles.infoCardButtonText}>{buttonText}</Text>
-        </TouchableOpacity>
-      </View>
-    </>
-  );
-};
 
 // BadgeSection Component
 const BadgeSection = ({badges, onMorePress}) => {
@@ -407,52 +378,6 @@ const FreezeSummary = ({freezeCount, onPress}) => {
   );
 };
 
-// GrassSummary Component
-const GrassSummary = ({name, totalDays}) => {
-  return (
-    <View style={styles.grassSection}>
-      <Text style={styles.grassTitle}>
-        <Text style={styles.highlightText}>{name}</Text>님은 지금까지
-      </Text>
-      <Text style={styles.grassTitle}>
-        총 <Text style={styles.highlightText}>{totalDays}</Text>일의 잔디를
-        심으셨어요!
-      </Text>
-      {/* Add charts or images related to grass summary here */}
-    </View>
-  );
-};
-
-// GrassButton Component
-const GrassButton = ({startDate, totalDays, totalTime, ImgSrc1, ImgSrc2}) => {
-  return (
-    <View style={styles.cardContainer}>
-      <View style={styles.card}>
-        <Text style={styles.dateText}>
-          <Text style={{fontWeight: '800'}}>{startDate}</Text>에 시작하여
-          지금까지 총{' '}
-          <Text style={{fontSize: 15, color: '#009499', fontWeight: '500'}}>
-            {totalDays}
-          </Text>
-          일
-        </Text>
-        <Image source={ImgSrc1} style={styles.image} />
-      </View>
-      <View style={styles.card}>
-        <Text style={styles.timeText}>
-          지금까지{'\n'}총{' '}
-          <Text style={{fontSize: 15, color: '#009499', fontWeight: '500'}}>
-            {totalTime}
-          </Text>
-          시간의 잔디를{'\n'}
-          심으셨어요!
-        </Text>
-        <Image source={ImgSrc2} style={styles.image} />
-      </View>
-    </View>
-  );
-};
-
 // ProfileFooter Component
 const ProfileFooter = ({navigation}) => {
   const [showLogOut, setShowLogOut] = useState(false);
@@ -487,6 +412,7 @@ const ProfileFooter = ({navigation}) => {
         <Image source={IMAGES.logoutIcon} style={styles.footerIcon} />
         <Text style={styles.footerButtonText}>로그아웃</Text>
       </TouchableOpacity>
+
       {/* 로그아웃 팝업창 */}
       <Modal
         animationType="slide"
@@ -630,67 +556,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  subTitleContainer: {
-    marginTop: 32,
-  },
-  subTitle: {
-    fontSize: 10,
-    fontWeight: '800',
-    color: '#838F8F',
-    marginBottom: 5,
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  infoCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: height * 0.055,
-    width: width * 0.6,
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: width * 0.035,
-    borderRadius: 4,
-  },
-  infoCardIcon: {
-    width: width * 0.04,
-    height: width * 0.04,
-    resizeMode: 'contain',
-    marginRight: width * 0.02,
-  },
-  infoCardText: {
-    fontSize: width * 0.027,
-    fontWeight: '700',
-    color: '#B6B6B6',
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  infoCardCount: {
-    fontSize: width * 0.038,
-    color: '#0D9488',
-    fontWeight: '700',
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  infoCardButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: height * 0.055,
-    borderRadius: 4,
-    backgroundColor: '#0D9488',
-    paddingHorizontal: width * 0.03,
-    shadowColor: '#000',
-    shadowOffset: {width: 1, height: 1},
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-  },
-  infoCardButtonIcon: {
-    width: width * 0.03,
-    height: width * 0.03,
-    resizeMode: 'contain',
-    marginRight: width * 0.015,
-  },
-  infoCardButtonText: {
-    color: '#FFFFFF',
-    fontSize: width * 0.028,
-    fontWeight: '800',
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
   badgeSection: {
     marginTop: 16, // mt-4
     width: width * 0.6,
@@ -810,63 +675,10 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     marginRight: width * 0.02,
   },
-  grassSection: {
-    marginTop: 56, // mt-14
-  },
-  grassTitle: {
-    fontSize: 20, // text-xl
-    fontWeight: '800', // font-extrabold
-    color: '#52525B', // text-neutral-600
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
+
   scrollView: {
     flex: 1,
   },
-  highlightText: {
-    color: '#0D9488', // text-teal-600
-    fontFamily: 'NanumSquareNeo-Variable',
-    fontWeight: '800',
-  },
-
-  cardContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 10,
-  },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    padding: width * 0.03,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginHorizontal: width * 0.01,
-    width: width * 0.4,
-    height: height * 0.25,
-  },
-  dateText: {
-    fontSize: width * 0.03,
-    textAlign: 'center',
-    marginTop: height * 0.01,
-    marginBottom: -height * 0.01,
-    fontFamily: 'NanumSquareNeo-Variable',
-    fontWeight: '700',
-    color: '#000000',
-  },
-  timeText: {
-    fontSize: width * 0.03,
-    textAlign: 'center',
-    marginTop: height * 0.01,
-    marginBottom: -height * 0.01,
-    fontFamily: 'NanumSquareNeo-Variable',
-    fontWeight: '700',
-    color: '#000000',
-  },
-  image: {
-    width: width * 0.25,
-    height: width * 0.25,
-    resizeMode: 'contain',
-  },
-
   footer: {
     marginTop: 24, // mt-6
     alignItems: 'center',
