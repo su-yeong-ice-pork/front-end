@@ -32,8 +32,8 @@ import AuthButtons from '../components/AuthButtons';
 import {getUserDataApi} from '../api/user/getUserDataApi';
 import {getBadgesApi} from '../api/badge/getBadgesApi';
 import {useQuery} from '@tanstack/react-query';
-
-const HomeScreen = ({navigation}) => {
+import Badges from '../components/Badges';
+const HomeScreen = () => {
   const authInfo = useRecoilValue(authState);
   const [user, setUser] = useRecoilState(userState);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -43,20 +43,12 @@ const HomeScreen = ({navigation}) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState(false);
 
-  const {
-    data: memberData,
-    error: memberDataError,
-    isLoading: memberDataLoading,
-  } = useQuery({
+  const {data: memberData, error: memberDataError} = useQuery({
     queryKey: ['member'],
     queryFn: () => getUserDataApi(authInfo.authToken),
   });
 
-  const {
-    data: badgesData,
-    error: badgesDataError,
-    isLoading: badgesDataLoading,
-  } = useQuery({
+  const {data: badgesData, error: badgesDataError} = useQuery({
     queryKey: ['badges', memberData?.id],
     queryFn: () => getBadgesApi(memberData.id, authInfo.authToken),
     enabled: !!memberData,
@@ -185,33 +177,10 @@ const HomeScreen = ({navigation}) => {
               <View style={styles.profileTextContainer}>
                 <Text style={styles.nickname}>{member.mainTitle}</Text>
                 <Text style={styles.username}>{member.name}</Text>
-                <View style={styles.badgeContainer}>
-                  <Text style={styles.badgeText}>보유 뱃지</Text>
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {badges && badges.length > 0 ? (
-                      <>
-                        {badges.slice(0, 3).map(badge => (
-                          <Image
-                            key={badge.id}
-                            source={BADGES[badge.fileName]}
-                            style={styles.badge}
-                          />
-                        ))}
-                        {badges.length > 0 && (
-                          <TouchableOpacity
-                            onPress={() => {
-                              setShowModal(true);
-                            }}
-                            style={styles.moreButton}>
-                            <Text style={styles.moreText}>...</Text>
-                          </TouchableOpacity>
-                        )}
-                      </>
-                    ) : (
-                      <Text>보유한 뱃지가 없습니다.</Text>
-                    )}
-                  </ScrollView>
-                </View>
+
+                {/* 뱃지 */}
+
+                <Badges badges={badgesData} />
               </View>
             </View>
           )}
@@ -393,79 +362,7 @@ const styles = StyleSheet.create({
     marginTop: -10,
     fontFamily: 'NanumSquareNeo-Variable',
   },
-  badgeContainer: {
-    flexDirection: 'row',
-    marginLeft: width * 0.15,
-    color: '#009499',
-    position: 'relative',
-  },
-  badgeText: {
-    fontSize: 13,
-    color: '#777',
-    flexDirection: 'row',
-    marginTop: -30,
-    position: 'absolute',
-    fontFamily: 'NanumSquareNeo-Variable',
-    fontWeight: 'bold',
-  },
-  badge: {
-    width: 35,
-    height: 35,
-    marginRight: 7,
-    resizeMode: 'contain',
-  },
-  moreButton: {
-    color: '#009499',
-  },
-  moreImage: {
-    marginTop: 8,
-    marginLeft: 15,
-    marginRight: 5,
-  },
-  moreText: {
-    fontSize: 20,
-    color: '#009499',
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  buttonSection: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: width * 0.05,
-    marginVertical: height * 0.05,
-  },
-  certifyButton: {
-    backgroundColor: '#86C0AE',
-    width: width * 0.4,
-    height: height * 0.15,
-    borderRadius: 4,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    elevation: 3,
-  },
-  certifyButton2: {
-    backgroundColor: '#1AA5AA',
-    width: width * 0.4,
-    height: height * 0.15,
-    borderRadius: 4,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    elevation: 3,
-  },
-  buttonText: {
-    marginTop: 10,
-    color: '#fff',
-    fontSize: width * 0.04,
-    fontWeight: 'bold',
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  buttons: {
-    width: width * 0.3,
-    height: height * 0.08,
-    resizeMode: 'contain',
-    marginTop: 10,
-  },
+
   frozenSection: {
     paddingHorizontal: width * 0.05,
     marginBottom: height * 0.02,

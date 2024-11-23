@@ -13,3 +13,7 @@ export type getBadgesPropsType = {
   } | null;
   error: any;
 };
+
+export type BadgesProps = {
+  badges: BadgeType[];
+};

@@ -1,6 +1,6 @@
 import {StyleSheet, Dimensions} from 'react-native';
 const {width, height} = Dimensions.get('window');
-
+import {FONT} from '@/src/constants/styles/font/default-font';
 export const UpcomingModalStyles = StyleSheet.create({
   modalContent: {
     width: width * 0.8,
@@ -23,7 +23,7 @@ export const UpcomingModalStyles = StyleSheet.create({
     textAlign: 'left',
     fontSize: width * 0.04,
     fontWeight: '700',
-    fontFamily: 'NanumSquareNeo-Variable',
+    fontFamily: `${FONT}`,
     color: '#000000',
   },
   closeButton: {
