@@ -17,12 +17,11 @@ const BadgeModal: React.FC<BadgeModalProps> = ({
   setShowModal,
   badges,
 }) => {
+  const closeModal = () => {
+    setShowModal(false);
+  };
   return (
-    <Modal
-      isOpen={showModal}
-      onClose={() => {
-        setShowModal(false);
-      }}>
+    <Modal isOpen={showModal} onClose={closeModal}>
       <ModalBackdrop />
 
       <ModalContent style={BadgeModalStyles.modalView}>

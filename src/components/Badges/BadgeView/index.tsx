@@ -9,7 +9,7 @@ import {Text} from '@/components/ui/text';
 import {BADGES} from '@/src/constants/image/badges';
 const BadgeView: React.FC<BadgesProps> = ({badges}) => {
   const [showModal, setShowModal] = useState(false);
-
+  const openModal = () => setShowModal(true);
   return (
     <HStack>
       {badges && badges.length > 0 ? (
@@ -25,7 +25,7 @@ const BadgeView: React.FC<BadgesProps> = ({badges}) => {
           {badges.length > 0 && (
             <Button
               className="active:opacity-80 active:scale-95"
-              onPress={() => setShowModal(true)}
+              onPress={openModal}
               style={BadgeViewStyles.moreButton}>
               <ButtonText style={BadgeViewStyles.moreText}>...</ButtonText>
             </Button>
