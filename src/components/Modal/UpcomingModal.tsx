@@ -9,12 +9,7 @@ import {
 import {Text} from 'react-native';
 import React from 'react';
 import {UpcomingModalStyles} from './UpcomingModalStyle';
-
-type UpcomingModalProps = {
-  showModal: boolean;
-  setShowModal: (value: boolean) => void;
-  text: string;
-};
+import {UpcomingModalProps} from '../types/ModalType/UpcomingModalTypes';
 
 const UpcomingModal: React.FC<UpcomingModalProps> = ({
   showModal,

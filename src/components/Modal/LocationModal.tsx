@@ -1,10 +1,6 @@
 import React, {useState} from 'react';
 import UpcomingModal from './UpcomingModal';
-
-type LocationModalProps = {
-  showModal: boolean;
-  setShowModal: (value: boolean) => void;
-};
+import {LocationModalProps} from '../types/ModalType/LocationModalType';
 
 const LocationModal: React.FC<LocationModalProps> = ({
   showModal,
