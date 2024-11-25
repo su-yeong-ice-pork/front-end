@@ -3,7 +3,7 @@ import {Box} from '@/components/ui/box';
 import ProfileHeader from './ProfileHeader';
 import ProfileName from './ProfileName';
 
-const Profile = () => {
+const Profiles = () => {
   return (
     <Box>
       <ProfileHeader />
@@ -12,4 +12,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default Profiles;

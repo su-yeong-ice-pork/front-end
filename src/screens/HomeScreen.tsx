@@ -33,6 +33,8 @@ import {getUserDataApi} from '../api/user/getUserDataApi';
 import {getBadgesApi} from '../api/badge/getBadgesApi';
 import {useQuery} from '@tanstack/react-query';
 import Badges from '../components/Badges';
+import Profiles from '../components/Profile';
+import Freeze from '../components/Freeze';
 const HomeScreen = () => {
   const authInfo = useRecoilValue(authState);
   const [user, setUser] = useRecoilState(userState);
@@ -125,23 +127,10 @@ const HomeScreen = () => {
     }
   };
   const IMAGES = {
-    profile: require('../../assets/images/illustration/typeThree.png'),
-    logo: require('../../assets/images/illustration/logo.png'),
-    self: require('../../assets/images/illustration/typeTwo.png'),
-    together: require('../../assets/images/illustration/typeOne.png'),
     freeze: require('../../assets/images/illustration/freeze.png'),
     iIcon: require('../../assets/images/icons/iIcon.png'),
     moreIcon: require('../../assets/images/icons/moreIcon2.png'),
   };
-  const BADGES = [
-    require('../../assets/images/badge/badge0.png'),
-    require('../../assets/images/badge/badge1.png'),
-    require('../../assets/images/badge/badge2.png'),
-    require('../../assets/images/badge/badge3.png'),
-    require('../../assets/images/badge/badge4.png'),
-    require('../../assets/images/badge/badge5.png'),
-  ];
-
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
@@ -150,127 +139,23 @@ const HomeScreen = () => {
           contentContainerStyle={{paddingBottom: 80}}>
           {/* 상단 프로필 영역 */}
 
-          <View style={styles.logoSection}>
-            <View style={styles.logoInfo}>
-              <Image source={IMAGES.logo} style={styles.logoImage} />
-            </View>
+          <Profiles />
+
+          <View style={styles.profileTextContainer}>
+            <Badges badges={badgesData} />
           </View>
 
-          {member && (
-            <View>
-              <ImageBackground
-                source={{uri: member?.mainBanner, cache: 'reload'}}
-                style={styles.upperSection}
-                resizeMode="cover">
-                <View style={styles.profileInfo}>
-                  <Image
-                    source={
-                      member.profileImage
-                        ? {uri: member.profileImage, cache: 'reload'}
-                        : IMAGES.profile
-                    }
-                    style={styles.profileImage}
-                  />
-                </View>
-              </ImageBackground>
-
-              <View style={styles.profileTextContainer}>
-                <Text style={styles.nickname}>{member.mainTitle}</Text>
-                <Text style={styles.username}>{member.name}</Text>
-
-                {/* 뱃지 */}
-
-                <Badges badges={badgesData} />
-              </View>
-            </View>
-          )}
-
-          {/* 인증하기 버튼들 */}
           <AuthButtons />
 
           {/* 보유 프리즈 및 현재 일수 */}
-          {member && (
-            <View style={styles.frozenSection}>
-              <Text style={styles.frozenTitle}>보유 프리즈</Text>
+          <Freeze />
 
-              <View style={styles.infoCardContainer}>
-                <View style={styles.frozenDetailContainer}>
-                  <Text style={styles.frozenDetailText}>
-                    현재 총{' '}
-                    <Text style={styles.frozenCount}>{member.freezeCount}</Text>{' '}
-                    개의 프리즈를 보유하고 있습니다.
-                  </Text>
-                </View>
-
-                {/* 프리즈 충전하기 버튼 */}
-                <TouchableOpacity onPress={handleNotUseableModal}>
-                  <View style={styles.frozenText}>
-                    <Image source={IMAGES.freeze} style={styles.freeze} />
-                    <Text style={styles.useFrozenButtonText}>
-                      프리즈 사용하기
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-
-              <View style={styles.iconAndTextContainer}>
-                <Image source={IMAGES.iIcon} style={styles.setiIcon} />
-                <Text style={styles.activeText}>
-                  프리즈는 잔디를 대신 채워줄 수 있는 잔디 채우기권입니다!
-                </Text>
-              </View>
-            </View>
-          )}
           {/* 현재 일수 표시 */}
 
           {/* 달력 부분 */}
           <View>{member && <CalendarScreen userId={member.id} />}</View>
         </ScrollView>
         <BottomBar />
-        {/* 뱃지 모달 */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={showModal}
-          onRequestClose={() => setShowModal(false)}>
-          <View style={styles.modalOverlay}>
-            <TouchableOpacity
-              style={styles.overlayTouchable}
-              activeOpacity={1}
-              onPress={() => setShowModal(false)}
-            />
-            <View style={styles.modalView}>
-              <View style={styles.modalHeaderContainer}>
-                <Text style={styles.modalHeaderText}>프로필 뱃지 </Text>
-                <Text style={styles.modalHeaderHighlight}>
-                  총 {badges ? badges.length : 0}개 보유 중
-                </Text>
-              </View>
-              <ScrollView style={styles.modalScrollView}>
-                {badges &&
-                  badges.map(badge => (
-                    <View key={badge.id} style={styles.modalBadge}>
-                      <Image
-                        source={BADGES[Number(badge.fileName)]}
-                        style={styles.modalBadgeImage}
-                      />
-                      <View style={styles.modalBadgeInfo}>
-                        <Text style={styles.modalBadgeName}>{badge.name}</Text>
-                        <Text style={styles.modalBadgeDescription}>
-                          {badge.description}
-                        </Text>
-                      </View>
-                    </View>
-                  ))}
-              </ScrollView>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setShowModal(false)}>
-                <Text style={styles.closeButtonText}>닫기</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
         {/* 인증 결과 모달 */}
         <Modal
           animationType="slide"
@@ -341,8 +226,8 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   profileTextContainer: {
-    marginLeft: 15,
-    marginTop: 50,
+    marginLeft: 130,
+    marginTop: -30,
     flexDirection: 'row',
   },
   nickname: {

@@ -3,10 +3,8 @@ import React, {useState} from 'react';
 import {Image} from 'react-native';
 import UpcomingModal from '../../Modal/UpcomingModal';
 import {GroupAuthStyles} from './GroupAuth';
-const IMAGES = {
-  together: require('../../../../assets/images/illustration/typeOne.png'),
-};
-
+import {ILLUSTRATIONS} from '@/src/constants/image/illustrations';
+import {MESSAGES} from '@/src/constants/BottomBar/Messages';
 const GroupAuth = () => {
   const [showModal, setShowModal] = useState(false);
   const handleModalOpen = () => {
@@ -22,7 +20,7 @@ const GroupAuth = () => {
         style={GroupAuthStyles.button}
         onPress={handleModalOpen}>
         <ButtonIcon>
-          <Image source={IMAGES.together} style={GroupAuthStyles.icon} />
+          <Image source={ILLUSTRATIONS.TYPE_ONE} style={GroupAuthStyles.icon} />
         </ButtonIcon>
         <ButtonText style={GroupAuthStyles.text}>
           랜덤 스터디 매칭하기
@@ -31,7 +29,7 @@ const GroupAuth = () => {
       <UpcomingModal
         showModal={showModal}
         setShowModal={setShowModal}
-        text="추가 예정 기능입니다."
+        text={MESSAGES.MODAL}
       />
     </>
   );
