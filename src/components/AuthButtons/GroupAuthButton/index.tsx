@@ -4,7 +4,7 @@ import {Image} from 'react-native';
 import UpcomingModal from '../../Modal/UpcomingModal';
 import {GroupAuthStyles} from './GroupAuth';
 import {ILLUSTRATIONS} from '@/src/constants/image/illustrations';
-
+import {MESSAGES} from '@/src/constants/BottomBar/Messages';
 const GroupAuth = () => {
   const [showModal, setShowModal] = useState(false);
   const handleModalOpen = () => {
@@ -29,7 +29,7 @@ const GroupAuth = () => {
       <UpcomingModal
         showModal={showModal}
         setShowModal={setShowModal}
-        text="추가 예정 기능입니다."
+        text={MESSAGES.MODAL}
       />
     </>
   );
