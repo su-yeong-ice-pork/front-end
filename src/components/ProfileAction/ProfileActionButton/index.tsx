@@ -27,7 +27,7 @@ const ProfileActionButton: React.FC<ProfileActionButtonProps> = ({
   const handleClick = () => {
     if (text == '비밀번호 변경하기')
       navigation.navigate('FindPassword', {title: '비밀번호 변경하기'});
-    else if (text == '로그아웃') navigation.navigate('Landing');
+    else if (text == '로그아웃') navigation.navigate('SignUp');
   };
   return (
     <Button onPress={handleClick}>

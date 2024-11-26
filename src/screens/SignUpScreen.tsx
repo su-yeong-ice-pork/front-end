@@ -29,6 +29,8 @@ import checkCode from '../api/checkCode';
 import checkEmail from '../api/checkEmail';
 import checkName from '../api/checkName';
 import ModalComponent from '../components/ModalComponent.tsx';
+import {SignUp} from '../components/SignUp/index.tsx';
+import SignUpHeader from '../components/SignUp/SignUpHeader/index.tsx';
 
 const IMAGES = {
   backButton: require('../../assets/images/icons/backButton.png'),
@@ -329,7 +331,7 @@ const SignUpScreen = ({navigation}) => {
       <GestureHandlerRootView style={{flex: 1}}>
         <View style={styles.container}>
           {/* 헤더 */}
-          <Header Title={'회원가입'} />
+          <Header Title="회원가입" />
 
           {/* 입력 폼 */}
           <KeyboardAwareScrollView
@@ -338,30 +340,7 @@ const SignUpScreen = ({navigation}) => {
             enableOnAndroid={true}
             extraScrollHeight={100} // Increased to provide more space
             keyboardShouldPersistTaps="handled">
-            <View style={styles.container}>
-              <Text style={styles.welcomeText}>환영합니다!</Text>
-              <View style={styles.inlineText}>
-                <Svg height={height * 0.05} width={width * 0.9}>
-                  <Defs>
-                    <SVGLinearGradient id="grad1">
-                      <Stop offset="0%" stopColor="#2CCDE4" stopOpacity="1" />
-                      <Stop offset="100%" stopColor="#25E798" stopOpacity="1" />
-                    </SVGLinearGradient>
-                  </Defs>
-                  <SvgText
-                    fontSize="24"
-                    fontWeight="800"
-                    x="0"
-                    y="30%"
-                    textAnchor="start"
-                    alignmentBaseline="hanging">
-                    <TSpan fill="url(#grad1)">당신의 잔디</TSpan>
-                    <TSpan fill="#3E3E3E">를 함께 심어보아요!</TSpan>
-                  </SvgText>
-                </Svg>
-              </View>
-            </View>
-
+            <SignUpHeader />
             {/* 이메일 입력 */}
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>
