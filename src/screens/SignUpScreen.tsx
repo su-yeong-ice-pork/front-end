@@ -343,9 +343,11 @@ const SignUpScreen = ({navigation}) => {
             <SignUpHeader />
             {/* 이메일 입력 */}
             <View style={styles.inputContainer}>
+              <SignUp />
               <Text style={styles.inputLabel}>
                 학교 이메일 인증 <Text style={styles.starmark}>*</Text>
               </Text>
+
               <View style={styles.inputWrapper}>
                 <TextInput
                   ref={emailInputRef}
