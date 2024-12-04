@@ -37,7 +37,7 @@ const BottomBar = () => {
       />
       <BottomBarButton
         currentScreen={currentScreen}
-        onPress={handleNotUseableModal}
+        onPress={() => navigateTo(PATH_NAME.STUDY)}
         screen={PATH_NAME.STUDY}
         label={LABELS.STUDY}
       />

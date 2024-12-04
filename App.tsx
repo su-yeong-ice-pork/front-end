@@ -8,7 +8,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import LandingScreen from './src/screens/LandingScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
 import StudyScreen from './src/screens/StudyScreen';
-import StudyDetailScreen from './src/screens/StudyDetailScreen';
+import StudyDetailScreen from './src/screens/StudyDetailScreen/index';
 import AlarmScreen from './src/screens/AlarmScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import StudyRecordScreen from './src/screens/StudyRecordScreen';
