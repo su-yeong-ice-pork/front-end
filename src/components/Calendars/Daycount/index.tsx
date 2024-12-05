@@ -3,12 +3,13 @@ import {Text} from '@/components/ui/text';
 import {DayCountStyle} from './daycountStyle';
 import {getRecord} from '@/src/api/record';
 import {useRecoilValue} from 'recoil';
+import {DayCountProps} from '../../types/CalendarType/DayCountType';
 import authState from '@/src/recoil/authAtom';
 import React, {useState, useEffect} from 'react';
 const Daycount = ({userId}: {userId: number}) => {
   const authInfo = useRecoilValue(authState);
 
-  const [userRecord, setRecord] = useState<any>(null);
+  const [userRecord, setRecord] = useState<DayCountProps | null>(null);
 
   const fetchRecordData = async () => {
     const userRecords = await getRecord(userId, authInfo.authToken);
