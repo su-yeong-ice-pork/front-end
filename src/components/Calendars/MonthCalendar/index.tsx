@@ -19,6 +19,7 @@ import {ICONS} from '@/src/constants/image/icons';
 import Daycount from '../Daycount';
 import {JANDILEVEL} from '@/src/constants/Calendar/JandiLevel';
 import StudyStats from '../StudyStats';
+import {MonthCalendarProps} from '../../types/CalendarType/MonthCalendarType';
 const MonthCalendar = ({userId}: {userId: number}) => {
   const authInfo = useRecoilValue(authState);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -109,15 +110,10 @@ const MonthCalendar = ({userId}: {userId: number}) => {
     else return ICONS.JANDI_IMG4;
   };
 
-  const CustomDay = ({
+  const CustomDay: React.FC<MonthCalendarProps> = ({
     date,
     state,
     grassData,
-  }: {
-    date: DateData;
-    state: string;
-    marking: any;
-    grassData: any;
   }) => {
     const isSelected = state === 'selected';
     const isToday = moment(date.dateString).isSame(moment(), 'day');
@@ -252,13 +248,8 @@ const MonthCalendar = ({userId}: {userId: number}) => {
             }}
             firstDay={0}
             hideExtraDays={true}
-            dayComponent={({date, state, marking}) => (
-              <CustomDay
-                date={date}
-                state={state}
-                marking={marking}
-                grassData={grassData}
-              />
+            dayComponent={({date, state}) => (
+              <CustomDay date={date} state={state} grassData={grassData} />
             )}
             extraData={grassData}
           />

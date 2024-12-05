@@ -2,19 +2,14 @@ import {Box} from '@/components/ui/box';
 import {Text} from '@/components/ui/text';
 import moment from 'moment';
 import React from 'react';
+import {DateModalProps} from '../../types/CalendarType/DateModalType';
 import {DateModalStyles} from './dateModalStyles';
 import {Modal, ModalCloseButton} from '@/components/ui/modal';
-import {Button} from '@/components/ui/button';
-const DateModal = ({
+const DateModal: React.FC<DateModalProps> = ({
   visible,
   onClose,
   selectedDate,
   selectedDateData,
-}: {
-  visible: boolean;
-  onClose: () => void;
-  selectedDate: string;
-  selectedDateData: any;
 }) => {
   return (
     <Modal
