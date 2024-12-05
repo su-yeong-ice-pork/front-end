@@ -10,7 +10,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import BottomBar from '../components/BottomBar/index';
-import CalendarScreen from '../components/calendar';
+import MonthCalendar from '../components/Calendars/MonthCalendar';
 import Sticker from '../components/CheerupSticker';
 import CheerupWords from '../components/CheerupWords';
 import CheerupText from '../components/CheerupText';
@@ -131,7 +131,7 @@ const FriendsProfile = () => {
 
           {/* 달력 부분 */}
           <View style={styles.calendarContainer}>
-            <CalendarScreen />
+            <MonthCalendar />
           </View>
         </ScrollView>
         <BottomBar />
