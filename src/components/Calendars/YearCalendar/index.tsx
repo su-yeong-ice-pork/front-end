@@ -6,6 +6,7 @@ import authState from '@/src/recoil/authAtom';
 import {YearCalendarStyles} from './yearCalendarStyles';
 import {Box} from '@/components/ui/box';
 import {Text} from '@/components/ui/text';
+import {JANDILEVEL} from '@/src/constants/Calendar/JandiLevel';
 interface GrassData {
   [date: string]: {
     studyTime: number;
@@ -137,8 +138,16 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
   };
 
   const getColorForActivity = (studyHour: number, grassScore: number) => {
-    if (grassScore >= 10 && studyHour === 0) return '#DCE1CB';
-    else if (studyHour === 0 || grassScore < 10) return '#ebedf0';
+    if (
+      grassScore >= JANDILEVEL.JANDI_LEVEL_HIGH &&
+      studyHour === JANDILEVEL.JANDI_LEVEL_LOW
+    )
+      return '#DCE1CB';
+    else if (
+      studyHour === JANDILEVEL.JANDI_LEVEL_LOW ||
+      grassScore < JANDILEVEL.JANDI_LEVEL_HIGH
+    )
+      return '#ebedf0';
     else if (studyHour >= 1 && studyHour <= 2) return '#c6e48b';
     else if (studyHour >= 3 && studyHour <= 4) return '#7bc96f';
     else if (studyHour >= 5 && studyHour <= 6) return '#239a3b';

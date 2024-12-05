@@ -17,6 +17,7 @@ import authState from '@/src/recoil/authAtom';
 import '../../../constants/Calendar/LocalConfig';
 import {ICONS} from '@/src/constants/image/icons';
 import Daycount from '../Daycount';
+import {JANDILEVEL} from '@/src/constants/Calendar/JandiLevel';
 import StudyStats from '../StudyStats';
 const MonthCalendar = ({userId}: {userId: number}) => {
   const authInfo = useRecoilValue(authState);
@@ -91,8 +92,16 @@ const MonthCalendar = ({userId}: {userId: number}) => {
     setIsLoading(false);
   };
   const getJandiImage = (studyHour: number, grassScore: number) => {
-    if (grassScore >= 10 && studyHour === 0) return ICONS.JANDI_IMG;
-    else if (studyHour === 0 || grassScore < 10) return null;
+    if (
+      grassScore >= JANDILEVEL.JANDI_LEVEL_HIGH &&
+      studyHour === JANDILEVEL.JANDI_LEVEL_LOW
+    )
+      return ICONS.JANDI_IMG;
+    else if (
+      studyHour === JANDILEVEL.JANDI_LEVEL_LOW ||
+      grassScore < JANDILEVEL.JANDI_LEVEL_HIGH
+    )
+      return null;
     else if (studyHour >= 1 && studyHour <= 2) return ICONS.JANDI_IMG1;
     else if (studyHour >= 3 && studyHour <= 4) return ICONS.JANDI_IMG2;
     else if (studyHour >= 5 && studyHour <= 6) return ICONS.JANDI_IMG3;
