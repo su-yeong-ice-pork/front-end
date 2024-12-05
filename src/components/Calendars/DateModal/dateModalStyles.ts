@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {FONT} from '@/src/constants/styles/font/default-font';
 
 export const DateModalStyles = StyleSheet.create({
