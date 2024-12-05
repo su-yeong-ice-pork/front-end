@@ -1,10 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {Image, View, TouchableOpacity} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import {Box} from '@/components/ui/box';
 import {Button, ButtonText} from '@/components/ui/button';
 import {Text} from '@/components/ui/text';
 import DateModal from '../DateModal';
-import {MonthCalendarStyles} from './monthCalendarStyles';
+import CustomDay from '../CustomDay';
+import {MonthCalendarStyles, calendarTheme} from './monthCalendarStyles';
 import {Calendar, DateData} from 'react-native-calendars';
 import YearlyCalendar from '../YearCalendar';
 import moment from 'moment';
@@ -15,11 +16,9 @@ import {getMonthlyGrass} from '@/src/api/monthJandi';
 import {useRecoilValue} from 'recoil';
 import authState from '@/src/recoil/authAtom';
 import '../../../constants/Calendar/LocalConfig';
-import {ICONS} from '@/src/constants/image/icons';
 import Daycount from '../Daycount';
-import {JANDILEVEL} from '@/src/constants/Calendar/JandiLevel';
 import StudyStats from '../StudyStats';
-import {MonthCalendarProps} from '../../types/CalendarType/MonthCalendarType';
+
 const MonthCalendar = ({userId}: {userId: number}) => {
   const authInfo = useRecoilValue(authState);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -91,58 +90,6 @@ const MonthCalendar = ({userId}: {userId: number}) => {
   };
   const handleYearlyDataLoad = () => {
     setIsLoading(false);
-  };
-  const getJandiImage = (studyHour: number, grassScore: number) => {
-    if (
-      grassScore >= JANDILEVEL.JANDI_LEVEL_HIGH &&
-      studyHour === JANDILEVEL.JANDI_LEVEL_LOW
-    )
-      return ICONS.JANDI_IMG;
-    else if (
-      studyHour === JANDILEVEL.JANDI_LEVEL_LOW ||
-      grassScore < JANDILEVEL.JANDI_LEVEL_HIGH
-    )
-      return null;
-    else if (studyHour >= 1 && studyHour <= 2) return ICONS.JANDI_IMG1;
-    else if (studyHour >= 3 && studyHour <= 4) return ICONS.JANDI_IMG2;
-    else if (studyHour >= 5 && studyHour <= 6) return ICONS.JANDI_IMG3;
-    else if (studyHour >= 7 && studyHour <= 8) return ICONS.JANDI_IMG4;
-    else return ICONS.JANDI_IMG4;
-  };
-
-  const CustomDay: React.FC<MonthCalendarProps> = ({
-    date,
-    state,
-    grassData,
-  }) => {
-    const isSelected = state === 'selected';
-    const isToday = moment(date.dateString).isSame(moment(), 'day');
-    const studyData = grassData[date.dateString];
-    const studyTime = studyData ? studyData.studyTime : 0;
-    const grassScore = studyData ? studyData.grassScore : 0;
-    const jandiImage = getJandiImage(studyTime, grassScore);
-
-    return (
-      <Button
-        style={[
-          MonthCalendarStyles.dayContainer,
-          isSelected && MonthCalendarStyles.selectedDay,
-          !jandiImage && MonthCalendarStyles.defaultDayContainer,
-        ]}
-        onPress={() => onDayPress(date)}
-        disabled={state === 'disabled'}>
-        {jandiImage && (
-          <Image source={jandiImage} style={MonthCalendarStyles.dayImage} />
-        )}
-        <Text
-          style={[
-            MonthCalendarStyles.dayText,
-            isToday && MonthCalendarStyles.todayText,
-          ]}>
-          {date.day}
-        </Text>
-      </Button>
-    );
   };
 
   return (
@@ -241,15 +188,16 @@ const MonthCalendar = ({userId}: {userId: number}) => {
                 </Box>
               );
             }}
-            theme={{
-              selectedDayBackgroundColor: '#A8E6CF',
-              todayTextColor: '#00adf5',
-              dotColor: '#A8E6CF',
-            }}
+            theme={calendarTheme}
             firstDay={0}
             hideExtraDays={true}
             dayComponent={({date, state}) => (
-              <CustomDay date={date} state={state} grassData={grassData} />
+              <CustomDay
+                date={date}
+                state={state}
+                grassData={grassData}
+                onDayPress={onDayPress}
+              />
             )}
             extraData={grassData}
           />
@@ -257,7 +205,6 @@ const MonthCalendar = ({userId}: {userId: number}) => {
         </Box>
       ) : (
         <Box style={MonthCalendarStyles.yearlyView}>
-          {/* 연간 잔디밭 구현 */}
           <YearlyCalendar
             memberId={userId}
             onLoadComplete={handleYearlyDataLoad}
