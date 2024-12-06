@@ -1,8 +1,13 @@
 import React from 'react';
 import {Box} from '@/components/ui/box';
 import VerifyEmail from './VerifyEmail';
-import {Input, InputSlot, InputIcon, InputField} from '@/components/ui/input';
+import RegisterDepart from './RegisterDepart';
 
 export const SignUp = () => {
-  return <VerifyEmail />;
+  return (
+    <Box>
+      <VerifyEmail />
+      <RegisterDepart />
+    </Box>
+  );
 };
