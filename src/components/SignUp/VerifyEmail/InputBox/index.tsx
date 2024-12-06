@@ -4,9 +4,9 @@ import {Input, InputField, InputSlot, InputIcon} from '@/components/ui/input';
 
 import {InputBoxStyles} from './InputBoxStyles';
 
-const InputBox = ({inputTitle, placeholderText}) => {
+const InputBox = ({inputTitle, placeholderText, value, setValue}) => {
   return (
-    <Box style={InputBoxStyles.inputContainer}>
+    <Box>
       <Text style={InputBoxStyles.inputLabel}>
         {inputTitle}
         <Text style={InputBoxStyles.starmark}> *</Text>
@@ -16,6 +16,8 @@ const InputBox = ({inputTitle, placeholderText}) => {
         <InputField
           placeholder={placeholderText}
           style={InputBoxStyles.placeholderText}
+          value={value}
+          onChangeText={setValue}
         />
       </Input>
     </Box>

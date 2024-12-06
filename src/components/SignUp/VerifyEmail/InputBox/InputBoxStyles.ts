@@ -4,9 +4,6 @@ import {StyleSheet} from 'react-native-css-interop';
 const {height} = Dimensions.get('window');
 
 export const InputBoxStyles = StyleSheet.create({
-  inputContainer: {
-    paddingBottom: 20,
-  },
   inputLabel: {
     color: '#454545',
     marginBottom: height * 0.005,

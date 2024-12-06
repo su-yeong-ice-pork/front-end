@@ -344,99 +344,7 @@ const SignUpScreen = ({navigation}) => {
             {/* 이메일 입력 */}
             <View style={styles.inputContainer}>
               <SignUp />
-              <Text style={styles.inputLabel}>
-                학교 이메일 인증 <Text style={styles.starmark}>*</Text>
-              </Text>
-
-              <View style={styles.inputWrapper}>
-                <TextInput
-                  ref={emailInputRef}
-                  style={styles.inputBox}
-                  placeholder="학교 이메일을 입력해주세요."
-                  placeholderTextColor="#B9B9B9"
-                  value={email}
-                  onChangeText={setEmail}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  returnKeyType="next"
-                  onSubmitEditing={() => {
-                    if (showCodeInput) {
-                      codeInputRef.current?.focus();
-                    } else {
-                      handleRequire();
-                    }
-                  }}
-                  blurOnSubmit={false}
-                />
-                <TouchableOpacity
-                  style={styles.codeButton}
-                  onPress={handleRequire}>
-                  <Text style={styles.requestCodeButtonText}>{askCode}</Text>
-                </TouchableOpacity>
-              </View>
-              {isActive && (
-                <View style={styles.iconAndTextContainer}>
-                  <Image source={IMAGES.iIcon} style={styles.setiIcon} />
-                  <Text style={styles.activeText}>
-                    메일이 오지 않으셨나요? 재요청 버튼을 눌러보세요.
-                  </Text>
-                </View>
-              )}
-              {isEmailVerified && (
-                <View style={styles.iconAndTextContainer}>
-                  <Image source={IMAGES.iIcon} style={styles.setiIcon} />
-                  <Text style={styles.activeText}>
-                    이메일 인증이 완료되었습니다.
-                  </Text>
-                </View>
-              )}
-              {emailErrorMessage ? (
-                <View style={styles.iconAndTextContainer}>
-                  <Image source={IMAGES.iIcon} style={styles.setiIcon} />
-                  <Text style={styles.activeText}>{emailErrorMessage}</Text>
-                </View>
-              ) : null}
             </View>
-
-            {/* 인증 코드 입력 */}
-            {showCodeInput && (
-              <View style={styles.inputContainer}>
-                <View
-                  style={[
-                    styles.inputRow,
-                    {borderBottomWidth: 1.5, borderBottomColor: '#A9A9A9'},
-                  ]}>
-                  <TextInput
-                    ref={codeInputRef}
-                    style={{flex: 1}}
-                    placeholder="메일로 전송된 코드를 입력해주세요."
-                    value={verificationCode}
-                    placeholderTextColor="#B9B9B9"
-                    onChangeText={text => {
-                      setVerificationCode(text);
-                      setCodeErrorMessage('');
-                    }}
-                    returnKeyType="next"
-                    onSubmitEditing={() => {
-                      passwordInputRef.current?.focus();
-                    }}
-                    blurOnSubmit={false}
-                  />
-                  <Text style={styles.timerText}>{formatTime(timeLeft)}</Text>
-                  <TouchableOpacity
-                    style={styles.verifyButton}
-                    onPress={verifyCode}>
-                    <Text style={styles.verifyButtonText}>확인</Text>
-                  </TouchableOpacity>
-                </View>
-                {codeErrorMessage ? (
-                  <View style={styles.iconAndTextContainer}>
-                    <Image source={IMAGES.iIcon} style={styles.setiIcon} />
-                    <Text style={styles.activeText}>{codeErrorMessage}</Text>
-                  </View>
-                ) : null}
-              </View>
-            )}
 
             {/* 학과 등록 */}
             <RegisterDepart
@@ -806,8 +714,7 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.035,
   },
   inputContainer: {
-    marginTop: height * 0.025,
-    marginBottom: height * 0.025,
+    marginTop: height * 0.02,
   },
   inputLabel: {
     fontFamily: 'NanumSquareNeo-Variable',
