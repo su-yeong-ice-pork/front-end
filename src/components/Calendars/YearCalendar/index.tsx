@@ -1,16 +1,12 @@
-// components/YearCalendar.tsx
 import React, {useState, useEffect, useRef, useCallback} from 'react';
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Text,
-  ActivityIndicator,
-} from 'react-native';
-import {getMonthlyGrass} from '../api/monthJandi';
+import {ScrollView, ActivityIndicator} from 'react-native';
+import {getMonthlyGrass} from '@/src/api/monthJandi';
 import {useRecoilValue} from 'recoil';
-import authState from '../recoil/authAtom';
-
+import authState from '@/src/recoil/authAtom';
+import {YearCalendarStyles} from './yearCalendarStyles';
+import {Box} from '@/components/ui/box';
+import {Text} from '@/components/ui/text';
+import {JANDILEVEL} from '@/src/constants/Calendar/JandiLevel';
 interface GrassData {
   [date: string]: {
     studyTime: number;
@@ -38,7 +34,6 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
   const dayLabelMargin = Platform.OS === 'ios' ? 4.5 : 0;
   const scrollViewRef = useRef<ScrollView>(null);
 
-  // 현재 날짜 기준으로 시작 날짜를 설정 (1년 전)
   const START_DATE = new Date();
   START_DATE.setHours(0, 0, 0, 0);
   START_DATE.setDate(START_DATE.getDate() - 365);
@@ -66,8 +61,6 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
 
           const dateCopy = new Date(currentDate);
           week.push(dateCopy);
-
-          // 월 시작일에 월 라벨 추가
           if (
             dateCopy.getDate() === 1 &&
             monthsMap.every(
@@ -103,7 +96,6 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
         const year = today.getFullYear();
         const allGrassData: GrassData = {};
 
-        //모든 달 데이터 가져오기
         const fetchPromises = Array.from({length: 12}, (_, i) => {
           const month = i + 1;
           return getMonthlyGrass(memberId, year, month, authInfo.authToken);
@@ -146,11 +138,19 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
   };
 
   const getColorForActivity = (studyHour: number, grassScore: number) => {
-    if (grassScore >= 10 && studyHour === 0) return '#DCE1CB';
-    else if (studyHour === 0 || grassScore < 10) return '#ebedf0';
-    else if (studyHour >= 1 && studyHour <= 2) return '#c6e48b'; // 연한 초록
-    else if (studyHour >= 3 && studyHour <= 4) return '#7bc96f'; // 중간 초록
-    else if (studyHour >= 5 && studyHour <= 6) return '#239a3b'; // 진한 초록
+    if (
+      grassScore >= JANDILEVEL.JANDI_LEVEL_HIGH &&
+      studyHour === JANDILEVEL.JANDI_LEVEL_LOW
+    )
+      return '#DCE1CB';
+    else if (
+      studyHour === JANDILEVEL.JANDI_LEVEL_LOW ||
+      grassScore < JANDILEVEL.JANDI_LEVEL_HIGH
+    )
+      return '#ebedf0';
+    else if (studyHour >= 1 && studyHour <= 2) return '#c6e48b';
+    else if (studyHour >= 3 && studyHour <= 4) return '#7bc96f';
+    else if (studyHour >= 5 && studyHour <= 6) return '#239a3b';
     else if (studyHour >= 7 && studyHour <= 8) return '#196127';
     else return '#196127';
   };
@@ -174,40 +174,41 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
   };
 
   const renderDayLabels = () => (
-    <View style={styles.dayLabelsContainer}>
+    <Box style={YearCalendarStyles.dayLabelsContainer}>
       {dayLabels.map((day, index) => (
         <Text
           key={index}
           style={[
-            styles.dayLabelText,
+            YearCalendarStyles.dayLabelText,
             {marginTop: index === 0 ? 15 : dayLabelMargin},
           ]}>
           {day}
         </Text>
       ))}
-    </View>
+    </Box>
   );
 
   const renderMonthLabels = () => (
-    <View style={styles.monthLabelsContainer}>
+    <Box style={YearCalendarStyles.monthLabelsContainer}>
       {monthLabels.map((month, index) => (
         <Text
           key={index}
           style={[
-            styles.monthLabelText,
+            YearCalendarStyles.monthLabelText,
             {
               left:
-                month.index * (styles.dayBox.width + styles.dayBox.margin * 2) +
+                month.index *
+                  (YearCalendarStyles.dayBox.width +
+                    YearCalendarStyles.dayBox.margin * 2) +
                 30,
             },
           ]}>
           {month.month}
         </Text>
       ))}
-    </View>
+    </Box>
   );
 
-  // 스크롤 위치 계산
   const scrollToToday = useCallback(() => {
     if (scrollViewRef.current && weeks.length > 0) {
       const today = new Date();
@@ -215,8 +216,8 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
         (today.getTime() - START_DATE.getTime()) / (1000 * 60 * 60 * 24),
       );
       const weekIndex = Math.floor(daysFromStart / 7);
-      const dayBoxWidth = styles.dayBox.width || 12;
-      const dayBoxMargin = styles.dayBox.margin || 2;
+      const dayBoxWidth = YearCalendarStyles.dayBox.width || 12;
+      const dayBoxMargin = YearCalendarStyles.dayBox.margin || 2;
       const scrollToX = weekIndex * (dayBoxWidth + dayBoxMargin * 2) - 100;
 
       scrollViewRef.current.scrollTo({x: scrollToX, animated: false});
@@ -225,10 +226,10 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
+      <Box style={YearCalendarStyles.loadingContainer}>
         <ActivityIndicator size="large" color="#1AA5AA" />
         <Text>데이터를 불러오는 중...</Text>
-      </View>
+      </Box>
     );
   }
 
@@ -237,74 +238,28 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
       horizontal
       ref={scrollViewRef}
       onContentSizeChange={scrollToToday}>
-      <View style={styles.container}>
+      <Box style={YearCalendarStyles.container}>
         {renderMonthLabels()}
-        <View style={{flexDirection: 'row'}}>
+        <Box style={{flexDirection: 'row'}}>
           {renderDayLabels()}
-          <View style={styles.calendarContainer}>
+          <Box style={YearCalendarStyles.calendarContainer}>
             {weeks.map((week, weekIndex) => (
-              <View key={weekIndex} style={styles.weekColumn}>
+              <Box key={weekIndex} style={YearCalendarStyles.weekColumn}>
                 {week.map((date, dayIndex) => (
-                  <View
+                  <Box
                     key={dayIndex}
                     style={[
-                      styles.dayBox,
+                      YearCalendarStyles.dayBox,
                       {backgroundColor: getColorForDate(date)},
                     ]}
                   />
                 ))}
-              </View>
+              </Box>
             ))}
-          </View>
-        </View>
-      </View>
+          </Box>
+        </Box>
+      </Box>
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: 20,
-    paddingLeft: 30,
-  },
-  calendarContainer: {
-    backgroundColor: '#F5F5F5',
-    flexDirection: 'row',
-  },
-  weekColumn: {
-    flexDirection: 'column',
-  },
-  dayBox: {
-    width: 12,
-    height: 12,
-    margin: 2,
-    backgroundColor: '#ebedf0',
-  },
-  dayLabelsContainer: {
-    marginRight: 5,
-    marginTop: -15,
-  },
-  dayLabelText: {
-    fontSize: 10,
-    color: '#586069',
-    marginBottom: 2,
-  },
-  monthLabelsContainer: {
-    position: 'absolute',
-    flexDirection: 'row',
-    left: 30,
-    top: 0,
-  },
-  monthLabelText: {
-    position: 'absolute',
-    fontSize: 10,
-    color: '#586069',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
-
 export default YearlyCalendar;

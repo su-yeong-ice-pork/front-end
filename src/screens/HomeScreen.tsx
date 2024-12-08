@@ -6,8 +6,6 @@ import {
   Text,
   TouchableOpacity,
   Dimensions,
-  ImageBackground,
-  Image,
   StyleSheet,
   ScrollView,
   SafeAreaView,
@@ -15,7 +13,7 @@ import {
 } from 'react-native';
 import BottomBar from '../components/BottomBar/index';
 const {width, height} = Dimensions.get('window');
-import CalendarScreen from '../components/calendar';
+import MonthCalendar from '../components/Calendars/MonthCalendar';
 import Loader from '../components/Loader';
 import {Member} from '../api/profile';
 import {Badge} from '../api/badge';
@@ -126,11 +124,6 @@ const HomeScreen = () => {
       setIsLoading(false);
     }
   };
-  const IMAGES = {
-    freeze: require('../../assets/images/illustration/freeze.png'),
-    iIcon: require('../../assets/images/icons/iIcon.png'),
-    moreIcon: require('../../assets/images/icons/moreIcon2.png'),
-  };
   return (
     <>
       <SafeAreaView style={{flex: 1}}>
@@ -153,7 +146,7 @@ const HomeScreen = () => {
           {/* 현재 일수 표시 */}
 
           {/* 달력 부분 */}
-          <View>{member && <CalendarScreen userId={member.id} />}</View>
+          <View>{member && <MonthCalendar userId={member.id} />}</View>
         </ScrollView>
         <BottomBar />
         {/* 인증 결과 모달 */}
