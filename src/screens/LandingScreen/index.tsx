@@ -27,12 +27,14 @@ const LandingScreen = ({navigation}) => {
     queryKey: [SIGN.IN_AUTO],
     queryFn: fetchAutoLogin,
     select: async data => {
-      const authToken = await data?.headers[AUTH];
-      setAuthState({email: '', authToken});
-      navigation.reset({
-        index: 0,
-        routes: [{name: LANDING.PATH_HOME}],
-      });
+      if (data?.headers) {
+        const authToken = await data?.headers[AUTH];
+        setAuthState({email: '', authToken});
+        navigation.reset({
+          index: 0,
+          routes: [{name: LANDING.PATH_HOME}],
+        });
+      }
     },
   });
 
