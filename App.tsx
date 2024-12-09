@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import '@/global.css';
 import {GluestackUIProvider} from '@/components/ui/gluestack-ui-provider';
 import {RecoilRoot} from 'recoil';
-import {StatusBar} from 'react-native';
+import {Alert, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import LandingScreen from './src/screens/LandingScreen';
@@ -18,10 +18,17 @@ import EditProfileScreen from './src/screens/EditProfileScreen';
 import FriendsProfile from './src/screens/FriendsProfile';
 import SplashScreen from 'react-native-splash-screen';
 import LoginScreen from './src/screens/LoginScreen';
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 
 const Stack = createStackNavigator();
 const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: error => Alert.alert(`${error.message}`),
+  }),
   defaultOptions: {
     queries: {retry: 0, staleTime: 1000 * 60, gcTime: 1000 * 60 * 60 * 24},
   },
