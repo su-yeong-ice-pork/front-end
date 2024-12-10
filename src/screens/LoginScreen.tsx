@@ -6,6 +6,8 @@ import Slides from '../components/Slides';
 import LoginForm from '../components/LoginForm';
 import Loader from '../components/Loader';
 
+//,,,
+
 const LoginScreen = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
   return (
