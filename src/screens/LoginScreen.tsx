@@ -2,9 +2,9 @@ import React, {useState} from 'react';
 import {StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import Slides from '../components/Slides';
 import LoginForm from '../components/LoginForm';
 import Loader from '../components/Loader';
+import Slides from '../components/Landing/Slides';
 
 const LoginScreen = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(false);

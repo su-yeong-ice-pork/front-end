@@ -6,6 +6,7 @@ import {Button} from '@/components/ui/button';
 import {Image} from '@/components/ui/image';
 import {Text} from '@/components/ui/text';
 import {HStack} from '@/components/ui/hstack';
+import {setItem} from '@/src/api/asyncStorage';
 
 const IMAGES = {
   changePassword: require('../../../../assets/images/icons/lockIcon.png'),
@@ -27,7 +28,11 @@ const ProfileActionButton: React.FC<ProfileActionButtonProps> = ({
   const handleClick = () => {
     if (text == '비밀번호 변경하기')
       navigation.navigate('FindPassword', {title: '비밀번호 변경하기'});
-    else if (text == '로그아웃') navigation.navigate('Landing');
+    else if (text == '로그아웃') {
+      navigation.navigate('Landing');
+      setItem('autoLogin', '');
+      setItem('refreshToken', '');
+    }
   };
   return (
     <Button onPress={handleClick}>
