@@ -22,11 +22,6 @@ const BottomBar = () => {
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  const handleNotUseableModal = () => {
-    setModalVisible(true);
-    return;
-  };
-
   return (
     <HStack style={BottomBarStyles.container}>
       <BottomBarButton
@@ -49,7 +44,7 @@ const BottomBar = () => {
       />
       <BottomBarButton
         currentScreen={currentScreen}
-        onPress={handleNotUseableModal}
+        onPress={() => navigateTo(PATH_NAME.ALARM)}
         screen={PATH_NAME.ALARM}
         label={LABELS.ALARM}
       />
