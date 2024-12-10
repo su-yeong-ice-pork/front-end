@@ -10,7 +10,7 @@ import Slides from '../../components/Landing/Slides';
 
 import {COLOR} from '../../constants/styles/color/color';
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({}) => {
     const [isLoading, setIsLoading] = useState(false);
     return (
         <LinearGradient
