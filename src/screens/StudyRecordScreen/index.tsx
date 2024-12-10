@@ -1,58 +1,58 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  Dimensions,
-  SafeAreaView,
-  Alert,
-} from 'react-native';
+import {TouchableOpacity, Alert} from 'react-native';
 
-import Header from '../components/Header';
-import DashLine from '../components/DashLine';
-import BottomBar from '../components/BottomBar/index';
-import {useNavigation} from '@react-navigation/native';
-import NoticeModal from '../components/NoticeModal';
-import Loader from '../components/Loader';
+import {SafeAreaView} from '@/components/ui/safe-area-view';
+import {ScrollView} from '@/components/ui/scroll-view';
+import {Text} from '@/components/ui/text';
+import {Box} from '@/components/ui/box';
+
+import Header from '../../components/Header';
+import BottomBar from '../../components/BottomBar/index';
+import NoticeModal from '../../components/NoticeModal';
+import Loader from '../../components/Loader';
+
 import {
   getStudyTime,
   updateStudyTime,
   getTodayAttendance,
-} from '../api/studyTime';
+} from '../../api/studyTime';
 import {
   requestLocationPermission,
   getCurrentLocation,
-} from '../utils/locationUtils';
-import {isPointInPolygon, SERVICE_AREA} from '../utils/serviceArea';
+} from '../../utils/locationUtils';
+import {isPointInPolygon, SERVICE_AREA} from '../../utils/serviceArea';
 import {useRecoilValue} from 'recoil';
-import userState from '../recoil/userAtom';
-import authState from '../recoil/authAtom';
-import ProfileCardSection from '../components/ProfileCardSection';
 
-const {width} = Dimensions.get('window');
+import userState from '../../recoil/userAtom';
+import authState from '../../recoil/authAtom';
+
+import {STUDY_DETAIL} from '@/src/constants/StudyDetail/studyDetail';
+
+import RecordTapSection from '@/src/components/StudyRecord/RecordTapSection';
+import RankingSection from '@/src/components/StudyRecord/RankingSection';
+
+import {
+  StudyRecordScreenStyles,
+  ScrollContentPaddingBottom,
+} from './StudyRecordScreenStyles';
 
 const StudyRecordScreen = () => {
   const user = useRecoilValue(userState);
   const authInfo = useRecoilValue(authState);
   const [isRecording, setIsRecording] = useState(false);
   const [timeElapsed, setTimeElapsed] = useState<number>(0);
+  const [activeTab, setActiveTab] = useState(STUDY_DETAIL.RECORD);
   const [todayStudyTime, setTodayStudyTime] = useState<number>(0);
   const [totalStudyTime, setTotalStudyTime] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
   const intervalRef = useRef<NodeJS.Timer | null>(null);
   const startTimeRef = useRef<number | null>(null);
   const isStoppingRef = useRef<boolean>(false);
-  const isStartingRef = useRef<boolean>(false); // Flag to prevent multiple starts
+  const isStartingRef = useRef<boolean>(false);
 
-  // Modal state variables
   const [modalVisible, setModalVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
   const [modalMessage, setModalMessage] = useState('');
-
-  const navigation = useNavigation();
 
   const locationCheckIntervalRef = useRef<NodeJS.Timer | null>(null);
 
@@ -302,316 +302,85 @@ const StudyRecordScreen = () => {
     }
   };
 
-  // handleNotUseableModal function
-  const handleNotUseableModal = () => {
-    setModalTitle('추가 예정인 기능입니다.');
-    setModalMessage('');
-    setModalVisible(true);
+  const handleTabPress = (tabName: string) => {
+    setActiveTab(tabName);
   };
 
+  const closeModal = () => setModalVisible(false);
   return (
     <>
-      <SafeAreaView style={{flex: 1}}>
-        <View style={styles.container}>
-          <Header Title={'기록장 / 랭킹'} />
+      <SafeAreaView style={StudyRecordScreenStyles.container}>
+        <Box style={StudyRecordScreenStyles.container}>
+          <Header Title={STUDY_DETAIL.TITLE} />
           <ScrollView
-            style={styles.main}
-            contentContainerStyle={{paddingBottom: 80}}>
-            {/* 기록장과 기록 랭킹 탭 */}
-            <View style={styles.tabsContainer}>
-              <TouchableOpacity style={styles.activeTab}>
-                <Text style={styles.activeTabText}>기록장</Text>
+            style={StudyRecordScreenStyles.main}
+            contentContainerStyle={ScrollContentPaddingBottom}>
+            <Box style={StudyRecordScreenStyles.tabsContainer}>
+              <TouchableOpacity
+                style={
+                  activeTab === STUDY_DETAIL.RECORD
+                    ? StudyRecordScreenStyles.activeTab
+                    : StudyRecordScreenStyles.inactiveTab
+                }
+                onPress={() => handleTabPress(STUDY_DETAIL.RECORD)}>
+                <Text
+                  style={
+                    activeTab === STUDY_DETAIL.RECORD
+                      ? StudyRecordScreenStyles.activeTabText
+                      : StudyRecordScreenStyles.inactiveTabText
+                  }>
+                  기록장
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.inactiveTab}
-                onPress={handleNotUseableModal}>
-                <Text style={styles.inactiveTabText}>기록 랭킹</Text>
+                style={
+                  activeTab === STUDY_DETAIL.RANKING
+                    ? StudyRecordScreenStyles.activeTab
+                    : StudyRecordScreenStyles.inactiveTab
+                }
+                onPress={() => handleTabPress(STUDY_DETAIL.RANKING)}>
+                <Text
+                  style={
+                    activeTab === STUDY_DETAIL.RANKING
+                      ? StudyRecordScreenStyles.activeTabText
+                      : StudyRecordScreenStyles.inactiveTabText
+                  }>
+                  기록 랭킹
+                </Text>
               </TouchableOpacity>
-            </View>
+            </Box>
 
-            {/* 프로필 카드 */}
+            {activeTab === STUDY_DETAIL.RECORD && (
+              <RecordTapSection
+                title={user?.mainTitle || STUDY_DETAIL.DEFAULT_TITLE}
+                name={user?.name || STUDY_DETAIL.DEFAULT_TITLE}
+                profileImage={user?.profileImage || STUDY_DETAIL.DEFAULT_IMAGE}
+                studyMessage={user?.message || STUDY_DETAIL.DEFAULT_MESSAGE}
+                timerValue={
+                  isRecording
+                    ? formatTime(todayStudyTime + timeElapsed)
+                    : formatTime(todayStudyTime)
+                }
+                totalTimeValue={formatTime(totalStudyTime)}
+                isRecording={isRecording}
+                onStudyButtonPress={handleStudyButtonPress}
+              />
+            )}
 
-            <ProfileCardSection
-              title={user?.mainTitle || ''}
-              name={user?.name || ''}
-              profileImage={user?.profileImage || 'null'}
-              studyMessage={user?.message || '중간고사 화이팅!'}
-              timerValue={
-                isRecording
-                  ? formatTime(todayStudyTime + timeElapsed)
-                  : formatTime(todayStudyTime)
-              }
-              totalTimeValue={formatTime(totalStudyTime)}
-              isRecording={isRecording}
-              onStudyButtonPress={handleStudyButtonPress}
-            />
-
-            {/* 점선 */}
-            <DashLine />
-
-            {/* 친구 목록 헤더 */}
-            <View style={styles.membersHeader}>
-              <Text style={styles.membersTitle}>친구 목록</Text>
-              <TouchableOpacity
-                style={styles.addMemberButton}
-                onPress={handleNotUseableModal}>
-                <Image
-                  source={require('../../assets/images/icons/whiteUsers.png')}
-                  style={styles.redStar}
-                  resizeMode="contain"
-                />
-                <Text style={styles.addMemberButtonText}>친구 추가</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* 친구 리스트 */}
-            <View style={styles.membersList}>
-              {/* 친구 리스트 코드가 여기에 들어갑니다 */}
-            </View>
+            {activeTab === STUDY_DETAIL.RANKING && <RankingSection />}
           </ScrollView>
-        </View>
+        </Box>
         <NoticeModal
           visible={modalVisible}
-          onClose={() => setModalVisible(false)}
+          onClose={closeModal}
           title={modalTitle}
           message={modalMessage}
         />
         {isLoading && <Loader />}
+        <BottomBar />
       </SafeAreaView>
-      <BottomBar />
     </>
   );
 };
 
 export default StudyRecordScreen;
-
-const styles = StyleSheet.create({
-  // 기존 스타일 코드 유지
-  container: {
-    flex: 1,
-  },
-  main: {
-    width: width,
-  },
-  tabsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    backgroundColor: '#1AA5AA',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-    marginTop: 20,
-    width: width - 40,
-    alignSelf: 'center',
-  },
-  friendInfoIconAbsolute: {
-    position: 'absolute',
-    right: 5,
-    top: 25,
-    width: 30,
-    height: 30,
-  },
-  activeTab: {
-    paddingBottom: 5,
-    marginHorizontal: 20,
-  },
-  inactiveTab: {
-    opacity: 0.6,
-    marginHorizontal: 20,
-  },
-  activeTabText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    fontSize: 16,
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  inactiveTabText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    fontSize: 16,
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  // 점선
-  dashedLine: {
-    width: '90%',
-    borderBottomWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: '#DBDBDB',
-    marginVertical: 20,
-    alignSelf: 'center',
-  },
-  // 친구 목록 헤더
-  membersHeader: {
-    width: '90%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 0,
-    marginBottom: 10,
-    alignSelf: 'center',
-  },
-  membersTitle: {
-    fontSize: 16,
-    color: '#454545',
-    fontWeight: '900',
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  addMemberButton: {
-    backgroundColor: '#1AA5AA',
-    width: 100,
-    height: 30,
-    borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-  },
-  addMemberButtonText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    letterSpacing: 1,
-    fontWeight: '900',
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  redStar: {
-    width: 20,
-    height: 20,
-    marginRight: 8,
-  },
-  // 친구 리스트
-  membersList: {
-    width: width,
-    backgroundColor: '#FFFFFF',
-  },
-  memberItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    paddingVertical: 20,
-    paddingHorizontal: 20,
-  },
-  memberImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#E1E6E8',
-    marginRight: 20,
-  },
-  memberInfo: {
-    flex: 1,
-  },
-  nameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  memberName: {
-    fontSize: 18,
-    color: '#454545',
-    fontFamily: 'NanumSquareNeo-Variable',
-    fontWeight: '800',
-    marginRight: 10,
-  },
-  onlineStatus: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  onlineDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#1AA5AA',
-    marginRight: 5,
-  },
-  onlineText: {
-    fontSize: 14,
-    color: '#1AA5AA',
-    fontWeight: '700',
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  memberStudyTime: {
-    fontSize: 14,
-    color: '#646464',
-    fontWeight: '700',
-    fontFamily: 'NanumSquareNeo-Variable',
-    marginTop: 5,
-  },
-  totalStudyTimeValue: {
-    color: '#009499',
-  },
-  messageBubble: {
-    backgroundColor: '#DEEFEA',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 10,
-    borderBottomLeftRadius: 0,
-    marginTop: 10,
-    alignSelf: 'flex-start',
-  },
-  messageText: {
-    fontSize: 14,
-    color: '#454545',
-    fontWeight: '800',
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  separator: {
-    height: 1,
-    backgroundColor: '#DBDBDB',
-    width: '100%',
-  },
-  modalBackground: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContainer: {
-    width: '80%',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 20,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  modalIcon: {
-    width: 46,
-    height: 46,
-    marginRight: 10,
-  },
-  modalTitle: {
-    fontSize: 16,
-    fontWeight: '900',
-    fontFamily: 'NanumSquareNeo-Variable',
-    color: '#4b5563',
-    flex: 1,
-  },
-  modalHighlightText: {
-    color: '#14B8A6',
-    fontWeight: '900',
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  modalSubtitle: {
-    marginTop: 10,
-    fontSize: 11,
-    color: '#6b7280',
-    textAlign: 'left',
-    lineHeight: 20,
-    marginLeft: 56,
-    fontWeight: '800',
-    fontFamily: 'NanumSquareNeo-Variable',
-  },
-  modalCloseButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    width: 24,
-    height: 24,
-    zIndex: 1,
-  },
-  modalCloseIcon: {
-    width: 24,
-    height: 24,
-  },
-});
