@@ -15,8 +15,10 @@ import {useMutation} from '@tanstack/react-query';
 import {LoginFormStyles} from './../LoginFrom/LoginFromStyle.ts';
 import {LoginPropsType} from "@/src/api/login/LoginPropsType.ts";
 
+import {LoginFormProps} from "@/src/components/types/LoginFormType/LoinFromType.ts";
 
-const LoginForm = ({setIsLoading}) => {
+
+const LoginForm:React.FC<LoginFormProps> = ({setIsLoading}) => {
     const navigation = useNavigation();
     const setAuthState = useSetRecoilState(authState);
     const [isAutoLogin, setIsAutoLogin] = useState(false);
