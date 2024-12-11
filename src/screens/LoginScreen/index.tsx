@@ -4,7 +4,7 @@ import {LoginScreenStyles} from './LoginScreenStyle.ts';
 
 import LinearGradient from 'react-native-linear-gradient';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import LoginForm from '../../components/LoginForm.tsx';
+import LoginForm from '../../components/LoginFrom/index.tsx';
 import Loader from '../../components/Loader';
 import Slides from '../../components/Landing/Slides';
 
