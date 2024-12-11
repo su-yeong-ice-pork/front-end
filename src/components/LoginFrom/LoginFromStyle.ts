@@ -1,4 +1,15 @@
 import {StyleSheet} from "react-native";
+import {FONT} from '@/src/constants/styles/font/default-font';
+import {COLOR} from '@/src/constants/styles/color/color.ts';
+
+const subTextColor = '#5D5D5D';
+const pointColor = '#009499';
+
+const commonTextStyle = {
+    fontFamily: FONT,
+    fontWeight: '700' as '700',
+    letterSpacing: 3,
+};
 
 export const LoginFormStyles = StyleSheet.create({
     loginFormContainer: {
@@ -17,11 +28,9 @@ export const LoginFormStyles = StyleSheet.create({
     },
     inputLabel: {
         color: '#454545',
-        fontFamily: 'NanumSquareNeo-Variable',
-        fontWeight: '700',
         fontSize: 13,
-        lineHeight: 20,
-        letterSpacing: 3,
+        paddingBottom:5,
+        ...commonTextStyle,
     },
     input: {
         width: '100%',
@@ -30,10 +39,8 @@ export const LoginFormStyles = StyleSheet.create({
         backgroundColor: '#F4F4F4',
         paddingHorizontal: 10,
         fontSize: 12,
-        fontFamily: 'NanumSquareNeo-Variable',
-        fontWeight: '700',
-        letterSpacing: 3,
-        color: '#000000',
+        ...commonTextStyle,
+        color: COLOR.BLACK,
     },
     findTextContainer: {
         position: 'absolute',
@@ -41,12 +48,10 @@ export const LoginFormStyles = StyleSheet.create({
         right: 0,
     },
     findText: {
-        color: '#5D5D5D',
-        fontFamily: 'NanumSquareNeo-Variable',
-        fontWeight: '700',
+        color: subTextColor,
+        ...commonTextStyle,
         fontSize: 9,
         textDecorationLine: 'underline',
-        letterSpacing: 3,
     },
     autoLoginContainer: {
         flexDirection: 'row',
@@ -61,7 +66,7 @@ export const LoginFormStyles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 5,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: COLOR.WHITE,
         borderRadius: 2,
     },
     customCheckbox: {
@@ -72,34 +77,30 @@ export const LoginFormStyles = StyleSheet.create({
         alignItems: 'center',
     },
     customCheckboxChecked: {
-        backgroundColor: '#009499',
+        backgroundColor: pointColor,
     },
     checkmark: {
-        color: '#FFFFFF',
+        color: COLOR.WHITE,
         fontSize: 10,
         fontWeight: 'bold',
     },
     optionText: {
-        color: '#5D5D5D',
-        fontFamily: 'NanumSquareNeo-Variable',
-        fontWeight: '700',
+        color: subTextColor,
         fontSize: 11,
-        letterSpacing: 3,
+        ...commonTextStyle,
     },
     loginButton: {
         marginTop: 20,
         width: '60%',
         height: 50,
         borderRadius: 23.5,
-        backgroundColor: '#009499',
+        backgroundColor: pointColor,
         justifyContent: 'center',
         alignItems: 'center',
     },
     loginButtonText: {
-        color: '#FFFFFF',
-        fontFamily: 'NanumSquareNeo-Variable',
-        fontWeight: '700',
+        color: COLOR.WHITE,
         fontSize: 18,
-        letterSpacing: 3,
+        ...commonTextStyle,
     },
 });
