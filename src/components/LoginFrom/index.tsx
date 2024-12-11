@@ -1,10 +1,14 @@
 import React, {useState, useRef} from 'react';
 import {
-    View,
-    Text,
     TextInput,
     TouchableOpacity,
 } from 'react-native';
+
+import {Box} from '@/components/ui/box'
+import {VStack} from '@/components/ui/vstack'
+import {HStack} from '@/components/ui/hstack'
+import {Text} from '@/components/ui/text'
+
 import {useNavigation} from '@react-navigation/native';
 import {useSetRecoilState} from 'recoil';
 import authState from '../../recoil/authAtom';
@@ -71,9 +75,9 @@ const LoginForm:React.FC<LoginFormProps> = ({setIsLoading}) => {
     };
 
     return (
-        <View style={LoginFormStyles.loginFormContainer}>
-            <View style={LoginFormStyles.loginFormInnerContainer}>
-                <View style={LoginFormStyles.inputContainer}>
+        <Box style={LoginFormStyles.loginFormContainer}>
+            <VStack style={LoginFormStyles.loginFormInnerContainer}>
+                <VStack style={LoginFormStyles.inputContainer}>
                     <Text style={LoginFormStyles.inputLabel}>이메일</Text>
                     <TextInput
                         style={LoginFormStyles.input}
@@ -87,8 +91,8 @@ const LoginForm:React.FC<LoginFormProps> = ({setIsLoading}) => {
                         }}
                         blurOnSubmit={false}
                     />
-                </View>
-                <View style={LoginFormStyles.inputContainer}>
+                </VStack>
+                <VStack style={LoginFormStyles.inputContainer}>
                     <Text style={LoginFormStyles.inputLabel}>비밀번호</Text>
                     <TextInput
                         style={LoginFormStyles.input}
@@ -111,31 +115,31 @@ const LoginForm:React.FC<LoginFormProps> = ({setIsLoading}) => {
                         <Text style={LoginFormStyles.findText}>비밀번호 찾기</Text>
                     </TouchableOpacity>
 
-                    <View style={LoginFormStyles.autoLoginContainer}>
+                    <HStack style={LoginFormStyles.autoLoginContainer}>
                         <TouchableOpacity
                             style={LoginFormStyles.customCheckboxContainer}
                             onPress={() => setIsAutoLogin(!isAutoLogin)}>
-                            <View
+                            <Box
                                 style={[
                                     LoginFormStyles.customCheckbox,
                                     isAutoLogin && LoginFormStyles.customCheckboxChecked,
                                 ]}>
                                 {isAutoLogin && <Text style={LoginFormStyles.checkmark}>✓</Text>}
-                            </View>
+                            </Box>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => setIsAutoLogin(!isAutoLogin)}>
                             <Text style={LoginFormStyles.optionText}>자동 로그인</Text>
                         </TouchableOpacity>
-                    </View>
-                </View>
+                    </HStack>
+                </VStack>
 
                 <TouchableOpacity
                     style={LoginFormStyles.loginButton}
                     onPress={() => onLoginPress()}>
                     <Text style={LoginFormStyles.loginButtonText}>잔디 심기</Text>
                 </TouchableOpacity>
-            </View>
-        </View>
+            </VStack>
+        </Box>
     );
 };
 
