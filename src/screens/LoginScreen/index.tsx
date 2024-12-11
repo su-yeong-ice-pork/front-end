@@ -8,7 +8,7 @@ import LoginForm from '../../components/LoginFrom/index.tsx';
 import Loader from '../../components/Loader';
 import Slides from '../../components/Landing/Slides';
 
-import {COLOR} from '../../constants/styles/color/color';
+import {COLOR} from '../../constants/styles/color/color.ts';
 
 const LoginScreen = ({}) => {
     const [isLoading, setIsLoading] = useState(false);
