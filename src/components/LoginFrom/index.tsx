@@ -4,10 +4,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-import {Box} from '@/components/ui/box'
-import {VStack} from '@/components/ui/vstack'
-import {HStack} from '@/components/ui/hstack'
-import {Text} from '@/components/ui/text'
+import {Box,VStack,HStack,Text} from '@/components/ui/index.ts'
 
 import {useNavigation} from '@react-navigation/native';
 import {useSetRecoilState} from 'recoil';
