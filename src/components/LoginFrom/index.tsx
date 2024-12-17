@@ -12,11 +12,10 @@ import authState from '../../recoil/authAtom';
 import handleLogin from '../../api/login/LoginApi';
 import {setItem} from '../../api/asyncStorage';
 import {useMutation} from '@tanstack/react-query';
+import Loader from "@/src/components/Loader.tsx";
 
 import {LoginFormStyles} from './../LoginFrom/LoginFromStyle.ts';
 import {LoginPropsType} from "@/src/api/login/LoginPropsType.ts";
-
-import Loader from "@/src/components/Loader.tsx";
 
 
 const LoginForm = ({}) => {
@@ -27,7 +26,6 @@ const LoginForm = ({}) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const passwordInputRef = useRef(null);
-
 
     const mutation = useMutation({
         mutationFn: ({email, password}: LoginPropsType) =>
