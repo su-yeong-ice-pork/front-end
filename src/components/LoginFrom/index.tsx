@@ -4,7 +4,7 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-import {Box,VStack,HStack,Text} from '@/components/ui/index.ts'
+import {Box, VStack, HStack, Text} from '@/components/ui/index.ts'
 
 import {useNavigation} from '@react-navigation/native';
 import {useSetRecoilState} from 'recoil';
@@ -16,16 +16,18 @@ import {useMutation} from '@tanstack/react-query';
 import {LoginFormStyles} from './../LoginFrom/LoginFromStyle.ts';
 import {LoginPropsType} from "@/src/api/login/LoginPropsType.ts";
 
-import {LoginFormProps} from "@/src/components/types/LoginFormType/LoinFromType.ts";
+import Loader from "@/src/components/Loader.tsx";
 
 
-const LoginForm:React.FC<LoginFormProps> = ({setIsLoading}) => {
+const LoginForm = ({}) => {
     const navigation = useNavigation();
     const setAuthState = useSetRecoilState(authState);
     const [isAutoLogin, setIsAutoLogin] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const passwordInputRef = useRef(null);
+
 
     const mutation = useMutation({
         mutationFn: ({email, password}: LoginPropsType) =>
@@ -73,6 +75,9 @@ const LoginForm:React.FC<LoginFormProps> = ({setIsLoading}) => {
 
     return (
         <Box style={LoginFormStyles.loginFormContainer}>
+            {
+                isLoading && <Loader/>
+            }
             <VStack style={LoginFormStyles.loginFormInnerContainer}>
                 <VStack style={LoginFormStyles.inputContainer}>
                     <Text style={LoginFormStyles.inputLabel}>이메일</Text>

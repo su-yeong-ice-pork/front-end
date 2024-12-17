@@ -11,7 +11,6 @@ import Slides from '../../components/Landing/Slides';
 import {COLOR} from '../../constants/styles/color/color.ts';
 
 const LoginScreen = ({}) => {
-    const [isLoading, setIsLoading] = useState(false);
     return (
         <LinearGradient
             colors={COLOR.GRADIENT.TONE}
@@ -29,10 +28,8 @@ const LoginScreen = ({}) => {
                 bounces={false}>
                 <Slides/>
 
-                <LoginForm setIsLoading={setIsLoading}
-                />
+                <LoginForm/>
             </KeyboardAwareScrollView>
-            {isLoading && <Loader/>}
         </LinearGradient>
     );
 };
