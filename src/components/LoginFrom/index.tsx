@@ -12,17 +12,16 @@ import authState from '../../recoil/authAtom';
 import handleLogin from '../../api/login/LoginApi';
 import {setItem} from '../../api/asyncStorage';
 import {useMutation} from '@tanstack/react-query';
-import Loader from "@/src/components/Loader.tsx";
 
 import {LoginFormStyles} from './../LoginFrom/LoginFromStyle.ts';
 import {LoginPropsType} from "@/src/api/login/LoginPropsType.ts";
+import {LoginFormProps} from "@/src/components/types/LoginFormType/LoginFormType.ts";
 
 
-const LoginForm = ({}) => {
+const LoginForm: React.FC<LoginFormProps> = ({setIsLoading}) => {
     const navigation = useNavigation();
     const setAuthState = useSetRecoilState(authState);
     const [isAutoLogin, setIsAutoLogin] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const passwordInputRef = useRef(null);
@@ -73,9 +72,6 @@ const LoginForm = ({}) => {
 
     return (
         <Box style={LoginFormStyles.loginFormContainer}>
-            {
-                isLoading && <Loader/>
-            }
             <VStack style={LoginFormStyles.loginFormInnerContainer}>
                 <VStack style={LoginFormStyles.inputContainer}>
                     <Text style={LoginFormStyles.inputLabel}>이메일</Text>
