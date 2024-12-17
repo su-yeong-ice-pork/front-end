@@ -23,14 +23,15 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
+import {RootStackParamList} from '@/src/components/types/NavigationType/NavigationType';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
 const queryClient = new QueryClient({
   queryCache: new QueryCache({
     onError: error => Alert.alert(`${error.message}`),
   }),
   defaultOptions: {
-    queries: {retry: 0, staleTime: 1000 * 60, gcTime: 1000 * 60 * 60 * 24},
+    queries: {retry: 0, staleTime: 1000, gcTime: 1000},
   },
 });
 
