@@ -16,31 +16,17 @@ export const LoginFormStyles = StyleSheet.create({
         width: '100%',
         paddingHorizontal: 20,
         marginTop: 20,
-        marginBottom: 20,
+        marginBottom: 40,
     },
     loginFormInnerContainer: {
         alignItems: 'center',
         justifyContent: 'center',
     },
-    inputContainer: {
+    passwardContainer:{
         width: '100%',
-        marginBottom: 20,
     },
-    inputLabel: {
-        color: '#454545',
-        fontSize: 13,
-        paddingBottom:5,
-        ...commonTextStyle,
-    },
-    input: {
-        width: '100%',
-        height: 50,
-        borderRadius: 6,
-        backgroundColor: '#F4F4F4',
-        paddingHorizontal: 10,
-        fontSize: 12,
-        ...commonTextStyle,
-        color: COLOR.BLACK,
+    paddingBox: {
+        height: 20
     },
     findTextContainer: {
         position: 'absolute',

@@ -1,8 +1,5 @@
 import React, {useState, useRef} from 'react';
-import {
-    TextInput,
-    TouchableOpacity,
-} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 
 import {Box, VStack, HStack, Text} from '@/components/ui/index.ts'
 
@@ -16,6 +13,7 @@ import {useMutation} from '@tanstack/react-query';
 import {LoginFormStyles} from './../LoginFrom/LoginFromStyle.ts';
 import {LoginPropsType} from "@/src/api/login/LoginPropsType.ts";
 import {LoginFormProps} from "@/src/components/types/LoginFormType/LoginFormType.ts";
+import {InputField} from "../LoginFrom/InputField/index.tsx";
 
 
 const LoginForm: React.FC<LoginFormProps> = ({setIsLoading}) => {
@@ -73,33 +71,23 @@ const LoginForm: React.FC<LoginFormProps> = ({setIsLoading}) => {
     return (
         <Box style={LoginFormStyles.loginFormContainer}>
             <VStack style={LoginFormStyles.loginFormInnerContainer}>
-                <VStack style={LoginFormStyles.inputContainer}>
-                    <Text style={LoginFormStyles.inputLabel}>이메일</Text>
-                    <TextInput
-                        style={LoginFormStyles.input}
-                        placeholder="이메일을 입력해주세요."
-                        placeholderTextColor="#B9B9B9"
-                        value={email}
-                        onChangeText={setEmail}
-                        returnKeyType="next"
-                        onSubmitEditing={() => {
-                            passwordInputRef.current?.focus();
-                        }}
-                        blurOnSubmit={false}
-                    />
-                </VStack>
-                <VStack style={LoginFormStyles.inputContainer}>
-                    <Text style={LoginFormStyles.inputLabel}>비밀번호</Text>
-                    <TextInput
-                        style={LoginFormStyles.input}
+                <InputField
+                    label="이메일"
+                    placeholder="이메일을 입력해주세요."
+                    value={email}
+                    onChangeText={setEmail}
+                    onSubmitEditing={() => passwordInputRef.current?.focus()}
+                />
+                <VStack style={LoginFormStyles.paddingBox}></VStack>
+                <VStack style={LoginFormStyles.passwardContainer}>
+                    <InputField
+                        label="비밀번호"
                         placeholder="비밀번호를 입력해주세요."
-                        placeholderTextColor="#B9B9B9"
-                        secureTextEntry
                         value={password}
                         onChangeText={setPassword}
-                        ref={passwordInputRef}
-                        returnKeyType="done"
+                        secureTextEntry={true}
                         onSubmitEditing={onLoginPress}
+                        ref={passwordInputRef}
                     />
                     <TouchableOpacity
                         style={LoginFormStyles.findTextContainer}
@@ -128,7 +116,7 @@ const LoginForm: React.FC<LoginFormProps> = ({setIsLoading}) => {
                         </TouchableOpacity>
                     </HStack>
                 </VStack>
-
+                <VStack style={LoginFormStyles.paddingBox}></VStack>
                 <TouchableOpacity
                     style={LoginFormStyles.loginButton}
                     onPress={() => onLoginPress()}>
