@@ -346,44 +346,6 @@ const SignUpScreen = ({navigation}) => {
               <SignUp />
             </View>
 
-            {/* 비밀번호 입력 */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>
-                비밀번호 입력 <Text style={styles.starmark}>*</Text>
-              </Text>
-              <View style={styles.inputWrapper}>
-                <TextInput
-                  ref={passwordInputRef}
-                  style={styles.inputBox}
-                  placeholder="8~16자리 입력 / 영어, 숫자, 특수문자 조합"
-                  placeholderTextColor="#B9B9B9"
-                  secureTextEntry
-                  value={inputPassword}
-                  onChangeText={handlePasswordChange}
-                  returnKeyType="next"
-                  onSubmitEditing={() => nameInputRef.current?.focus()}
-                  blurOnSubmit={false}
-                />
-                {inputPassword.length > 0 && (
-                  <TouchableOpacity
-                    style={styles.resetButton}
-                    onPress={deletePassword}>
-                    <Image
-                      source={IMAGES.resetButton}
-                      style={styles.clearIcon}
-                    />
-                  </TouchableOpacity>
-                )}
-              </View>
-
-              {errorMessage ? (
-                <View style={styles.iconAndTextContainer}>
-                  <Image source={IMAGES.iIcon} style={styles.setiIcon} />
-                  <Text style={styles.activeText}>{errorMessage}</Text>
-                </View>
-              ) : null}
-            </View>
-
             {/* 이름 입력 */}
             <View style={styles.inputContainer}>
               <Text style={styles.inputLabel}>
