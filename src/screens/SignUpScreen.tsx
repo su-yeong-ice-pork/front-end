@@ -346,40 +346,6 @@ const SignUpScreen = ({navigation}) => {
               <SignUp />
             </View>
 
-            {/* 이름 입력 */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>
-                이름(닉네임) 입력 <Text style={styles.starmark}>*</Text>
-              </Text>
-              <View style={styles.inputWrapper}>
-                <TextInput
-                  ref={nameInputRef}
-                  style={styles.inputBox}
-                  placeholder="1~8자리 입력 / 한글, 영어, 숫자 조합"
-                  placeholderTextColor="#B9B9B9"
-                  value={name}
-                  onChangeText={text => {
-                    setName(text);
-                    setIsNameAvailable(false);
-                    setNameErrorMessage('');
-                  }}
-                  returnKeyType="done"
-                  onSubmitEditing={chkDuplicate}
-                />
-                <TouchableOpacity
-                  style={styles.codeButton}
-                  onPress={chkDuplicate}>
-                  <Text style={styles.requestCodeButtonText}>중복 확인</Text>
-                </TouchableOpacity>
-              </View>
-              {nameErrorMessage ? (
-                <View style={styles.iconAndTextContainer}>
-                  <Image source={IMAGES.iIcon} style={styles.setiIcon} />
-                  <Text style={styles.activeText}>{nameErrorMessage}</Text>
-                </View>
-              ) : null}
-            </View>
-
             {/* 잔디 심으러 가기 버튼 */}
             <View style={styles.buttonContainer}>
               <TouchableOpacity
