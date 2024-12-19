@@ -15,6 +15,8 @@ import {LoginPropsType} from "@/src/api/login/LoginPropsType.ts";
 import {LoginFormProps} from "@/src/components/types/LoginFormType/LoginFormType.ts";
 import {InputField} from "../LoginFrom/InputField/index.tsx";
 
+import {LOGIN_ERROR_MESSAGE,LOGIN_FORM_MESSAGE} from "@/src/constants/LoginFrom/LoginForm.ts";
+
 
 const LoginForm: React.FC<LoginFormProps> = ({setIsLoading}) => {
     const navigation = useNavigation();
@@ -57,8 +59,8 @@ const LoginForm: React.FC<LoginFormProps> = ({setIsLoading}) => {
                     },
                     onError: error => {
                         console.log(
-                            '오류',
-                            error.message || '로그인 중 오류가 발생했습니다.',
+                            LOGIN_ERROR_MESSAGE.ERROR,
+                            error.message || LOGIN_ERROR_MESSAGE.ERROR_MESSAGE,
                         );
                     },
                 },
@@ -72,8 +74,8 @@ const LoginForm: React.FC<LoginFormProps> = ({setIsLoading}) => {
         <Box style={LoginFormStyles.loginFormContainer}>
             <VStack style={LoginFormStyles.loginFormInnerContainer}>
                 <InputField
-                    label="이메일"
-                    placeholder="이메일을 입력해주세요."
+                    label={LOGIN_FORM_MESSAGE.EMAIL.LABEL}
+                    placeholder={LOGIN_FORM_MESSAGE.EMAIL.PLACEHOLDER}
                     value={email}
                     onChangeText={setEmail}
                     onSubmitEditing={() => passwordInputRef.current?.focus()}
@@ -81,8 +83,8 @@ const LoginForm: React.FC<LoginFormProps> = ({setIsLoading}) => {
                 <VStack style={LoginFormStyles.paddingBox}></VStack>
                 <VStack style={LoginFormStyles.passwardContainer}>
                     <InputField
-                        label="비밀번호"
-                        placeholder="비밀번호를 입력해주세요."
+                        label={LOGIN_FORM_MESSAGE.PASSWORD.LABEL}
+                        placeholder={LOGIN_FORM_MESSAGE.PASSWORD.PLACEHOLDER}
                         value={password}
                         onChangeText={setPassword}
                         secureTextEntry={true}
@@ -93,10 +95,10 @@ const LoginForm: React.FC<LoginFormProps> = ({setIsLoading}) => {
                         style={LoginFormStyles.findTextContainer}
                         onPress={() =>
                             navigation.navigate('FindPassword', {
-                                title: '비밀번호 찾기',
+                                title: LOGIN_FORM_MESSAGE.FIND_PASSWORD,
                             })
                         }>
-                        <Text style={LoginFormStyles.findText}>비밀번호 찾기</Text>
+                        <Text style={LoginFormStyles.findText}>{LOGIN_FORM_MESSAGE.FIND_PASSWORD}</Text>
                     </TouchableOpacity>
 
                     <HStack style={LoginFormStyles.autoLoginContainer}>
@@ -112,7 +114,7 @@ const LoginForm: React.FC<LoginFormProps> = ({setIsLoading}) => {
                             </Box>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => setIsAutoLogin(!isAutoLogin)}>
-                            <Text style={LoginFormStyles.optionText}>자동 로그인</Text>
+                            <Text style={LoginFormStyles.optionText}>{LOGIN_FORM_MESSAGE.AUTO_LOGIN}</Text>
                         </TouchableOpacity>
                     </HStack>
                 </VStack>
@@ -120,7 +122,7 @@ const LoginForm: React.FC<LoginFormProps> = ({setIsLoading}) => {
                 <TouchableOpacity
                     style={LoginFormStyles.loginButton}
                     onPress={() => onLoginPress()}>
-                    <Text style={LoginFormStyles.loginButtonText}>잔디 심기</Text>
+                    <Text style={LoginFormStyles.loginButtonText}>{LOGIN_FORM_MESSAGE.LOGIN_BUTTON_TEXT}</Text>
                 </TouchableOpacity>
             </VStack>
         </Box>
