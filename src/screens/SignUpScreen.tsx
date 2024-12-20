@@ -345,21 +345,6 @@ const SignUpScreen = ({navigation}) => {
             <View style={styles.inputContainer}>
               <SignUp />
             </View>
-
-            {/* 잔디 심으러 가기 버튼 */}
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={styles.signUpButton}
-                onPress={submitSignUp}>
-                <LinearGradient
-                  colors={['rgba(31, 209, 245, 1)', 'rgba(0, 255, 150, 1)']}
-                  style={styles.gradientButton}
-                  start={{x: 0, y: 0}}
-                  end={{x: 1, y: 1}}>
-                  <Text style={styles.signUpButtonText}>잔디 심으러 가기</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            </View>
           </KeyboardAwareScrollView>
 
           {/* 모달창 */}

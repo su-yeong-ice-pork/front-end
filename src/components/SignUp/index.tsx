@@ -5,6 +5,7 @@ import VerifyEmail from './VerifyEmail';
 import RegisterDepart from './RegisterDepart';
 import InputPassword from './InputPassword';
 import NickName from './NickName';
+import SaveButton from './SaveButton';
 
 export const SignUp = () => {
   return (
@@ -13,6 +14,7 @@ export const SignUp = () => {
       <RegisterDepart />
       <InputPassword />
       <NickName />
+      <SaveButton />
     </Box>
   );
 };
