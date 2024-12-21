@@ -1,5 +1,4 @@
 import {Dimensions, StyleSheet} from "react-native";
-import {FONT} from "@/src/constants/styles/font/default-font.ts";
 
 const {width, height} = Dimensions.get('window');
 
@@ -26,27 +25,27 @@ export const ProfileScreenStyles  = StyleSheet.create({
         borderColor: 'black',
         borderWidth: 1,
     },
-    badges: {
-        flexDirection: 'row',
-        backgroundColor: 'red',
-        padding: width * 0.025,
-        borderRadius: width * 0.015,
-        alignSelf: 'flex-start',
-        alignItems: 'center',
-    },
-    badgeText: {
-        fontSize: 10,
-        fontWeight: 'bold',
-        color: 'red',
-        marginBottom: 5,
-        fontFamily: `${FONT}`,
-    },
-    badge: {
-        width: width * 0.09,
-        height: width * 0.09,
-        marginRight: width * 0.02,
-        resizeMode: 'contain',
-    },
+    // badges: {
+    //     flexDirection: 'row',
+    //     backgroundColor: 'red',
+    //     padding: width * 0.025,
+    //     borderRadius: width * 0.015,
+    //     alignSelf: 'flex-start',
+    //     alignItems: 'center',
+    // },
+    // badgeText: {
+    //     fontSize: 10,
+    //     fontWeight: 'bold',
+    //     color: 'red',
+    //     marginBottom: 5,
+    //     fontFamily: `${FONT}`,
+    // },
+    // badge: {
+    //     width: width * 0.09,
+    //     height: width * 0.09,
+    //     marginRight: width * 0.02,
+    //     resizeMode: 'contain',
+    // },
 
 
     profileHeader: {

@@ -4,17 +4,13 @@ import {
     Text,
     Image,
     Modal,
-    ImageBackground,
     TouchableOpacity,
-    StyleSheet,
     ScrollView,
-    Dimensions,
     SafeAreaView,
 } from 'react-native';
 
 import {ProfileScreenStyles} from "./ProfileScreenStyle.ts"
 import BottomBar from '../../components/BottomBar/index.tsx';
-import LinearGradient from 'react-native-linear-gradient';
 
 import {getMemberData, Member} from '../../api/profile';
 import {getBadges, Badge} from '../../api/badge';
@@ -33,9 +29,7 @@ import {useQuery} from "@tanstack/react-query";
 import {getUserDataApi} from "@/src/api/user/getUserDataApi.ts";
 import {getBadgesApi} from "@/src/api/badge/getBadgesApi.ts";
 import {Box} from "@/components/ui";
-import {FriendsProfileScreenStyles} from "@/src/screens/FriendsProfileScreen/FriendsProfileStyles.ts";
-import Badges from "@/src/components/Badges";
-const {width, height} = Dimensions.get('window');
+import Badges from "@/src/components/Badges/index.tsx";
 
 const IMAGES = {
     profile: require('../../../assets/images/illustration/typeThree.png'),
@@ -178,7 +172,7 @@ const ProfileScreen = ({navigation}) => {
                         <ListViewBox type="group" count={0} />
 
                         <Box style={ProfileScreenStyles.badgeContainer}>
-                            {badgesData ? <Badges badges={badgesData} style ={ProfileScreenStyles.badges}/> : null}
+                            {badgesData ? <Badges badges={badgesData} styleType={"profile"}/> : null}
                         </Box>
 
 
@@ -327,77 +321,6 @@ const ProfileScreen = ({navigation}) => {
 
 export default ProfileScreen;
 
-// BadgeSection Component
-const BadgeSection = ({badges, onMorePress}) => {
-    return (
-        <View style={ProfileScreenStyles.badgeSection}>
-            <Text style={ProfileScreenStyles.badgeTitle}>보유 뱃지</Text>
-            <View style={ProfileScreenStyles.badgeContainer}>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {badges && badges.length > 0 ? (
-                        <>
-                            {badges.slice(0, 3).map(badge => (
-                                <Image
-                                    key={badge.id}
-                                    source={BADGES[Number(badge.fileName)]}
-                                    style={ProfileScreenStyles.badge}
-                                />
-                            ))}
-                            {badges.length > 0 && (
-                                <TouchableOpacity
-                                    onPress={onMorePress}
-                                    style={ProfileScreenStyles.moreButton}>
-                                    <Text style={ProfileScreenStyles.moreText}>...</Text>
-                                </TouchableOpacity>
-                            )}
-                        </>
-                    ) : (
-                        <Text>보유한 뱃지가 없습니다.</Text>
-                    )}
-                </ScrollView>
-            </View>
-        </View>
-    );
-};
-
-// FreezeSummary Component
-const FreezeSummary = ({freezeCount, onPress}) => {
-    return (
-        <View style={ProfileScreenStyles.frozenSection}>
-            <Text style={ProfileScreenStyles.frozenTitle}>보유 프리즈</Text>
-            {/* 프리즈 개수 표시 상자 */}
-            <View style={ProfileScreenStyles.infoCardContainer}>
-                <View style={ProfileScreenStyles.frozenDetailContainer}>
-                    <Text style={ProfileScreenStyles.frozenDetailText}>
-                        현재 총 <Text style={ProfileScreenStyles.frozenCount}>{freezeCount}</Text> 개의
-                        프리즈를 보유하고 있습니다.
-                    </Text>
-                </View>
-
-                {/* 프리즈 충전하기 버튼 */}
-                <TouchableOpacity onPress={onPress}>
-                    <LinearGradient
-                        colors={['rgba(31, 209, 245, 1)', 'rgba(0, 255, 150, 1)']}
-                        style={ProfileScreenStyles.gradientStyle}
-                        start={{x: 0.5, y: 1}}
-                        end={{x: 0.5, y: 0}}>
-                        <View style={ProfileScreenStyles.frozenText}>
-                            <Image source={IMAGES.freeze} style={ProfileScreenStyles.freeze} />
-                            <Text style={ProfileScreenStyles.useFrozenButtonText}>프리즈 충전하기</Text>
-                        </View>
-                    </LinearGradient>
-                </TouchableOpacity>
-            </View>
-            {/* 안내 문구 */}
-            <View style={ProfileScreenStyles.iconAndTextContainer}>
-                <Image source={IMAGES.iIcon} style={ProfileScreenStyles.setiIcon} />
-                <Text style={ProfileScreenStyles.activeText}>
-                    프리즈는 잔디를 대신 채워줄 수 있는 잔디 채우기권입니다!
-                </Text>
-            </View>
-        </View>
-    );
-};
 
 // ProfileFooter Component
 const ProfileFooter = ({navigation}) => {

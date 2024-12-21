@@ -1,8 +1,7 @@
-import {StyleSheet, Dimensions} from 'react-native';
-const {width, height} = Dimensions.get('window');
+import {StyleSheet} from 'react-native';
 import {FONT} from '@/src/constants/styles/font/default-font';
 
-export const BadgeViewStyles = StyleSheet.create({
+export const HomeBadgeViewStyles = StyleSheet.create({
   badge: {
     width: 35,
     height: 35,
