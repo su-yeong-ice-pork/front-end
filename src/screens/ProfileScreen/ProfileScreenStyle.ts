@@ -1,4 +1,5 @@
 import {Dimensions, StyleSheet} from "react-native";
+import {FONT} from "@/src/constants/styles/font/default-font.ts";
 
 const {width, height} = Dimensions.get('window');
 
@@ -10,9 +11,44 @@ export const ProfileScreenStyles  = StyleSheet.create({
         height: height,
     },
     content: {
-        paddingHorizontal: width * 0.05,
         marginTop: height * 0.01,
+        borderStyle: 'solid', //test
+        borderColor: 'red',
+        borderWidth: 1,
     },
+
+    //test
+    badgeContainer: {
+        padding: height * 0.025,
+        marginTop: 25,
+        marginLeft: -50,
+        borderStyle: 'solid', //test
+        borderColor: 'black',
+        borderWidth: 1,
+    },
+    badges: {
+        flexDirection: 'row',
+        backgroundColor: 'red',
+        padding: width * 0.025,
+        borderRadius: width * 0.015,
+        alignSelf: 'flex-start',
+        alignItems: 'center',
+    },
+    badgeText: {
+        fontSize: 10,
+        fontWeight: 'bold',
+        color: 'red',
+        marginBottom: 5,
+        fontFamily: `${FONT}`,
+    },
+    badge: {
+        width: width * 0.09,
+        height: width * 0.09,
+        marginRight: width * 0.02,
+        resizeMode: 'contain',
+    },
+
+
     profileHeader: {
         flexDirection: 'column',
     },
@@ -101,29 +137,29 @@ export const ProfileScreenStyles  = StyleSheet.create({
         marginTop: 16, // mt-4
         width: width * 0.6,
     },
-    badgeTitle: {
-        fontSize: 10,
-        fontWeight: '800',
-        color: '#838F8F',
-        fontFamily: 'NanumSquareNeo-Variable',
-    },
-    badgeContainer: {
-        flexDirection: 'row',
-        backgroundColor: '#FFFFFF',
-        alignItems: 'center',
-        height: height * 0.06,
-        width: width * 0.6,
-        paddingHorizontal: width * 0.03,
-        paddingVertical: height * 0.01,
-        borderRadius: 4,
-        marginTop: height * 0.005,
-    },
-    badge: {
-        width: 25,
-        height: 25,
-        marginRight: 7,
-        resizeMode: 'contain',
-    },
+    // badgeTitle: {
+    //     fontSize: 10,
+    //     fontWeight: '800',
+    //     color: '#838F8F',
+    //     fontFamily: 'NanumSquareNeo-Variable',
+    // },
+    // badgeContainer: {
+    //     flexDirection: 'row',
+    //     backgroundColor: '#FFFFFF',
+    //     alignItems: 'center',
+    //     height: height * 0.06,
+    //     width: width * 0.6,
+    //     paddingHorizontal: width * 0.03,
+    //     paddingVertical: height * 0.01,
+    //     borderRadius: 4,
+    //     marginTop: height * 0.005,
+    // },
+    // badge: {
+    //     width: 25,
+    //     height: 25,
+    //     marginRight: 7,
+    //     resizeMode: 'contain',
+    // },
     moreButton: {
         color: '#009499',
         flexDirection: 'row',

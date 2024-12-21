@@ -28,34 +28,41 @@ import Profiles from '../../components/Profile';
 import ListViewBox from '../../components/ListViewBox';
 import GrassCard from '../../components/GrassCard';
 import ProfileAction from '../../components/ProfileAction';
+import Freeze from "@/src/components/Freeze";
+import {useQuery} from "@tanstack/react-query";
+import {getUserDataApi} from "@/src/api/user/getUserDataApi.ts";
+import {getBadgesApi} from "@/src/api/badge/getBadgesApi.ts";
+import {Box} from "@/components/ui";
+import {FriendsProfileScreenStyles} from "@/src/screens/FriendsProfileScreen/FriendsProfileStyles.ts";
+import Badges from "@/src/components/Badges";
 const {width, height} = Dimensions.get('window');
 
 const IMAGES = {
-    profile: require('../../assets/images/illustration/typeThree.png'),
-    logo: require('../../assets/images/illustration/logo.png'),
-    friendsIcon: require('../../assets/images/icons/friendsIcon.png'),
-    groupsIcon: require('../../assets/images/icons/groupsIcon.png'),
-    freeze: require('../../assets/images/illustration/freeze.png'),
-    lockIcon: require('../../assets/images/icons/lockIcon.png'),
-    logoutIcon: require('../../assets/images/icons/logoutIcon.png'),
-    moreIcon: require('../../assets/images/icons/moreIcon2.png'),
-    coloredFriendsIcon: require('../../assets/images/icons/coloredFriendsIcon.png'),
-    coloredGroupIcon: require('../../assets/images/icons/coloredGroupIcon.png'),
-    jandi1: require('../../assets/images/illustration/jandi1.png'),
-    jandi2: require('../../assets/images/illustration/jandi2.png'),
-    editProfile: require('../../assets/images/icons/profileEdit.png'),
-    profileBackButton: require('../../assets/images/icons/profileBackButton.png'),
-    sleepyFaceEmoji: require('../../assets/images/emoji/sleepyFaceEmoji.png'),
-    closeLogout: require('../../assets/images/icons/closeLogout.png'),
-    iIcon: require('../../assets/images/icons/iIcon.png'),
+    profile: require('../../../assets/images/illustration/typeThree.png'),
+    logo: require('../../../assets/images/illustration/logo.png'),
+    friendsIcon: require('../../../assets/images/icons/friendsIcon.png'),
+    groupsIcon: require('../../../assets/images/icons/groupsIcon.png'),
+    freeze: require('../../../assets/images/illustration/freeze.png'),
+    lockIcon: require('../../../assets/images/icons/lockIcon.png'),
+    logoutIcon: require('../../../assets/images/icons/logoutIcon.png'),
+    moreIcon: require('../../../assets/images/icons/moreIcon2.png'),
+    coloredFriendsIcon: require('../../../assets/images/icons/coloredFriendsIcon.png'),
+    coloredGroupIcon: require('../../../assets/images/icons/coloredGroupIcon.png'),
+    jandi1: require('../../../assets/images/illustration/jandi1.png'),
+    jandi2: require('../../../assets/images/illustration/jandi2.png'),
+    editProfile: require('../../../assets/images/icons/profileEdit.png'),
+    profileBackButton: require('../../../assets/images/icons/profileBackButton.png'),
+    sleepyFaceEmoji: require('../../../assets/images/emoji/sleepyFaceEmoji.png'),
+    closeLogout: require('../../../assets/images/icons/closeLogout.png'),
+    iIcon: require('../../../assets/images/icons/iIcon.png'),
 };
 const BADGES = [
-    require('../../assets/images/badge/badge0.png'),
-    require('../../assets/images/badge/badge1.png'),
-    require('../../assets/images/badge/badge2.png'),
-    require('../../assets/images/badge/badge3.png'),
-    require('../../assets/images/badge/badge4.png'),
-    require('../../assets/images/badge/badge5.png'),
+    require('../../../assets/images/badge/badge0.png'),
+    require('../../../assets/images/badge/badge1.png'),
+    require('../../../assets/images/badge/badge2.png'),
+    require('../../../assets/images/badge/badge3.png'),
+    require('../../../assets/images/badge/badge4.png'),
+    require('../../../assets/images/badge/badge5.png'),
 ];
 
 const ProfileScreen = ({navigation}) => {
@@ -75,37 +82,52 @@ const ProfileScreen = ({navigation}) => {
         setModalVisible(true);
         return;
     };
-    useEffect(() => {
-        const fetchMember = async () => {
-            try {
-                const memberData = await getMemberData(authInfo.authToken);
-                if (memberData) {
-                    setMember(memberData);
-                    setUser(memberData);
-                    const badgesData = await getBadges(memberData.id, authInfo.authToken);
-                    if (badgesData) {
-                        setBadges(badgesData);
-                    } else {
-                        console.log('뱃지를 불러오는 데 실패했습니다.');
-                    }
-                    const recordData = await getMyPageRecord(authInfo.authToken);
-                    if (recordData && recordData.success) {
-                        setTotalDays(recordData.response.totalStreak);
-                        setTotalTime(recordData.response.totalStudyTime);
-                        setCreateDate(recordData.response.createdDate);
-                    } else {
-                        console.log('기록을 불러오는 데 실패했습니다.');
-                    }
-                } else {
-                    console.log('프로필을 불러오는 데 실패했습니다.');
-                }
-            } catch (error) {
-                console.log('데이터를 불러오는 중 오류가 발생했습니다.');
-            }
-        };
 
-        fetchMember();
-    }, []);
+    const {data: memberData, error: memberDataError} = useQuery({
+        queryKey: ['member'],
+        queryFn: () => getUserDataApi(authInfo.authToken),
+    });
+
+    const {data: badgesData, error: badgesDataError} = useQuery({
+        queryKey: ['badges', memberData?.id],
+        queryFn: () => memberData ? getBadgesApi(memberData.id, authInfo.authToken) : Promise.resolve(null),
+        enabled: !!memberData,
+    });
+
+    const {data: recordData, error: recordDataError} = useQuery({
+        queryKey: ['record'],
+        queryFn: () => getMyPageRecord(authInfo.authToken),
+    });
+
+    useEffect(() => {
+        if (memberData) {
+            setMember(memberData);
+            setUser(memberData);
+        } else if (memberDataError) {
+            setModalMessage('프로필을 불러오는 데 실패했습니다.');
+            setModalVisible(true);
+        }
+    }, [memberData, memberDataError]);
+
+    useEffect(() => {
+        if (badgesData) {
+            setBadges(badgesData);
+        } else if (badgesDataError) {
+            setModalMessage('뱃지를 불러오는 데 실패했습니다.');
+            setModalVisible(true);
+        }
+    }, [badgesData, badgesDataError]);
+
+    useEffect(() => {
+        if (recordData && recordData.success) {
+            setTotalDays(recordData.response.totalStreak);
+            setTotalTime(recordData.response.totalStudyTime);
+            setCreateDate(recordData.response.createdDate);
+        } else if (recordDataError) {
+            setModalMessage('기록을 불러오는 데 실패했습니다.');
+            setModalVisible(true);
+        }
+    }, [recordData, recordDataError]);
 
     return (
         <>
@@ -155,15 +177,12 @@ const ProfileScreen = ({navigation}) => {
 
                         <ListViewBox type="group" count={0} />
 
-                        <BadgeSection
-                            badges={badges}
-                            onMorePress={() => setShowBadgeModal(true)}
-                        />
+                        <Box style={ProfileScreenStyles.badgeContainer}>
+                            {badgesData ? <Badges badges={badgesData} style ={ProfileScreenStyles.badges}/> : null}
+                        </Box>
 
-                        <FreezeSummary
-                            freezeCount={member?.freezeCount}
-                            onPress={handleNotUseableModal}
-                        />
+
+                        <Freeze />
 
                         <GrassCard name={member?.name} totalDays={totalDays} />
                     </View>
