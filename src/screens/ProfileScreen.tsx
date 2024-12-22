@@ -120,7 +120,9 @@ const ProfileScreen = ({navigation}) => {
           </View>
 
           {member?.mainBanner ? (
-            <Profiles />
+            <View>
+              <Profiles />
+            </View>
           ) : (
             <View style={styles.upperSection}>
               <TouchableOpacity
@@ -151,6 +153,12 @@ const ProfileScreen = ({navigation}) => {
           )}
 
           <View style={styles.content}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('EditProfile', {id: member?.id})
+              }>
+              <Image source={IMAGES.editProfile} style={styles.editIcon} />
+            </TouchableOpacity>
             <ListViewBox type="friend" count={0} />
 
             <ListViewBox type="group" count={0} />
