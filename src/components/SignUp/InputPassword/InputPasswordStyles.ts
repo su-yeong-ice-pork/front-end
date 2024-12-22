@@ -12,7 +12,7 @@ export const InputPasswordStyles = StyleSheet.create({
   codeButton: {
     position: 'absolute',
     right: 0,
-    top: 35,
+    top: '50%',
     backgroundColor: 'transparent',
     borderRadius: 20,
   },

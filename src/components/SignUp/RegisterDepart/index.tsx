@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {Box} from '@/components/ui/box';
 import {Text} from '@/components/ui/text';
+import {Button, ButtonText} from '@/components/ui/button';
+
 import {Modal, TouchableOpacity, Image} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
@@ -79,14 +81,14 @@ const RegisterDepart = () => {
             {/* College Selection */}
             <Box style={RegisterDepartStyles.inputWrapper}>
               <Text style={RegisterDepartStyles.modalTitle}>학과 등록</Text>
-              <TouchableOpacity
+              <Button
                 style={RegisterDepartStyles.resetButton}
                 onPress={() => setDepartModalVisible(false)}>
                 <Image
                   source={ICONS.CLOSE_BUTTON}
                   style={RegisterDepartStyles.clearIcon}
                 />
-              </TouchableOpacity>
+              </Button>
             </Box>
 
             <Box style={RegisterDepartStyles.modalContainer2}>
@@ -145,11 +147,13 @@ const RegisterDepart = () => {
             </Box>
 
             {/* Confirm Button */}
-            <TouchableOpacity
+            <Button
               style={RegisterDepartStyles.confirmButton}
               onPress={confirmSelection}>
-              <Text style={RegisterDepartStyles.confirmButtonText}>확인</Text>
-            </TouchableOpacity>
+              <ButtonText style={RegisterDepartStyles.confirmButtonText}>
+                확인
+              </ButtonText>
+            </Button>
           </Box>
         </GestureHandlerRootView>
       </Modal>

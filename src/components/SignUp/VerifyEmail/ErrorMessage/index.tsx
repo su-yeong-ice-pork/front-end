@@ -6,7 +6,9 @@ import {HStack} from '@/components/ui/hstack';
 import {ICONS} from '@/src/constants/image/icons';
 import ErrorMessageStyles from './ErrorMessageStyles';
 
-const ErrorMessage = ({errorMessage}) => {
+import {ErrorMessageProps} from '@/src/components/types/SignUpType/VerifyEmail';
+
+const ErrorMessage = ({errorMessage}: ErrorMessageProps) => {
   return (
     <HStack style={ErrorMessageStyles.iconAndTextContainer}>
       <Image

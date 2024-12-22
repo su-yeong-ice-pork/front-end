@@ -52,7 +52,6 @@ const InputPassword = () => {
               style={InputPasswordStyles.codeButton}
               onPress={deletePassword}>
               <Image
-                size="sm"
                 alt="delete"
                 style={InputPasswordStyles.deleteImage}
                 source={ICONS.RESET_BUTTON}

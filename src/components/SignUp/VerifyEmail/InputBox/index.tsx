@@ -4,7 +4,14 @@ import {Input, InputField, InputSlot, InputIcon} from '@/components/ui/input';
 
 import {InputBoxStyles} from './InputBoxStyles';
 
-const InputBox = ({inputTitle, placeholderText, value, setValue}) => {
+import {InputBoxProps} from '@/src/components/types/SignUpType/VerifyEmail';
+
+const InputBox = ({
+  inputTitle,
+  placeholderText,
+  value,
+  setValue,
+}: InputBoxProps) => {
   return (
     <Box>
       <Text style={InputBoxStyles.inputLabel}>

@@ -45,6 +45,7 @@ export const RegisterDepartStyles = StyleSheet.create({
     position: 'absolute',
     right: 5,
     paddingHorizontal: 15,
+    backgroundColor: 'transparent',
   },
   clearIcon: {
     width: width * 0.04,
@@ -76,9 +77,9 @@ export const RegisterDepartStyles = StyleSheet.create({
   },
   modalContainer2: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // 두 드롭다운 사이의 간격 조절
-    alignItems: 'center', // 세로축 가운데 정렬
-    paddingHorizontal: 20, // 좌우 패딩으로 모달의 가운데 위치 조정
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
     width: '100%',
     position: 'relative',
   },
@@ -109,7 +110,6 @@ export const RegisterDepartStyles = StyleSheet.create({
   confirmButton: {
     backgroundColor: '#009499',
     borderRadius: 20,
-    paddingVertical: 10,
     alignItems: 'center',
     marginTop: 15,
     width: width * 0.2,
