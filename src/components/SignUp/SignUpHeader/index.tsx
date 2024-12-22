@@ -1,5 +1,9 @@
 import React from 'react';
-import {View, Text, Dimensions} from 'react-native';
+
+import {Box} from '@/components/ui/box';
+import {Text} from '@/components/ui/text';
+
+import {Dimensions} from 'react-native';
 import Svg, {
   Defs,
   LinearGradient as SVGLinearGradient,
@@ -14,9 +18,9 @@ const {width, height} = Dimensions.get('window');
 
 const SignUpHeader = () => {
   return (
-    <View style={SignUpHeaderStyles.container}>
+    <Box style={SignUpHeaderStyles.container}>
       <Text style={SignUpHeaderStyles.welcomeText}>환영합니다!</Text>
-      <View style={SignUpHeaderStyles.inlineText}>
+      <Box style={SignUpHeaderStyles.inlineText}>
         <Svg height={height * 0.05} width={width * 0.9}>
           <Defs>
             <SVGLinearGradient id="grad1">
@@ -35,8 +39,8 @@ const SignUpHeader = () => {
             <TSpan fill="#3E3E3E">를 함께 심어보아요!</TSpan>
           </SvgText>
         </Svg>
-      </View>
-    </View>
+      </Box>
+    </Box>
   );
 };
 
