@@ -7,13 +7,12 @@ import ErrorMessage from '../ErrorMessage';
 import {Button, ButtonText} from '@/components/ui/button';
 
 import {VerifyCodeProps} from '@/src/components/types/SignUpType/VerifyEmail';
-import {FormatTypeProps} from '@/src/components/types/SignUpType/VerifyEmail';
 
 const VerifyCode = ({timeLeft = 1000}: VerifyCodeProps) => {
   const [verificationCode, setVerificationCode] = useState<string>('');
   const [showError, setShowError] = useState<Boolean>(true);
 
-  const formatTime = ({seconds}: FormatTypeProps) => {
+  const formatTime = seconds => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(

@@ -14,7 +14,3 @@ export type ErrorMessageProps = {
 export type VerifyCodeProps = {
   timeLeft: number;
 };
-
-export type FormatTypeProps = {
-  seconds: number;
-};
