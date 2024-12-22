@@ -6,6 +6,7 @@ export const SaveButtonStyles = StyleSheet.create({
     width: '90%',
     height: 60,
     alignSelf: 'center',
+    backgroundColor: '#E1E6E8',
   },
   buttonStyle: {
     position: 'absolute',
