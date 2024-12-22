@@ -2,28 +2,36 @@ import React, {useEffect} from 'react';
 import '@/global.css';
 import {GluestackUIProvider} from '@/components/ui/gluestack-ui-provider';
 import {RecoilRoot} from 'recoil';
-import {View, StatusBar, StyleSheet} from 'react-native';
+import {Alert, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import LandingScreen from './src/screens/LandingScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
 import StudyScreen from './src/screens/StudyScreen';
-import StudyDetailScreen from './src/screens/StudyDetailScreen';
-import AlarmScreen from './src/screens/AlarmScreen';
+import StudyDetailScreen from './src/screens/StudyDetailScreen/index';
+import AlarmScreen from './src/screens/AlarmScreen/index';
 import HomeScreen from './src/screens/HomeScreen';
 import StudyRecordScreen from './src/screens/StudyRecordScreen';
 import FindPassword from './src/screens/FindPasswordScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import EditProfileScreen from './src/screens/EditProfileScreen';
-import FriendsProfile from './src/screens/FriendsProfile';
+import FriendsProfile from './src/screens/FriendsProfileScreen';
 import SplashScreen from 'react-native-splash-screen';
-import LoginScreen from './src/screens/LoginScreen';
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import LoginScreen from './src/screens/LoginScreen/index.tsx';
+import {
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
+import {RootStackParamList} from '@/src/components/types/NavigationType/NavigationType';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
 const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: error => Alert.alert(`${error.message}`),
+  }),
   defaultOptions: {
-    queries: {retry: 0, staleTime: 1000 * 60, gcTime: 1000 * 60 * 60 * 24},
+    queries: {retry: 0, staleTime: 1000, gcTime: 1000},
   },
 });
 

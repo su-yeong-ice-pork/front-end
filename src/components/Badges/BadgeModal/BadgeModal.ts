@@ -1,5 +1,6 @@
 import {StyleSheet, Dimensions} from 'react-native';
 const {width, height} = Dimensions.get('window');
+import {FONT} from '@/src/constants/styles/font/default-font';
 
 export const BadgeModalStyles = StyleSheet.create({
   modalOverlay: {
@@ -76,14 +77,14 @@ export const BadgeModalStyles = StyleSheet.create({
   modalHeaderText: {
     fontSize: width * 0.045,
     fontWeight: 'bold',
-    fontFamily: 'NanumSquareNeo-Variable',
+    fontFamily: `${FONT}`,
     color: '#000',
     textAlign: 'left',
   },
   modalHeaderHighlight: {
     fontSize: width * 0.04,
     fontWeight: 'bold',
-    fontFamily: 'NanumSquareNeo-Variable',
+    fontFamily: `${FONT}`,
     color: '#1AA5AA',
     paddingHorizontal: 5,
     borderRadius: 3,

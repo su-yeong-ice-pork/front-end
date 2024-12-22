@@ -1,11 +1,12 @@
 import {FONT} from '@/src/constants/styles/font/default-font';
+import {COLOR} from '@/src/constants/styles/color/color.ts';
 import {GetLabelProps} from '../../types/BottomBarType/BottomBarType';
 import {StyleSheet} from 'react-native';
 
 export const BottomBarButtonStyles = StyleSheet.create({
   iconContainer: {
     padding: 6,
-    backgroundColor: '#fff',
+    backgroundColor: COLOR.WHITE,
     flexDirection: 'column',
     resizeMode: 'contain',
   },
@@ -24,7 +25,7 @@ export const BottomBarButtonStyles = StyleSheet.create({
   },
   labelActive: {
     fontSize: 12,
-    color: '#000',
+    color: COLOR.BLACK,
     fontFamily: FONT,
     fontWeight: 'bold',
     resizeMode: 'contain',

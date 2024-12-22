@@ -23,10 +23,11 @@ import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
 import userState from '../recoil/userAtom';
 import authState from '../recoil/authAtom';
 import {setItem} from '../api/asyncStorage';
-import Profile from '../components/Profile';
+import Profiles from '../components/Profile';
 import ListViewBox from '../components/ListViewBox';
 import GrassCard from '../components/GrassCard';
 import ProfileAction from '../components/ProfileAction';
+import Badges from '../components/Badges';
 const {width, height} = Dimensions.get('window');
 
 const IMAGES = {
@@ -119,10 +120,8 @@ const ProfileScreen = ({navigation}) => {
           </View>
 
           {member?.mainBanner ? (
-            // 배너 이미지가 있을 때 ImageBackground를 렌더링
-            <Profile />
+            <Profiles />
           ) : (
-            // 배너 이미지가 없을 때 View를 렌더링하고 배경색을 적용
             <View style={styles.upperSection}>
               <TouchableOpacity
                 style={styles.backButtonWrapper}
