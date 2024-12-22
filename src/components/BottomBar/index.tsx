@@ -50,7 +50,7 @@ const BottomBar = () => {
       />
       <BottomBarButton
         currentScreen={currentScreen}
-        onPress={() => navigateTo(PATH_NAME.FRIENDSPROFILE)}
+        onPress={() => navigateTo(PATH_NAME.PROFILE)}
         screen={PATH_NAME.PROFILE}
         label={LABELS.PROFILE}
       />
