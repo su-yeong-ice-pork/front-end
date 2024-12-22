@@ -17,7 +17,7 @@ import ProfileScreen from './src/screens/ProfileScreen';
 import EditProfileScreen from './src/screens/EditProfileScreen';
 import FriendsProfile from './src/screens/FriendsProfileScreen';
 import SplashScreen from 'react-native-splash-screen';
-import LoginScreen from './src/screens/LoginScreen';
+import LoginScreen from './src/screens/LoginScreen/index.tsx';
 import {
   QueryCache,
   QueryClient,
