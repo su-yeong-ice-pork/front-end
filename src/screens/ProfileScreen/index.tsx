@@ -30,6 +30,9 @@ import {getUserDataApi} from "@/src/api/user/getUserDataApi.ts";
 import {getBadgesApi} from "@/src/api/badge/getBadgesApi.ts";
 import {Box} from "@/components/ui";
 import Badges from "@/src/components/Badges/index.tsx";
+import {RootStackRouteProp} from "@/src/components/types/NavigationType/NavigationType.ts";
+import {useNavigation, useRoute} from "@react-navigation/native";
+import {Button} from "@/components/ui/button";
 
 const IMAGES = {
     profile: require('../../../assets/images/illustration/typeThree.png'),
@@ -59,7 +62,10 @@ const BADGES = [
     require('../../../assets/images/badge/badge5.png'),
 ];
 
-const ProfileScreen = ({navigation}) => {
+const ProfileScreen = () => {
+    const navigation = useNavigation();
+    const route = useRoute<RootStackRouteProp<'Profile'>>();
+
     const [member, setMember] = useState<Member | null>(null);
     const [badges, setBadges] = useState<Badge[] | null>(null);
     const authInfo = useRecoilValue(authState);
@@ -134,7 +140,6 @@ const ProfileScreen = ({navigation}) => {
                             <Image source={IMAGES.logo} style={ProfileScreenStyles.logoImage} />
                         </View>
                     </View>
-
                     {member?.mainBanner ? (
                         <Profiles />
                     ) : (
