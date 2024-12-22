@@ -19,21 +19,19 @@ const VerifyEmail = () => {
 
   return (
     <Box>
-      <HStack>
-        <VStack style={NickNameStyles.inputWrapper}>
-          <InputBox
-            inputTitle="이름(닉네임) 입력"
-            placeholderText="1~8자리 입력/한글 영어, 숫자 조합합"
-            value={name}
-            setValue={setName}
-          />
-          <Button style={NickNameStyles.codeButton} onPress={chkDuplicate}>
-            <ButtonText style={NickNameStyles.requestCodeButtonText}>
-              중복확인
-            </ButtonText>
-          </Button>
-        </VStack>
-      </HStack>
+      <VStack style={NickNameStyles.inputWrapper}>
+        <InputBox
+          inputTitle="이름(닉네임) 입력"
+          placeholderText="1~8자리 입력/한글 영어, 숫자 조합"
+          value={name}
+          setValue={setName}
+        />
+        <Button style={NickNameStyles.codeButton} onPress={chkDuplicate}>
+          <ButtonText style={NickNameStyles.requestCodeButtonText}>
+            중복확인
+          </ButtonText>
+        </Button>
+      </VStack>
     </Box>
   );
 };

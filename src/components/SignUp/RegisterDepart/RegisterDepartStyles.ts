@@ -18,6 +18,7 @@ export const RegisterDepartStyles = StyleSheet.create({
   },
   inputBox: {
     height: height * 0.06,
+    minHeight: 50,
     backgroundColor: '#F4F4F4',
     borderRadius: 6,
     paddingHorizontal: 10,
@@ -80,6 +81,29 @@ export const RegisterDepartStyles = StyleSheet.create({
     paddingHorizontal: 20, // 좌우 패딩으로 모달의 가운데 위치 조정
     width: '100%',
     position: 'relative',
+  },
+
+  dropDownStyle: {
+    height: 40,
+    marginBottom: 10,
+    backgroundColor: '#fafafa',
+    borderWidth: 0,
+  },
+  dropDownContainerStyle: {
+    backgroundColor: '#fafafa',
+    borderColor: '#ddd',
+  },
+  tickIconStyle: {
+    width: 20,
+    height: 20,
+    tintColor: '#009499',
+  },
+  labelStyle: {
+    fontSize: 13,
+    textAlign: 'left',
+  },
+  arrowStyle: {
+    tintColor: '#009499',
   },
 
   confirmButton: {

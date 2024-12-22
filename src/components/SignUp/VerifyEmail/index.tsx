@@ -1,11 +1,8 @@
 import React, {useState, useEffect} from 'react';
 
-import {Text} from '@/components/ui/text';
-import {Input} from '@/components/ui/input';
 import {Box} from '@/components/ui/box';
 import {Button, ButtonText} from '@/components/ui/button';
 import {VStack} from '@/components/ui/vstack';
-import {HStack} from '@/components/ui/hstack';
 
 import {VerifyEmailStyles} from './VerifyEmailStyles';
 
@@ -54,8 +51,8 @@ const VerifyEmail = () => {
 
   return (
     <Box>
-      <HStack>
-        <VStack style={VerifyEmailStyles.inputWrapper}>
+      <VStack style={VerifyEmailStyles.inputWrapper}>
+        <Box>
           <InputBox
             inputTitle="학교 이메일 인증"
             placeholderText="학교 이메일을 입력해주세요"
@@ -67,8 +64,8 @@ const VerifyEmail = () => {
               {askCode}
             </ButtonText>
           </Button>
-        </VStack>
-      </HStack>
+        </Box>
+      </VStack>
       {emailErrorMessage && <ErrorMessage errorMessage={emailErrorMessage} />}
       {isActive && <VerifyCode timeLeft={timeLeft} />}
     </Box>

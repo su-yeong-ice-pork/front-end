@@ -1,8 +1,10 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, TouchableOpacity} from 'react-native';
-import {Dimensions} from 'react-native';
+import {Box} from '@/components/ui/box';
+import {Text} from '@/components/ui/text';
+import {TextInput} from 'react-native';
 import {VerifyCodeStyles} from './VerifyCodeStyles';
 import ErrorMessage from '../ErrorMessage';
+import {Button, ButtonText} from '@/components/ui/button';
 
 const VerifyCode = ({timeLeft = 1000}) => {
   const [verificationCode, setVerificationCode] = useState<string>('');
@@ -26,8 +28,8 @@ const VerifyCode = ({timeLeft = 1000}) => {
   };
 
   return (
-    <View style={VerifyCodeStyles.inputContainer}>
-      <View style={VerifyCodeStyles.inputRow}>
+    <Box style={VerifyCodeStyles.inputContainer}>
+      <Box style={VerifyCodeStyles.inputRow}>
         <TextInput
           style={VerifyCodeStyles.inputText}
           placeholder="메일로 전송된 코드를 입력해주세요."
@@ -37,14 +39,14 @@ const VerifyCode = ({timeLeft = 1000}) => {
           }}
         />
         <Text style={VerifyCodeStyles.timerText}>{formatTime(timeLeft)}</Text>
-        <TouchableOpacity
-          style={VerifyCodeStyles.verifyButton}
-          onPress={verifyCode}>
-          <Text style={VerifyCodeStyles.verifyButtonText}>확인</Text>
-        </TouchableOpacity>
-      </View>
+        <Button style={VerifyCodeStyles.verifyButton} onPress={verifyCode}>
+          <ButtonText style={VerifyCodeStyles.verifyButtonText}>
+            확인
+          </ButtonText>
+        </Button>
+      </Box>
       {showError && <ErrorMessage errorMessage="인증 코드를 입력해주세요." />}
-    </View>
+    </Box>
   );
 };
 

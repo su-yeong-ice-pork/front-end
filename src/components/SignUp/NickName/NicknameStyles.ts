@@ -11,7 +11,7 @@ export const NickNameStyles = StyleSheet.create({
   codeButton: {
     position: 'absolute',
     right: 10,
-    top: 35,
+    top: '50%',
     backgroundColor: '#009499',
     borderRadius: 20,
   },

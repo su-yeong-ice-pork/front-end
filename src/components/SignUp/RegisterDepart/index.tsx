@@ -1,11 +1,13 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, Modal, TouchableOpacity, Image} from 'react-native';
-
+import {Box} from '@/components/ui/box';
+import {Text} from '@/components/ui/text';
+import {Modal, TouchableOpacity, Image} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import {collegeData} from '@/src/constants/departData';
 import {ICONS} from '@/src/constants/image/icons';
+
 import {RegisterDepartStyles} from './RegisterDepartStyles';
 
 const RegisterDepart = () => {
@@ -48,7 +50,7 @@ const RegisterDepart = () => {
   };
 
   return (
-    <View style={RegisterDepartStyles.inputContainer}>
+    <Box style={RegisterDepartStyles.inputContainer}>
       <Text style={RegisterDepartStyles.inputLabel}>
         학과 등록 <Text style={RegisterDepartStyles.starmark}>*</Text>
       </Text>
@@ -73,9 +75,9 @@ const RegisterDepart = () => {
         transparent={true}
         animationType="slide">
         <GestureHandlerRootView style={RegisterDepartStyles.modalOverlay}>
-          <View style={RegisterDepartStyles.modalContainer}>
+          <Box style={RegisterDepartStyles.modalContainer}>
             {/* College Selection */}
-            <View style={RegisterDepartStyles.inputWrapper}>
+            <Box style={RegisterDepartStyles.inputWrapper}>
               <Text style={RegisterDepartStyles.modalTitle}>학과 등록</Text>
               <TouchableOpacity
                 style={RegisterDepartStyles.resetButton}
@@ -85,10 +87,10 @@ const RegisterDepart = () => {
                   style={RegisterDepartStyles.clearIcon}
                 />
               </TouchableOpacity>
-            </View>
+            </Box>
 
-            <View style={RegisterDepartStyles.modalContainer2}>
-              <View style={{zIndex: openCollege ? 1000 : 1, flex: 1}}>
+            <Box style={RegisterDepartStyles.modalContainer2}>
+              <Box style={{zIndex: openCollege ? 1000 : 1, flex: 1}}>
                 <DropDownPicker
                   open={openCollege}
                   value={selectedCollege}
@@ -104,34 +106,17 @@ const RegisterDepart = () => {
                   zIndex={1000}
                   zIndexInverse={1000}
                   onOpen={() => setOpenDepartment(false)}
-                  containerStyle={{
-                    height: 40,
-                    marginBottom: 10,
-                  }}
-                  style={{
-                    backgroundColor: '#fafafa',
-                    borderWidth: 0,
-                  }}
-                  dropDownContainerStyle={{
-                    backgroundColor: '#fafafa',
-                    borderColor: '#ddd',
-                  }}
-                  tickIconStyle={{
-                    width: 20,
-                    height: 20,
-                    tintColor: '#009499',
-                  }}
-                  labelStyle={{
-                    fontSize: 13,
-                    textAlign: 'left',
-                  }}
-                  arrowStyle={{
-                    tintColor: '#009499',
-                  }}
+                  style={RegisterDepartStyles.dropDownStyle}
+                  dropDownContainerStyle={
+                    RegisterDepartStyles.dropDownContainerStyle
+                  }
+                  tickIconStyle={RegisterDepartStyles.tickIconStyle}
+                  labelStyle={RegisterDepartStyles.labelStyle}
+                  arrowStyle={RegisterDepartStyles.arrowStyle}
                 />
-              </View>
+              </Box>
 
-              <View style={{zIndex: openDepartment ? 1000 : 1, flex: 1}}>
+              <Box style={{zIndex: openDepartment ? 1000 : 1, flex: 1}}>
                 <DropDownPicker
                   open={openDepartment}
                   value={selectedDepartment}
@@ -148,33 +133,16 @@ const RegisterDepart = () => {
                   scrollViewProps={{
                     nestedScrollEnabled: true,
                   }}
-                  containerStyle={{
-                    height: 40,
-                    marginBottom: 10,
-                  }}
-                  style={{
-                    backgroundColor: '#fafafa',
-                    borderWidth: 0,
-                  }}
-                  dropDownContainerStyle={{
-                    backgroundColor: '#fafafa',
-                    borderColor: '#ddd',
-                  }}
-                  tickIconStyle={{
-                    width: 20,
-                    height: 20,
-                    tintColor: '#009499',
-                  }}
-                  labelStyle={{
-                    fontSize: 12,
-                    textAlign: 'left',
-                  }}
-                  arrowStyle={{
-                    tintColor: '#009499',
-                  }}
+                  style={RegisterDepartStyles.dropDownStyle}
+                  dropDownContainerStyle={
+                    RegisterDepartStyles.dropDownContainerStyle
+                  }
+                  tickIconStyle={RegisterDepartStyles.tickIconStyle}
+                  labelStyle={RegisterDepartStyles.labelStyle}
+                  arrowStyle={RegisterDepartStyles.arrowStyle}
                 />
-              </View>
-            </View>
+              </Box>
+            </Box>
 
             {/* Confirm Button */}
             <TouchableOpacity
@@ -182,10 +150,10 @@ const RegisterDepart = () => {
               onPress={confirmSelection}>
               <Text style={RegisterDepartStyles.confirmButtonText}>확인</Text>
             </TouchableOpacity>
-          </View>
+          </Box>
         </GestureHandlerRootView>
       </Modal>
-    </View>
+    </Box>
   );
 };
 
