@@ -5,6 +5,7 @@ const {width, height} = Dimensions.get('window');
 export const SignUpHeaderStyles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: height * 0.02,
   },
   formContainer: {
     paddingHorizontal: width * 0.05,
