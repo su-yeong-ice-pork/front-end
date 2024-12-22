@@ -1,5 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, Dimensions, SafeAreaView} from 'react-native';
+import {SafeAreaView} from 'react-native';
+import {Box} from '@/components/ui';
+import {Text} from '@/components/ui';
+import {Button} from '@/components/ui/button';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Header from '../../components/Header';
 import Loader from '../../components/Loader';
@@ -97,7 +100,7 @@ const EditProfileScreen = ({route}) => {
           enableOnAndroid={true}
           extraScrollHeight={20}
           keyboardShouldPersistTaps="handled">
-          <View style={EditProfileScreenStyles.titleContainer}>
+          <Box style={EditProfileScreenStyles.titleContainer}>
             <Text style={EditProfileScreenStyles.titleText}>
               나의{' '}
               <Text style={{color: '#00AAB0', fontWeight: '800'}}>
@@ -105,9 +108,9 @@ const EditProfileScreen = ({route}) => {
               </Text>
               을{'\n'}원하는 대로 예쁘게 꾸며봐요!
             </Text>
-          </View>
+          </Box>
 
-          <View style={EditProfileScreenStyles.formContainer}>
+          <Box style={EditProfileScreenStyles.formContainer}>
             <ChangeProfileImage
               defaultImages={defaultProfile}
               customImages={customProfileImages}
@@ -138,9 +141,9 @@ const EditProfileScreen = ({route}) => {
               currentMessage={currentMessage}
               setCurrentMessage={setCurrentMessage}
             />
-          </View>
+          </Box>
 
-          <View style={EditProfileScreenStyles.buttonContainer}>
+          <Box style={EditProfileScreenStyles.buttonContainer}>
             <SaveButton
               selectedProfile={selectedImage}
               selectedBanner={selectedBanner}
@@ -153,7 +156,7 @@ const EditProfileScreen = ({route}) => {
               currentMessage={currentMessage}
               setIsLoading={setIsLoading}
             />
-          </View>
+          </Box>
         </KeyboardAwareScrollView>
         <SuccessModal
           uploadSuccess={uploadSuccess}
