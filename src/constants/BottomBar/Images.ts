@@ -6,6 +6,7 @@ export const PATH_NAME = {
   ALARM: 'Alarm',
   PROFILE: 'Profile',
   FRIENDSPROFILE: 'FriendsProfile',
+  EDITPROFILE: 'EditProfile',
 };
 
 export const IMAGE_PATH = {
