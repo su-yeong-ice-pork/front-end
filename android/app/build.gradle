@@ -51,6 +51,7 @@ react {
     // hermesFlags = ["-O", "-output-source-map"]
 
     /* Autolinking */
+    cliFile = file("../../node_modules/@react-native-esbuild/cli/dist/index.js")
     autolinkLibrariesWithApp()
 }
 
