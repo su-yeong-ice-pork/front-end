@@ -24,25 +24,9 @@ exports.default = {
         },
       },
     },
-    stripFlowPackageNames: ['react-native', 'react-native-video'],
-  },
-  additionalTransformRules: {
-    babel: [
-      {
-        test: (path, code) => {
-          return (
-            /node_modules\/react-native-reanimated\//.test(path) ||
-            code.includes('react-native-reanimated')
-          );
-        },
-        options: {
-          plugins: ['react-native-reanimated/plugin'],
-          babelrc: false,
-        },
-      },
-    ],
+    stripFlowPackageNames: ['react-native'],
   },
   web: {
-    template: '<path to default template>',
+    template: './template/index.html',
   },
 };
