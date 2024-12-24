@@ -9,6 +9,7 @@ import {
     SafeAreaView,
 } from 'react-native';
 
+import {ERROR_MESSAGE} from "@/src/constants/Profile/Profile.ts";
 import {ProfileScreenStyles} from "./ProfileScreenStyle.ts"
 import BottomBar from '../../components/BottomBar/index.tsx';
 
@@ -35,31 +36,31 @@ import {useNavigation, useRoute} from "@react-navigation/native";
 import {Button} from "@/components/ui/button";
 
 const IMAGES = {
-    profile: require('../../../assets/images/illustration/typeThree.png'),
-    logo: require('../../../assets/images/illustration/logo.png'),
-    friendsIcon: require('../../../assets/images/icons/friendsIcon.png'),
-    groupsIcon: require('../../../assets/images/icons/groupsIcon.png'),
-    freeze: require('../../../assets/images/illustration/freeze.png'),
-    lockIcon: require('../../../assets/images/icons/lockIcon.png'),
-    logoutIcon: require('../../../assets/images/icons/logoutIcon.png'),
-    moreIcon: require('../../../assets/images/icons/moreIcon2.png'),
-    coloredFriendsIcon: require('../../../assets/images/icons/coloredFriendsIcon.png'),
-    coloredGroupIcon: require('../../../assets/images/icons/coloredGroupIcon.png'),
-    jandi1: require('../../../assets/images/illustration/jandi1.png'),
-    jandi2: require('../../../assets/images/illustration/jandi2.png'),
-    editProfile: require('../../../assets/images/icons/profileEdit.png'),
-    profileBackButton: require('../../../assets/images/icons/profileBackButton.png'),
-    sleepyFaceEmoji: require('../../../assets/images/emoji/sleepyFaceEmoji.png'),
-    closeLogout: require('../../../assets/images/icons/closeLogout.png'),
-    iIcon: require('../../../assets/images/icons/iIcon.png'),
+    profile: require('@/assets/images/illustration/typeThree.png'),
+    logo: require('@/assets/images/illustration/logo.png'),
+    friendsIcon: require('@/assets/images/icons/friendsIcon.png'),
+    groupsIcon: require('@/assets/images/icons/groupsIcon.png'),
+    freeze: require('@/assets/images/illustration/freeze.png'),
+    lockIcon: require('@/assets/images/icons/lockIcon.png'),
+    logoutIcon: require('@/assets/images/icons/logoutIcon.png'),
+    moreIcon: require('@/assets/images/icons/moreIcon2.png'),
+    coloredFriendsIcon: require('@/assets/images/icons/coloredFriendsIcon.png'),
+    coloredGroupIcon: require('@/assets/images/icons/coloredGroupIcon.png'),
+    jandi1: require('@/assets/images/illustration/jandi1.png'),
+    jandi2: require('@/assets/images/illustration/jandi2.png'),
+    editProfile: require('@/assets/images/icons/profileEdit.png'),
+    profileBackButton: require('@/assets/images/icons/profileBackButton.png'),
+    sleepyFaceEmoji: require('@/assets/images/emoji/sleepyFaceEmoji.png'),
+    closeLogout: require('@/assets/images/icons/closeLogout.png'),
+    iIcon: require('@/assets/images/icons/iIcon.png'),
 };
 const BADGES = [
-    require('../../../assets/images/badge/badge0.png'),
-    require('../../../assets/images/badge/badge1.png'),
-    require('../../../assets/images/badge/badge2.png'),
-    require('../../../assets/images/badge/badge3.png'),
-    require('../../../assets/images/badge/badge4.png'),
-    require('../../../assets/images/badge/badge5.png'),
+    require('@/assets/images/badge/badge0.png'),
+    require('@/assets/images/badge/badge1.png'),
+    require('@/assets/images/badge/badge2.png'),
+    require('@/assets/images/badge/badge3.png'),
+    require('@/assets/images/badge/badge4.png'),
+    require('@/assets/images/badge/badge5.png'),
 ];
 
 const ProfileScreen = () => {
@@ -104,7 +105,7 @@ const ProfileScreen = () => {
             setMember(memberData);
             setUser(memberData);
         } else if (memberDataError) {
-            setModalMessage('프로필을 불러오는 데 실패했습니다.');
+            setModalMessage(ERROR_MESSAGE.MEMBER);
             setModalVisible(true);
         }
     }, [memberData, memberDataError]);
@@ -113,7 +114,7 @@ const ProfileScreen = () => {
         if (badgesData) {
             setBadges(badgesData);
         } else if (badgesDataError) {
-            setModalMessage('뱃지를 불러오는 데 실패했습니다.');
+            setModalMessage(ERROR_MESSAGE.BADGE);
             setModalVisible(true);
         }
     }, [badgesData, badgesDataError]);
@@ -124,7 +125,7 @@ const ProfileScreen = () => {
             setTotalTime(recordData.response.totalStudyTime);
             setCreateDate(recordData.response.createdDate);
         } else if (recordDataError) {
-            setModalMessage('기록을 불러오는 데 실패했습니다.');
+            setModalMessage(ERROR_MESSAGE.RECORD);
             setModalVisible(true);
         }
     }, [recordData, recordDataError]);
@@ -135,6 +136,7 @@ const ProfileScreen = () => {
                 <ScrollView
                     style={ProfileScreenStyles.container}
                     contentContainerStyle={{paddingBottom: 80}}>
+
                     <View style={ProfileScreenStyles.logoSection}>
                         <View style={ProfileScreenStyles.logoInfo}>
                             <Image source={IMAGES.logo} style={ProfileScreenStyles.logoImage} />
