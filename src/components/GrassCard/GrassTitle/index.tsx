@@ -1,12 +1,11 @@
 import React from 'react';
-import {Box} from '@/components/ui/box';
-import {Text} from '@/components/ui/text';
-import {Heading} from '@/components/ui/heading';
+import {Box, Text, Heading} from '@/components/ui/index.ts';
 
 import {FONT_SIZE} from '@/src/constants/GrassCard/FontSizes';
-
 import {GrassTitleStyles} from './GrassTitleStyles';
 import {GrassTitleProps} from '../../types/GrassCardType/GrassCardType';
+import {GRASS_TITLE} from '@/src/constants/GrassCard/GrassCard.ts';
+
 
 const GrassTitle = ({name, totalDays}: GrassTitleProps) => {
   return (
@@ -16,14 +15,14 @@ const GrassTitle = ({name, totalDays}: GrassTitleProps) => {
           <Text size={FONT_SIZE['2XL']} style={GrassTitleStyles.grassTitleText}>
             {name}
           </Text>
-          님은 지금까지{'\n'}
+          {GRASS_TITLE.USER_PROGRESS_MESSAGE}
         </Heading>
         <Heading size={FONT_SIZE.XL}>
-          총{' '}
+          {GRASS_TITLE.TOTAL_DAYS}
           <Text size={FONT_SIZE['2XL']} style={GrassTitleStyles.grassTitleText}>
             {totalDays}
           </Text>
-          일의 잔디를 심으셨어요!
+          {GRASS_TITLE.PLANTED_DAYS}
         </Heading>
       </Text>
     </Box>

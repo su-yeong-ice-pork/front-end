@@ -6,7 +6,7 @@ import {Image} from '@/components/ui/image';
 import {ILLUSTRATIONS} from '@/src/constants/image/illustrations';
 import {GrassCardInfoStyles} from './GrassInfoCardStyles';
 
-import {GrassCardAltMessage} from '@/src/constants/GrassCard/GrassCardAltMessage';
+import {GRASS_CARD_ALT_MESSAGE} from '@/src/constants/GrassCard/GrassCard.ts';
 import {GrassInfoCardProps} from '../../types/GrassCardType/GrassCardType';
 
 const GrassInfoCard: React.FC<GrassInfoCardProps> = ({type}) => {
@@ -21,7 +21,7 @@ const GrassInfoCard: React.FC<GrassInfoCardProps> = ({type}) => {
           <Image
             style={GrassCardInfoStyles.grassCardImage}
             source={ILLUSTRATIONS.JANDI1}
-            alt={GrassCardAltMessage.JANDI}
+            alt={GRASS_CARD_ALT_MESSAGE.JANDI}
           />
         </Box>
       )}
@@ -37,7 +37,7 @@ const GrassInfoCard: React.FC<GrassInfoCardProps> = ({type}) => {
           <Image
             style={GrassCardInfoStyles.grassCardImage}
             source={ILLUSTRATIONS.JANDI2}
-            alt={GrassCardAltMessage.JANDI}
+            alt={GRASS_CARD_ALT_MESSAGE.JANDI}
           />
         </Box>
       )}
