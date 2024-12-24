@@ -1,13 +1,9 @@
 import React from 'react';
 import GrassTitle from './GrassTitle';
 import GrassInfoCard from './GrassInfoCard';
-import {Box} from '@/components/ui/box';
-import {HStack} from '@/components/ui/hstack';
+import {Box, HStack} from '@/components/ui/index.ts';
+import {GrassCardProps} from "@/src/components/types/ProfileType/ProfileType.ts";
 
-interface GrassCardProps {
-  name: string;
-  totalDays: number;
-}
 
 const GrassCard: React.FC<GrassCardProps> = ({name, totalDays}) => {
   return (
