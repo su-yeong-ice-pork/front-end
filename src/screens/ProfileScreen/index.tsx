@@ -2,12 +2,13 @@ import React, {useState, useEffect} from 'react';
 import {
     View,
     Text,
-    Image,
     Modal,
     TouchableOpacity,
     ScrollView,
     SafeAreaView,
 } from 'react-native';
+
+import {Box, Image, VStack} from '@/components/ui/index.ts'
 
 import {ERROR_MESSAGE} from "@/src/constants/Profile/Profile.ts";
 import {ProfileScreenStyles} from "./ProfileScreenStyle.ts"
@@ -29,7 +30,6 @@ import Freeze from "@/src/components/Freeze";
 import {useQuery} from "@tanstack/react-query";
 import {getUserDataApi} from "@/src/api/user/getUserDataApi.ts";
 import {getBadgesApi} from "@/src/api/badge/getBadgesApi.ts";
-import {Box} from "@/components/ui";
 import Badges from "@/src/components/Badges/index.tsx";
 import {RootStackRouteProp} from "@/src/components/types/NavigationType/NavigationType.ts";
 import {useNavigation, useRoute} from "@react-navigation/native";
@@ -136,16 +136,17 @@ const ProfileScreen = () => {
                 <ScrollView
                     style={ProfileScreenStyles.container}
                     contentContainerStyle={{paddingBottom: 80}}>
-
-                    <View style={ProfileScreenStyles.logoSection}>
-                        <View style={ProfileScreenStyles.logoInfo}>
+                    <Box style={ProfileScreenStyles.logoSection}>
+                        <Box style={ProfileScreenStyles.logoInfo}>
                             <Image source={IMAGES.logo} style={ProfileScreenStyles.logoImage} />
-                        </View>
-                    </View>
+                        </Box>
+                    </Box>
+
+                    {/*Profiles*/}
                     {member?.mainBanner ? (
                         <Profiles />
                     ) : (
-                        <View style={ProfileScreenStyles.upperSection}>
+                        <Box style={ProfileScreenStyles.upperSection}>
                             <TouchableOpacity
                                 style={ProfileScreenStyles.backButtonWrapper}
                                 onPress={() => navigation.goBack()}>
@@ -154,7 +155,7 @@ const ProfileScreen = () => {
                                     style={ProfileScreenStyles.profileBackButton}
                                 />
                             </TouchableOpacity>
-                            <View style={ProfileScreenStyles.profileInfo}>
+                            <Box style={ProfileScreenStyles.profileInfo}>
                                 <Image
                                     source={
                                         member?.profileImage
@@ -169,11 +170,11 @@ const ProfileScreen = () => {
                                     }>
                                     <Image source={IMAGES.editProfile} style={ProfileScreenStyles.editIcon} />
                                 </TouchableOpacity>
-                            </View>
-                        </View>
+                            </Box>
+                        </Box>
                     )}
 
-                    <View style={ProfileScreenStyles.content}>
+                    <VStack style={ProfileScreenStyles.content}>
                         <ListViewBox type="friend" count={0} />
 
                         <ListViewBox type="group" count={0} />
@@ -186,7 +187,7 @@ const ProfileScreen = () => {
                         <Freeze />
 
                         <GrassCard name={member?.name} totalDays={totalDays} />
-                    </View>
+                    </VStack>
                     <ProfileAction />
                 </ScrollView>
                 <BottomBar />

@@ -9,21 +9,8 @@ export const ProfileScreenStyles  = StyleSheet.create({
         width: width,
         height: height,
     },
-    content: {
-        marginTop: height * 0.01,
-        borderStyle: 'solid', //test
-        borderColor: 'red',
-        borderWidth: 1,
-    },
 
-    badgeContainer: {
-        paddingHorizontal: width * 0.03,
-        marginBottom: height * 0.02,
-        marginTop: height * 0.04,
-    },
-    profileHeader: {
-        flexDirection: 'column',
-    },
+    // LOGO
     logoSection: {
         alignItems: 'center',
         flexDirection: 'row',
@@ -37,6 +24,8 @@ export const ProfileScreenStyles  = StyleSheet.create({
         left: 20,
         resizeMode: 'contain',
     },
+
+    // Profile
     upperSection: {
         width: '100%',
         height: 100, // 배너의 높이를 원하는 대로하세요 조절
@@ -78,11 +67,21 @@ export const ProfileScreenStyles  = StyleSheet.create({
         bottom: -5, // profileImage의 하단 바깥쪽 경계에 위치시키기 위한 값
         resizeMode: 'contain', // 이미지 비율 유지
     },
-    profileTextContainer: {
-        marginLeft: 15,
-        marginTop: 50,
-        flexDirection: 'row',
+
+    // Content
+    content: {
+        marginTop: height * 0.01,
+        borderWidth: 1, //Test
+        borderColor: 'red',
     },
+    // Content-Badge
+    badgeContainer: {
+        paddingHorizontal: width * 0.03,
+        marginBottom: height * 0.02,
+        marginTop: height * 0.04,
+    },
+
+
     nickname: {
         fontSize: 12,
         color: '#009499',
@@ -125,49 +124,14 @@ export const ProfileScreenStyles  = StyleSheet.create({
         marginLeft: 15,
         marginRight: 5,
     },
-    frozenSection: {
-        marginTop: 16,
-    },
-    frozenTitle: {
-        fontSize: 10,
-        fontWeight: 'bold',
-        color: '#838F8F',
-        marginBottom: 5,
-        fontFamily: 'NanumSquareNeo-Variable',
-    },
-    frozenDetailContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: height * 0.055,
-        width: width * 0.6,
-        backgroundColor: '#FFFFFF',
-        paddingHorizontal: width * 0.03,
-        marginRight: width * 0.02,
-        borderRadius: 4,
-    },
-    frozenDetailText: {
-        fontSize: width * 0.027,
-        fontWeight: '800',
-        color: '#B6B6B6',
-        fontFamily: 'NanumSquareNeo-Variable',
-    },
-    frozenCount: {
-        fontSize: 15,
-        fontWeight: 'bold',
-        color: '#12A5B0',
-        fontFamily: 'NanumSquareNeo-Variable',
-    },
+
     gradientStyle: {
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 3,
         paddingHorizontal: width * 0.03,
     },
-    frozenText: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: height * 0.055,
-    },
+
     iconAndTextContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -190,11 +154,7 @@ export const ProfileScreenStyles  = StyleSheet.create({
         resizeMode: 'contain',
         marginRight: width * 0.01,
     },
-    frozenNote: {
-        fontSize: width * 0.03,
-        color: '#009499',
-        fontFamily: 'NanumSquareNeo-Variable',
-    },
+
     setiIcon: {
         width: width * 0.03,
         height: height * 0.03,

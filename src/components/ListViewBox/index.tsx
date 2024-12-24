@@ -1,9 +1,6 @@
 import React from 'react';
-import {Box} from '@/components/ui/box';
-import {Text} from '@/components/ui/text';
-import {HStack} from '@/components/ui/hstack';
+import {Box,Text,HStack, Image} from '@/components/ui/index.ts';
 import {Button, ButtonText} from '@/components/ui/button';
-import {Image} from '@/components/ui/image';
 import useListViewBox from '@/src/hooks/useListViewBox';
 
 import {ListViewBoxStyles} from './ListViewBoxStyels';
@@ -15,44 +12,34 @@ const ListViewBox: React.FC<ListViewBoxProps> = ({type, count}) => {
     useListViewBox(type);
 
   return (
-    <Box>
-      <Box style={ListViewBoxStyles.ViewBoxTitleContainer}>
-        <Text size="2xs" style={ListViewBoxStyles.ViewBoxTitle}>
-          {boxTitle}
-        </Text>
-      </Box>
+    <Box style={ListViewBoxStyles.ViewBoxContainer}>
+      <Text style={ListViewBoxStyles.ViewBoxTitle}>{boxTitle}</Text>
 
       <HStack>
-        <Box style={ListViewBoxStyles.ViewBoxText}>
-          <HStack style={ListViewBoxStyles.ViewBoxHStack}>
+        <HStack style={ListViewBoxStyles.ViewBoxText}>
             <Box style={ListViewBoxStyles.ViewBoxIconContainer}>
               <Image
-                size="2xs"
                 source={icon}
-                style={ListViewBoxStyles.ViewBoxIcon}
+                style={ListViewBoxStyles.Icon}
                 resizeMode="contain"
                 alt={ListViewBoxAltMessage.ICON}
               />
             </Box>
+
             <Text style={ListViewBoxStyles.ViewBoxDescription}>
-              <Text bold style={ListViewBoxStyles.ViewBoxIconContainer}>
-                {count}
-                {typeLabel}
-              </Text>
+              <Text bold style={ListViewBoxStyles.ViewBoxIconContainer}>{count}{typeLabel}</Text>
               {description}
             </Text>
-          </HStack>
-        </Box>
+        </HStack>
 
-        <Button size="xs" style={ListViewBoxStyles.buttonStyle}>
+        <Button style={ListViewBoxStyles.ButtonStyle}>
           <Image
-            size="2xs"
             source={buttonIcon}
-            style={ListViewBoxStyles.ButtonIcon}
+            style={ListViewBoxStyles.Icon}
             resizeMode="contain"
             alt={ListViewBoxAltMessage.BUTTONICON}
           />
-          <ButtonText>{buttonText}</ButtonText>
+          <ButtonText style={ListViewBoxStyles.ButtonText}>{buttonText}</ButtonText>
         </Button>
       </HStack>
     </Box>

@@ -1,46 +1,79 @@
 import {StyleSheet, Dimensions} from 'react-native';
+import {FONT} from "@/src/constants/styles/font/default-font.ts";
+import {COLOR} from "@/src/constants/styles/color/color.ts";
 
 const {width, height} = Dimensions.get('window');
 
+const mainColor = "#12A5B0"
+
+const border = 3
+const baseFontStyle = {
+    fontSize: 10,
+    fontWeight: 600,
+    fontFamily:`${FONT}`
+}
+
 export const ListViewBoxStyles = StyleSheet.create({
-  ViewBoxTitleContainer: {marginTop: 20, marginBottom: 5},
-  ViewBoxTitle: {color: '#B6B6B6', fontSize: 10, fontWeight: 'bold'},
-  ViewBoxText: {
-    backgroundColor: '#fff',
-    width: width * 0.6,
-    height: height * 0.06,
-    padding: 15,
-    borderRadius: 8,
-  },
-  ViewBoxHStack: {
-    alignItems: 'center',
-  },
-  ViewBoxIconContainer: {
-    color: '#009499',
-    marginRight: 6,
-  },
-  ViewBoxIcon: {
-    width: 20,
-    height: 20,
-  },
-  ViewBoxDescription: {
-    color: '#B6B6B6',
-    fontSize: 12,
-  },
-  ViewBoxCount: {
-    color: '#00A6AC',
-    fontSize: 13,
-  },
-  buttonStyle: {
-    width: width * 0.3,
-    height: height * 0.06,
-    padding: 12,
-    marginLeft: 10,
-    borderRadius: 8,
-    shadowOffset: {width: 0, height: 2},
-    backgroundColor: '#009499',
-  },
-  ButtonIcon: {
-    marginRight: 4,
-  },
+    ViewBoxContainer: {
+        paddingHorizontal: width * 0.03,
+        marginBottom: height * 0.02,
+    },
+
+    ViewBoxTitle: {
+        ...baseFontStyle,
+        color: '#838F8F',
+        marginBottom: 5,
+    },
+
+    ViewBoxText: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: height * 0.055,
+        width: width * 0.57,
+        backgroundColor: COLOR.WHITE,
+        paddingHorizontal: width * 0.03,
+        borderRadius: border,
+    },
+
+    ViewBoxIconContainer: {
+        ...baseFontStyle,
+        fontSize: 15,
+        color: mainColor,
+        marginRight: width * 0.01,
+    },
+    Icon: {
+        width: width * 0.05,
+        height: width * 0.05,
+        resizeMode: 'contain',
+        marginRight: width * 0.01,
+    },
+
+    ViewBoxDescription: {
+        marginLeft: width * 0.01,
+        fontSize: width * 0.025,
+        fontWeight: '800',
+        color: '#B6B6B6',
+        fontFamily: `${FONT}`,
+    },
+    ViewBoxCount: {
+        color: mainColor,
+        fontSize: 15,
+    },
+
+    ButtonStyle: {
+        backgroundColor: mainColor,
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: height * 0.055,
+        justifyContent: 'center',
+        borderRadius: border,
+        paddingHorizontal: width * 0.01,
+        marginLeft: width * 0.03,
+    },
+    ButtonText:{
+        color: COLOR.WHITE,
+        fontSize: width * 0.028,
+        fontWeight: 'bold',
+        fontFamily: `${FONT}`,
+    },
 });
