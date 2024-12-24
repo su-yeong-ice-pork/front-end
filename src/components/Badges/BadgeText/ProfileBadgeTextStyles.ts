@@ -3,13 +3,12 @@ import {FONT} from '@/src/constants/styles/font/default-font';
 
 export const ProfileBadgeTextStyles = StyleSheet.create({
   badgeText: {
-    fontSize: 10,
-    // color: '#777',
-    color: 'red',
     flexDirection: 'row',
-    marginTop: -30,
+    marginTop: -17,
     position: 'absolute',
-    fontFamily: `${FONT}`,
+    fontSize: 10,
     fontWeight: 'bold',
+    color: '#838F8F',
+    fontFamily: `${FONT}`
   },
 });

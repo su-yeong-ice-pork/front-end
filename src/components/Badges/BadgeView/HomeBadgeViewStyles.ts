@@ -16,4 +16,5 @@ export const HomeBadgeViewStyles = StyleSheet.create({
     color: '#009499',
     fontFamily: `${FONT}`,
   },
+  badgeStackBox:{}
 });

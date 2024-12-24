@@ -16,7 +16,7 @@ const BadgeView: React.FC<BadgesProps> = ({badges,styleType}) => {
   const [showModal, setShowModal] = useState(false);
   const openModal = () => setShowModal(true);
   return (
-    <HStack>
+    <HStack style={badgeViewStyles.badgeStackBox}>
       {badges && badges.length > 0 ? (
         <>
           {badges.slice(0, 3).map(badge => (
