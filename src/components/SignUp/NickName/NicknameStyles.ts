@@ -1,6 +1,7 @@
-import {Dimensions, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 
-const {width, height} = Dimensions.get('window');
+import {FONT} from '@/src/constants/styles/font/default-font';
+import {COLOR} from '@/src/constants/styles/color/color';
 
 export const NickNameStyles = StyleSheet.create({
   inputWrapper: {
@@ -12,13 +13,13 @@ export const NickNameStyles = StyleSheet.create({
     position: 'absolute',
     right: 10,
     top: '50%',
-    backgroundColor: '#009499',
+    backgroundColor: COLOR.MAIN,
     borderRadius: 20,
   },
   requestCodeButtonText: {
-    color: '#FFFFFF',
+    color: COLOR.WHITE,
     fontSize: 11,
     borderRadius: 20,
-    fontFamily: 'NanumSquareNeo-Variable',
+    fontFamily: FONT,
   },
 });
