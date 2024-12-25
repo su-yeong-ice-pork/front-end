@@ -2,12 +2,15 @@ import {Dimensions, StyleSheet} from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 
+import {FONT} from '@/src/constants/styles/font/default-font';
+import {COLOR} from '@/src/constants/styles/color/color';
+
 export const RegisterDepartStyles = StyleSheet.create({
   inputContainer: {
     marginTop: height * 0.02,
   },
   inputLabel: {
-    fontFamily: 'NanumSquareNeo-Variable',
+    fontFamily: FONT,
     fontWeight: '600',
     fontSize: 14,
     color: '#454545',
@@ -24,10 +27,10 @@ export const RegisterDepartStyles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8, // 필요에 따라 추가
     justifyContent: 'center',
-    fontFamily: 'NanumSquareNeo-Variable',
+    fontFamily: FONT,
     fontWeight: '600',
     fontSize: 12,
-    color: '#000000',
+    color: COLOR.BLACK,
     width: '100%',
   },
   placeholderText: {
@@ -56,6 +59,7 @@ export const RegisterDepartStyles = StyleSheet.create({
     fontSize: 24,
     color: '#3E3E3E',
     fontWeight: 'bold',
+    fontFamily: FONT,
     marginBottom: height * 0.01,
   },
   modalOverlay: {
@@ -64,7 +68,7 @@ export const RegisterDepartStyles = StyleSheet.create({
     justifyContent: 'center',
   },
   modalContainer: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLOR.WHITE,
     marginHorizontal: 20,
     padding: 10,
     borderRadius: 10,
@@ -97,18 +101,18 @@ export const RegisterDepartStyles = StyleSheet.create({
   tickIconStyle: {
     width: 20,
     height: 20,
-    tintColor: '#009499',
+    tintColor: COLOR.MAIN,
   },
   labelStyle: {
     fontSize: 13,
     textAlign: 'left',
   },
   arrowStyle: {
-    tintColor: '#009499',
+    tintColor: COLOR.MAIN,
   },
 
   confirmButton: {
-    backgroundColor: '#009499',
+    backgroundColor: COLOR.MAIN,
     borderRadius: 20,
     alignItems: 'center',
     marginTop: 15,
@@ -117,7 +121,7 @@ export const RegisterDepartStyles = StyleSheet.create({
     zIndex: -1,
   },
   confirmButtonText: {
-    color: '#FFFFFF',
+    color: COLOR.WHITE,
     fontSize: 12,
   },
 });

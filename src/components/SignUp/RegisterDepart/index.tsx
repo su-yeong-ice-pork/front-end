@@ -9,6 +9,11 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 import {collegeData} from '@/src/constants/departData';
 import {ICONS} from '@/src/constants/image/icons';
+import {
+  DepartModal,
+  DROPDOWN_COLLEGE,
+  DROPDOWN_MAJOR,
+} from '@/src/constants/SignUp/RegisterDepart';
 
 import {RegisterDepartStyles} from './RegisterDepartStyles';
 
@@ -37,7 +42,7 @@ const RegisterDepart = () => {
     } else {
       setDepartments([]);
     }
-    setSelectedDepartment(''); // 학과 선택 초기화
+    setSelectedDepartment('');
   }, [selectedCollege]);
 
   const confirmSelection = () => {
@@ -46,7 +51,7 @@ const RegisterDepart = () => {
       setDepartment(selectedDepartment);
       setDepartModalVisible(false);
     } else {
-      setDepartModalMessage('단과대학과 학과를 모두 선택해주세요.');
+      setDepartModalMessage(DepartModal.MESSAGE_SELECT1);
       setDepartModalVisible(true);
     }
   };
@@ -67,18 +72,16 @@ const RegisterDepart = () => {
           }>
           {selectedCollege && selectedDepartment
             ? selectedCollege + ' ' + selectedDepartment
-            : '대학 소속학과를 등록해주세요'}
+            : DepartModal.MESSAGE_SELECT2}
         </Text>
       </TouchableOpacity>
 
-      {/* 드롭다운 모달 */}
       <Modal
         visible={departModalVisible}
         transparent={true}
-        animationType="slide">
+        animationType={DROPDOWN_COLLEGE.ANIMATION}>
         <GestureHandlerRootView style={RegisterDepartStyles.modalOverlay}>
           <Box style={RegisterDepartStyles.modalContainer}>
-            {/* College Selection */}
             <Box style={RegisterDepartStyles.inputWrapper}>
               <Text style={RegisterDepartStyles.modalTitle}>학과 등록</Text>
               <Button
@@ -92,7 +95,12 @@ const RegisterDepart = () => {
             </Box>
 
             <Box style={RegisterDepartStyles.modalContainer2}>
-              <Box style={{zIndex: openCollege ? 1000 : 1, flex: 1}}>
+              <Box
+                style={{
+                  zIndex: openCollege
+                    ? DROPDOWN_COLLEGE.OPEN_Z_INDEX
+                    : DROPDOWN_COLLEGE.CLOSE_Z_INDEX,
+                }}>
                 <DropDownPicker
                   open={openCollege}
                   value={selectedCollege}
@@ -100,11 +108,11 @@ const RegisterDepart = () => {
                   setOpen={setOpenCollege}
                   setValue={setSelectedCollege}
                   setItems={setColleges}
-                  listMode="SCROLLVIEW"
+                  listMode={DROPDOWN_COLLEGE.LISTMODE}
                   scrollViewProps={{
                     nestedScrollEnabled: true,
                   }}
-                  placeholder="단과대학"
+                  placeholder={DROPDOWN_COLLEGE.PLACEHOLDER}
                   zIndex={1000}
                   zIndexInverse={1000}
                   onOpen={() => setOpenDepartment(false)}
@@ -118,7 +126,12 @@ const RegisterDepart = () => {
                 />
               </Box>
 
-              <Box style={{zIndex: openDepartment ? 1000 : 1, flex: 1}}>
+              <Box
+                style={{
+                  zIndex: openDepartment
+                    ? DROPDOWN_MAJOR.OPEN_Z_INDEX
+                    : DROPDOWN_MAJOR.CLOSE_Z_INDEX,
+                }}>
                 <DropDownPicker
                   open={openDepartment}
                   value={selectedDepartment}
@@ -126,12 +139,12 @@ const RegisterDepart = () => {
                   setOpen={setOpenDepartment}
                   setValue={setSelectedDepartment}
                   setItems={setDepartments}
-                  placeholder="학과"
+                  placeholder={DROPDOWN_MAJOR.PLACEHOLDER}
                   zIndex={500}
                   zIndexInverse={1000}
                   disabled={!selectedCollege}
                   onOpen={() => setOpenCollege(false)}
-                  listMode="SCROLLVIEW"
+                  listMode={DROPDOWN_MAJOR.LISTMODE}
                   scrollViewProps={{
                     nestedScrollEnabled: true,
                   }}
@@ -146,7 +159,6 @@ const RegisterDepart = () => {
               </Box>
             </Box>
 
-            {/* Confirm Button */}
             <Button
               style={RegisterDepartStyles.confirmButton}
               onPress={confirmSelection}>
