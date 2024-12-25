@@ -38,10 +38,6 @@ const LandingScreen = ({navigation}) => {
     },
   });
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
   return (
     <LinearGradient
       colors={COLOR.GRADIENT.TONE}

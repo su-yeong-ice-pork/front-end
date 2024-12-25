@@ -1,9 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 
-import {Text} from '@/components/ui/text';
-import {Input} from '@/components/ui/input';
 import {Box} from '@/components/ui/box';
-import {Button, ButtonText} from '@/components/ui/button';
+import {Button} from '@/components/ui/button';
 import {Image} from '@/components/ui/image';
 import {VStack} from '@/components/ui/vstack';
 import {HStack} from '@/components/ui/hstack';
@@ -11,8 +9,12 @@ import {HStack} from '@/components/ui/hstack';
 import {InputPasswordStyles} from './InputPasswordStyles';
 
 import InputBox from '../VerifyEmail/InputBox';
-import ErrorMessage from '../VerifyEmail/ErrorMessage';
 import {ICONS} from '@/src/constants/image/icons';
+
+import {passwordRegex} from '@/src/constants/Regex/password';
+import {PASSWORD, PasswordInputBox} from '@/src/constants/SignUp/Password';
+import {InputPasswordprops} from '../../types/SignUpType/InputPassword';
+import {MAGIC_NUMBER} from '@/src/constants/Number/MagicNumber';
 
 const InputPassword = () => {
   const [inputPassword, setInputPassword] = useState<string>('');
@@ -22,17 +24,12 @@ const InputPassword = () => {
     setInputPassword('');
   };
 
-  // 비밀번호 조건 확인
-  const validationPassword = password => {
-    const passwordRegex =
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,16}$/;
+  const validationPassword = ({password}: InputPasswordprops) => {
     if (!passwordRegex.test(password)) {
-      setErrorMessage(
-        '비밀번호는 8~16자 영문, 숫자, 특수문자를 포함해야 합니다.',
-      );
+      setErrorMessage(PASSWORD.ERRORMESSAGE);
       return false;
     } else {
-      setErrorMessage('');
+      setErrorMessage(PASSWORD.SOLVED_ERROR);
       return true;
     }
   };
@@ -42,17 +39,17 @@ const InputPassword = () => {
       <HStack>
         <VStack style={InputPasswordStyles.inputWrapper}>
           <InputBox
-            inputTitle="비밀번호 입력"
-            placeholderText="8~16자리 입력/영어, 숫자, 특수문자 조합"
+            inputTitle={PasswordInputBox.TITLE}
+            placeholderText={PasswordInputBox.PLACEHOLDER}
             value={inputPassword}
             setValue={setInputPassword}
           />
-          {inputPassword.length > 0 && (
+          {inputPassword.length > MAGIC_NUMBER.MIN_PASSWORD && (
             <Button
               style={InputPasswordStyles.codeButton}
               onPress={deletePassword}>
               <Image
-                alt="delete"
+                alt={PasswordInputBox.IMGALT}
                 style={InputPasswordStyles.deleteImage}
                 source={ICONS.RESET_BUTTON}
               />
