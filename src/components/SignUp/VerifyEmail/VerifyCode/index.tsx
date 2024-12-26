@@ -6,13 +6,23 @@ import {VerifyCodeStyles} from './VerifyCodeStyles';
 import ErrorMessage from '../ErrorMessage';
 import {Button, ButtonText} from '@/components/ui/button';
 
-import {VerifyCodeProps} from '@/src/components/types/SignUpType/VerifyEmail';
+import {
+  VerifyCodeProps,
+  SecondsProps,
+} from '@/src/components/types/SignUpType/VerifyEmail';
+import {
+  VERIFYCODE,
+  VERIFICATION,
+  VerifyCodeInputBox,
+} from '@/src/constants/SignUp/VerifyEmail';
 
 const VerifyCode = ({timeLeft = 1000}: VerifyCodeProps) => {
-  const [verificationCode, setVerificationCode] = useState<string>('');
+  const [verificationCode, setVerificationCode] = useState<string>(
+    VERIFICATION.DEFAULT_CODE,
+  );
   const [showError, setShowError] = useState<Boolean>(true);
 
-  const formatTime = seconds => {
+  const formatTime = ({seconds}: SecondsProps) => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(
@@ -34,7 +44,7 @@ const VerifyCode = ({timeLeft = 1000}: VerifyCodeProps) => {
       <Box style={VerifyCodeStyles.inputRow}>
         <TextInput
           style={VerifyCodeStyles.inputText}
-          placeholder="메일로 전송된 코드를 입력해주세요."
+          placeholder={VerifyCodeInputBox.PLACEHOLDER}
           value={verificationCode}
           onChangeText={text => {
             setVerificationCode(text);
@@ -47,7 +57,7 @@ const VerifyCode = ({timeLeft = 1000}: VerifyCodeProps) => {
           </ButtonText>
         </Button>
       </Box>
-      {showError && <ErrorMessage errorMessage="인증 코드를 입력해주세요." />}
+      {showError && <ErrorMessage errorMessage={VERIFYCODE.ERRORMESSAGE} />}
     </Box>
   );
 };

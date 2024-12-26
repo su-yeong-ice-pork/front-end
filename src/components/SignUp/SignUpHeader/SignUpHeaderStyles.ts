@@ -1,5 +1,8 @@
 import {StyleSheet, Dimensions} from 'react-native';
 
+import {FONT} from '@/src/constants/styles/font/default-font';
+import {COLOR} from '@/src/constants/styles/color/color';
+
 const {width, height} = Dimensions.get('window');
 
 export const SignUpHeaderStyles = StyleSheet.create({
@@ -12,7 +15,7 @@ export const SignUpHeaderStyles = StyleSheet.create({
     paddingBottom: height * 0.3, // Increased to ensure space for the button
   },
   welcomeText: {
-    fontFamily: 'NanumSquareNeo-Variable',
+    fontFamily: FONT,
     fontWeight: '800',
     fontSize: 24,
     color: '#3E3E3E',
@@ -32,7 +35,7 @@ export const SignUpHeaderStyles = StyleSheet.create({
   codeButton: {
     position: 'absolute',
     right: 10,
-    backgroundColor: '#009499',
+    backgroundColor: COLOR.MAIN,
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 15,

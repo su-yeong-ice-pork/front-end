@@ -1,11 +1,14 @@
 import {StyleSheet} from 'react-native-css-interop';
 import {Dimensions} from 'react-native';
 
+import {FONT} from '@/src/constants/styles/font/default-font';
+import {COLOR} from '@/src/constants/styles/color/color';
+
 const {width, height} = Dimensions.get('window');
 
 const ErrorMessageStyles = StyleSheet.create({
   iconAndTextContainer: {
-    alignItems: 'center', // 이미지와 텍스트를 수직 중앙 정렬
+    alignItems: 'center',
     marginTop: height * 0.005,
   },
   setiIcon: {
@@ -15,9 +18,9 @@ const ErrorMessageStyles = StyleSheet.create({
     marginRight: width * 0.02,
   },
   activeText: {
-    color: '#009499',
+    color: COLOR.MAIN,
     fontSize: 11,
-    fontFamily: 'NanumSquareNeo-Variable',
+    fontFamily: FONT,
   },
 });
 

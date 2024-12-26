@@ -10,31 +10,37 @@ import InputBox from './InputBox';
 import ErrorMessage from './ErrorMessage';
 import VerifyCode from './VerifyCode';
 
-const VerifyEmail = () => {
-  const [askCode, setAskCode] = useState<string>('코드 요청');
-  const [email, setEmail] = useState<string>('');
-  const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
+import {EMAIL_REGEX} from '@/src/constants/regex.ts';
+import {
+  ASKCODE,
+  EMAIL,
+  VerifyEmailInputBox,
+} from '@/src/constants/SignUp/VerifyEmail';
 
-  // 타이머
+const VerifyEmail = () => {
+  const [askCode, setAskCode] = useState<string>(ASKCODE.ASK);
+  const [email, setEmail] = useState<string>(EMAIL.SOLVED_ERROR);
+  const [emailErrorMessage, setEmailErrorMessage] = useState<string>(
+    EMAIL.SOLVED_ERROR,
+  );
+
   const [timeLeft, setTimeLeft] = useState<number>(300);
   const [isActive, setIsActive] = useState<Boolean>(false);
 
   const handleEmail = async () => {
     if (!email) {
-      setEmailErrorMessage('이메일을 입력해주세요');
+      setEmailErrorMessage(EMAIL.ERRORMESSAGE_EMPTY);
       return;
     }
-    const emailRegex = /^[A-Za-z0-9._%+-]+@pusan\.ac\.kr$/;
-    if (!emailRegex.test(email)) {
-      setEmailErrorMessage('pusan.ac.kr 계정을 사용해주세요.');
+    if (!EMAIL_REGEX.test(email)) {
+      setEmailErrorMessage(EMAIL.ERRORMESSAGE_PUSAN);
       return;
     }
-    setEmailErrorMessage('');
-    setAskCode('재요청');
+    setEmailErrorMessage(EMAIL.SOLVED_ERROR);
+    setAskCode(ASKCODE.RECALL);
     setIsActive(true);
   };
 
-  // 타이머 작동 함수
   useEffect(() => {
     let timer;
     if (isActive && timeLeft > 0) {
@@ -43,7 +49,7 @@ const VerifyEmail = () => {
       }, 1000);
     } else if (timeLeft === 0) {
       clearInterval(timer);
-      setAskCode('코드 요청');
+      setAskCode(ASKCODE.ASK);
       setIsActive(false);
     }
     return () => clearInterval(timer);
@@ -54,8 +60,8 @@ const VerifyEmail = () => {
       <VStack style={VerifyEmailStyles.inputWrapper}>
         <Box>
           <InputBox
-            inputTitle="학교 이메일 인증"
-            placeholderText="학교 이메일을 입력해주세요"
+            inputTitle={VerifyEmailInputBox.TITLE}
+            placeholderText={VerifyEmailInputBox.PLACEHOLDER}
             value={email}
             setValue={setEmail}
           />

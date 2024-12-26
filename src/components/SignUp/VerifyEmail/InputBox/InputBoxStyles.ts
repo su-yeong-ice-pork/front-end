@@ -1,11 +1,14 @@
 import {Dimensions} from 'react-native';
 import {StyleSheet} from 'react-native-css-interop';
 
-const {width, height} = Dimensions.get('window');
+import {FONT} from '@/src/constants/styles/font/default-font';
+import {COLOR} from '@/src/constants/styles/color/color';
+
+const {height} = Dimensions.get('window');
 
 export const InputBoxStyles = StyleSheet.create({
   inputLabel: {
-    fontFamily: 'NanumSquareNeo-Variable',
+    fontFamily: FONT,
     fontWeight: '600',
     fontSize: 14,
     color: '#454545',
@@ -22,9 +25,9 @@ export const InputBoxStyles = StyleSheet.create({
     borderRadius: 6,
     paddingVertical: 5,
     justifyContent: 'center',
-    fontFamily: 'NanumSquareNeo-Variable',
+    fontFamily: FONT,
     fontSize: 12,
-    color: '#000000',
+    color: COLOR.BLACK,
   },
   placeholderText: {
     color: '#B9B9B9',
