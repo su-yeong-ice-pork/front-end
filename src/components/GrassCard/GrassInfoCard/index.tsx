@@ -5,43 +5,33 @@ import {Image} from '@/components/ui/image';
 
 import {ILLUSTRATIONS} from '@/src/constants/image/illustrations';
 import {GrassCardInfoStyles} from './GrassInfoCardStyles';
-
-import {GRASS_CARD_ALT_MESSAGE} from '@/src/constants/GrassCard/GrassCard.ts';
+import {
+  GRASS_CARD_ALT_MESSAGE,
+  GRASS_CARD_TOTAL_DAYS,
+  GRASS_CARD_TOTAL_TIME
+} from '@/src/constants/GrassCard/GrassCard.ts';
 import {GrassInfoCardProps} from '../../types/GrassCardType/GrassCardType';
 
-const GrassInfoCard: React.FC<GrassInfoCardProps> = ({type}) => {
+const GrassInfoCard: React.FC<GrassInfoCardProps> = ({type,highlightNumber,createDate}) => {
+  const isType1 = type === 1;
+
   return (
-    <Box style={GrassCardInfoStyles.grassCardBox}>
-      {type === 1 && (
+      <Box style={GrassCardInfoStyles.grassCardBox}>
         <Box>
           <Text bold={true} style={GrassCardInfoStyles.grassCardText}>
-            2024년 10월 03일에 시작{'\n'}하여 지금까지 총{' '}
-            <Text style={GrassCardInfoStyles.grassCardTextPoint}>36</Text>일
+            {isType1 ? `${createDate}${GRASS_CARD_TOTAL_DAYS.START}` : GRASS_CARD_TOTAL_TIME.START}{" "}
+            <Text style={GrassCardInfoStyles.grassCardTextPoint}>
+              {isType1 ? '36' : highlightNumber}
+            </Text>
+            {isType1 ? GRASS_CARD_TOTAL_DAYS.END : GRASS_CARD_TOTAL_TIME.END}
           </Text>
           <Image
-            style={GrassCardInfoStyles.grassCardImage}
-            source={ILLUSTRATIONS.JANDI1}
-            alt={GRASS_CARD_ALT_MESSAGE.JANDI}
+              style={GrassCardInfoStyles.grassCardImage}
+              source={isType1 ? ILLUSTRATIONS.JANDI1 : ILLUSTRATIONS.JANDI2}
+              alt={GRASS_CARD_ALT_MESSAGE.JANDI}
           />
         </Box>
-      )}
-      {type === 2 && (
-        <Box>
-          <Text bold={true} style={GrassCardInfoStyles.grassCardText}>
-            지금까지{'\n'}총{' '}
-            <Text style={GrassCardInfoStyles.grassCardTextPoint}>139</Text>
-            시간의 잔디를
-            {'\n'}
-            심으셨어요!
-          </Text>
-          <Image
-            style={GrassCardInfoStyles.grassCardImage}
-            source={ILLUSTRATIONS.JANDI2}
-            alt={GRASS_CARD_ALT_MESSAGE.JANDI}
-          />
-        </Box>
-      )}
-    </Box>
+      </Box>
   );
 };
 
