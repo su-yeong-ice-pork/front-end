@@ -1,39 +1,35 @@
 import React, {useState, useEffect} from 'react';
 import {
     View,
-    Text,
     Modal,
     TouchableOpacity,
     ScrollView,
     SafeAreaView,
 } from 'react-native';
-
-import {Box, Image, VStack} from '@/components/ui/index.ts'
+import {Box, Image, VStack, Text} from '@/components/ui/index.ts'
 
 import {ERROR_MESSAGE} from "@/src/constants/Profile/Profile.ts";
 import {ProfileScreenStyles} from "./ProfileScreenStyle.ts"
-import BottomBar from '../../components/BottomBar/index.tsx';
-
-import {getMemberData, Member} from '../../api/profile';
-import {getBadges, Badge} from '../../api/badge';
-import {getMyPageRecord} from '../../api/myPageRecord';
-
 import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
 import userState from '../../recoil/userAtom';
 import authState from '../../recoil/authAtom';
 import {setItem} from '../../api/asyncStorage';
+import {useQuery} from "@tanstack/react-query";
+import {getUserDataApi} from "@/src/api/user/getUserDataApi.ts";
+import {getBadgesApi} from "@/src/api/badge/getBadgesApi.ts";
+import {useNavigation, useRoute} from "@react-navigation/native";
+import {getMemberData, Member} from '../../api/profile';
+import {getBadges, Badge} from '../../api/badge';
+import {getMyPageRecord} from '../../api/myPageRecord';
+import {RootStackRouteProp} from "@/src/components/types/NavigationType/NavigationType.ts";
+
 import Profiles from '../../components/Profile';
 import ListViewBox from '../../components/ListViewBox';
 import GrassCard from '../../components/GrassCard';
 import ProfileAction from '../../components/ProfileAction';
 import Freeze from "@/src/components/Freeze";
-import {useQuery} from "@tanstack/react-query";
-import {getUserDataApi} from "@/src/api/user/getUserDataApi.ts";
-import {getBadgesApi} from "@/src/api/badge/getBadgesApi.ts";
 import Badges from "@/src/components/Badges/index.tsx";
-import {RootStackRouteProp} from "@/src/components/types/NavigationType/NavigationType.ts";
-import {useNavigation, useRoute} from "@react-navigation/native";
-import {Button} from "@/components/ui/button";
+import BottomBar from '../../components/BottomBar/index.tsx';
 
 const IMAGES = {
     profile: require('@/assets/images/illustration/typeThree.png'),
@@ -66,16 +62,14 @@ const BADGES = [
 const ProfileScreen = () => {
     const navigation = useNavigation();
     const route = useRoute<RootStackRouteProp<'Profile'>>();
-
     const [member, setMember] = useState<Member | null>(null);
+
     const [badges, setBadges] = useState<Badge[] | null>(null);
     const authInfo = useRecoilValue(authState);
     const [user, setUser] = useRecoilState(userState);
     const [modalVisible, setModalVisible] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [totalDays, setTotalDays] = useState<number>(0);
-    const [totalTime, setTotalTime] = useState<number>(0);
-    const [createDate, setCreateDate] = useState<string>('');
     const [showBadgeModal, setShowBadgeModal] = useState(false);
 
     const handleNotUseableModal = () => {
@@ -95,14 +89,9 @@ const ProfileScreen = () => {
         enabled: !!memberData,
     });
 
-    const {data: recordData, error: recordDataError} = useQuery({
-        queryKey: ['record'],
-        queryFn: () => getMyPageRecord(authInfo.authToken),
-    });
-
     useEffect(() => {
         if (memberData) {
-            setMember(memberData);
+            //setMember(memberData);
             setUser(memberData);
         } else if (memberDataError) {
             setModalMessage(ERROR_MESSAGE.MEMBER);
@@ -119,17 +108,6 @@ const ProfileScreen = () => {
         }
     }, [badgesData, badgesDataError]);
 
-    useEffect(() => {
-        if (recordData && recordData.success) {
-            setTotalDays(recordData.response.totalStreak);
-            setTotalTime(recordData.response.totalStudyTime);
-            setCreateDate(recordData.response.createdDate);
-        } else if (recordDataError) {
-            setModalMessage(ERROR_MESSAGE.RECORD);
-            setModalVisible(true);
-        }
-    }, [recordData, recordDataError]);
-
     return (
         <>
             <SafeAreaView style={{flex: 1}}>
@@ -138,13 +116,13 @@ const ProfileScreen = () => {
                     contentContainerStyle={{paddingBottom: 80}}>
                     <Box style={ProfileScreenStyles.logoSection}>
                         <Box style={ProfileScreenStyles.logoInfo}>
-                            <Image source={IMAGES.logo} style={ProfileScreenStyles.logoImage} />
+                            <Image source={IMAGES.logo} style={ProfileScreenStyles.logoImage}/>
                         </Box>
                     </Box>
 
                     {/*Profiles*/}
-                    {member?.mainBanner ? (
-                        <Profiles />
+                    {memberData?.mainBanner ? (
+                        <Profiles/>
                     ) : (
                         <Box style={ProfileScreenStyles.upperSection}>
                             <TouchableOpacity
@@ -158,39 +136,37 @@ const ProfileScreen = () => {
                             <Box style={ProfileScreenStyles.profileInfo}>
                                 <Image
                                     source={
-                                        member?.profileImage
-                                            ? {uri: member.profileImage}
+                                        memberData?.profileImage
+                                            ? {uri: memberData.profileImage}
                                             : IMAGES.profile
                                     }
                                     style={ProfileScreenStyles.profileImage}
                                 />
                                 <TouchableOpacity
                                     onPress={() =>
-                                        navigation.navigate('EditProfile', {id: member?.id})
+                                        navigation.navigate('EditProfile', {id: memberData?.id})
                                     }>
-                                    <Image source={IMAGES.editProfile} style={ProfileScreenStyles.editIcon} />
+                                    <Image source={IMAGES.editProfile} style={ProfileScreenStyles.editIcon}/>
                                 </TouchableOpacity>
                             </Box>
                         </Box>
                     )}
 
                     <VStack style={ProfileScreenStyles.content}>
-                        <ListViewBox type="friend" count={0} />
-
-                        <ListViewBox type="group" count={0} />
+                        <ListViewBox type="friend" count={memberData?.friendCount || 0}/>
+                        <ListViewBox type="group" count={memberData?.studyCount || 0}/>
 
                         <Box style={ProfileScreenStyles.badgeContainer}>
                             {badgesData ? <Badges badges={badgesData} styleType={"profile"}/> : null}
                         </Box>
 
+                        <Freeze/>
 
-                        <Freeze />
-
-                        <GrassCard name={member?.name} totalDays={totalDays} />
+                        <GrassCard name={memberData?.name || ''}/>
                     </VStack>
-                    <ProfileAction />
+                    <ProfileAction/>
                 </ScrollView>
-                <BottomBar />
+                <BottomBar/>
             </SafeAreaView>
 
             <Modal
@@ -354,14 +330,14 @@ const ProfileFooter = ({navigation}) => {
                     navigation.navigate('FindPassword', {title: '비밀번호 변경하기'})
                 }
                 activeOpacity={0.7}>
-                <Image source={IMAGES.lockIcon} style={ProfileScreenStyles.footerIcon} />
+                <Image source={IMAGES.lockIcon} style={ProfileScreenStyles.footerIcon}/>
                 <Text style={ProfileScreenStyles.footerButtonText}>비밀번호 변경하기</Text>
             </TouchableOpacity>
-            <View style={ProfileScreenStyles.footerDivider} />
+            <View style={ProfileScreenStyles.footerDivider}/>
             <TouchableOpacity
                 style={ProfileScreenStyles.footerButton}
                 onPress={() => setShowLogOut(true)}>
-                <Image source={IMAGES.logoutIcon} style={ProfileScreenStyles.footerIcon} />
+                <Image source={IMAGES.logoutIcon} style={ProfileScreenStyles.footerIcon}/>
                 <Text style={ProfileScreenStyles.footerButtonText}>로그아웃</Text>
             </TouchableOpacity>
 

@@ -1,12 +1,12 @@
-import {StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 import {FONT} from '@/src/constants/styles/font/default-font';
-import {COLOR} from '@/src/constants/styles/color/color.ts';
+const {width, height} = Dimensions.get('window');
 
 export const ProfileBadgeViewStyles = StyleSheet.create({
     badge: {
-        width: 35,
-        height: 35,
-        marginRight: 7,
+        width: width * 0.098,
+        height: width * 0.098,
+        marginRight: width * 0.01,
         resizeMode: 'contain',
     },
     badgeStackBox: {
@@ -15,11 +15,12 @@ export const ProfileBadgeViewStyles = StyleSheet.create({
         width: 'auto'
     },
     moreButton: {
-        backgroundColor: COLOR.WHITE,
-        paddingBottom: 10
+        backgroundColor: '#F5F5F5',
+        paddingBottom: width * 0.028,
+        height: height*0.045,
     },
     moreText: {
-        fontSize: 20,
+        fontSize: width * 0.055,
         color: '#009499',
         fontFamily: `${FONT}`,
     },

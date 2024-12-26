@@ -8,8 +8,8 @@ const mainColor = "#12A5B0"
 
 const border = 3
 const baseFontStyle = {
-    fontSize: 10,
-    fontWeight: 600,
+    fontSize: width * 0.028,
+    fontWeight: '600' as '600',
     fontFamily:`${FONT}`
 }
 
@@ -37,7 +37,7 @@ export const ListViewBoxStyles = StyleSheet.create({
 
     ViewBoxIconContainer: {
         ...baseFontStyle,
-        fontSize: 15,
+        fontSize: width * 0.04,
         color: mainColor,
         marginRight: width * 0.01,
     },
@@ -57,7 +57,7 @@ export const ListViewBoxStyles = StyleSheet.create({
     },
     ViewBoxCount: {
         color: mainColor,
-        fontSize: 15,
+        fontSize: width*0.04,
     },
 
     ButtonStyle: {

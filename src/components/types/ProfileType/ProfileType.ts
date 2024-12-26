@@ -5,5 +5,4 @@ export type ProfileNameProps = {
 
 export type GrassCardProps = {
   name: string;
-  totalDays: number;
 }
