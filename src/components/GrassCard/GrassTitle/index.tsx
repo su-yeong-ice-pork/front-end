@@ -1,7 +1,6 @@
 import React from 'react';
 import {Box, Text, Heading} from '@/components/ui/index.ts';
 
-import {FONT_SIZE} from '@/src/constants/GrassCard/FontSizes';
 import {GrassTitleStyles} from './GrassTitleStyles';
 import {GrassTitleProps} from '../../types/GrassCardType/GrassCardType';
 import {GRASS_TITLE} from '@/src/constants/GrassCard/GrassCard.ts';
