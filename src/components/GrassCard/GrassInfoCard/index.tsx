@@ -1,8 +1,5 @@
 import React from 'react';
-import {Box} from '@/components/ui/box';
-import {Text} from '@/components/ui/text';
-import {Image} from '@/components/ui/image';
-
+import {Box,Text,Image} from '@/components/ui/index.ts';
 import {ILLUSTRATIONS} from '@/src/constants/image/illustrations';
 import {GrassCardInfoStyles} from './GrassInfoCardStyles';
 import {
@@ -18,8 +15,9 @@ const GrassInfoCard: React.FC<GrassInfoCardProps> = ({type,highlightNumber,creat
   return (
       <Box style={GrassCardInfoStyles.grassCardBox}>
         <Box>
-          <Text bold={true} style={GrassCardInfoStyles.grassCardText}>
-            {isType1 ? `${createDate}${GRASS_CARD_TOTAL_DAYS.START}` : GRASS_CARD_TOTAL_TIME.START}{" "}
+          <Text style={GrassCardInfoStyles.grassCardText}>
+              <Text style={{ fontWeight:800}}>{createDate}</Text>
+            {isType1 ? `${GRASS_CARD_TOTAL_DAYS.START}` : GRASS_CARD_TOTAL_TIME.START}{" "}
             <Text style={GrassCardInfoStyles.grassCardTextPoint}>
               {isType1 ? '36' : highlightNumber}
             </Text>
