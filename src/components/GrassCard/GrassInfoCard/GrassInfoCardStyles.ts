@@ -4,6 +4,8 @@ const {width, height} = Dimensions.get('window');
 import {FONT} from '@/src/constants/styles/font/default-font';
 import {COLOR} from '@/src/constants/styles/color/color.ts'
 
+const fontSize10 = width * 0.028;
+;
 export const GrassCardInfoStyles = StyleSheet.create({
   grassCardBox: {
     backgroundColor: COLOR.WHITE,
@@ -18,7 +20,7 @@ export const GrassCardInfoStyles = StyleSheet.create({
   },
   grassCardText: {
     color: COLOR.BLACK,
-    fontSize: width * 0.028,
+    fontSize: fontSize10,
     textAlign: 'center',
     marginTop: height * 0.01,
     marginBottom: height * 0.01,
@@ -28,7 +30,7 @@ export const GrassCardInfoStyles = StyleSheet.create({
   },
   grassCardTextPoint: {
     color: '#009499',
-    fontSize: width * 0.030,
+    fontSize: fontSize10+2,
     fontFamily: `${FONT}`,
     fontWeight:"600"
   },
