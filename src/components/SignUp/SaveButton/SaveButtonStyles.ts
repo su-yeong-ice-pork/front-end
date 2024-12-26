@@ -1,5 +1,7 @@
 import {StyleSheet} from 'react-native';
 
+import {COLOR} from '@/src/constants/styles/color/color';
+
 export const SaveButtonStyles = StyleSheet.create({
   boxContiner: {
     marginVertical: 20,
@@ -24,7 +26,8 @@ export const SaveButtonStyles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   buttonText: {
-    color: '#fff',
+    color: COLOR.WHITE,
+    fontSize: 17,
     fontWeight: 'bold',
   },
 });

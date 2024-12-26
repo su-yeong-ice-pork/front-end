@@ -7,6 +7,12 @@ import {Svg} from 'react-native-svg';
 
 import {SaveButtonStyles} from './SaveButtonStyles';
 
+import {COLOR} from '@/src/constants/styles/color/color';
+import {
+  SaveButtonGradient,
+  GradientLocation,
+} from '@/src/constants/SignUp/SaveButton';
+
 const SaveButton = () => {
   const submitSignUp = () => {};
 
@@ -14,24 +20,35 @@ const SaveButton = () => {
     <Box style={SaveButtonStyles.boxContiner}>
       <Svg style={SaveButtonStyles.buttonStyle}>
         <Defs>
-          <LinearGradient id="gradient" x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0" stopColor="rgba(31, 209, 245, 1)" />
-            <Stop offset="1" stopColor="rgba(0, 255, 150, 1)" />
+          <LinearGradient
+            id={SaveButtonGradient.ID}
+            x1={SaveButtonGradient.X[0]}
+            y1={SaveButtonGradient.Y[0]}
+            x2={SaveButtonGradient.X[1]}
+            y2={SaveButtonGradient.Y[1]}>
+            <Stop
+              offset={SaveButtonGradient.OFFSET[0]}
+              stopColor={COLOR.GRADIENT.TONE[1]}
+            />
+            <Stop
+              offset={SaveButtonGradient.OFFSET[1]}
+              stopColor={COLOR.GRADIENT.TONE[0]}
+            />
           </LinearGradient>
         </Defs>
         <Rect
-          x="0"
-          y="0"
-          width="100%"
-          height="60"
-          fill="url(#gradient)"
-          rx="30"
-          ry="30"
+          x={GradientLocation.X}
+          y={GradientLocation.Y}
+          width={GradientLocation.WIDTH}
+          height={GradientLocation.HEIGHT}
+          fill={GradientLocation.FILL}
+          rx={GradientLocation.RX}
+          ry={GradientLocation.RY}
         />
       </Svg>
 
       <Button onPress={submitSignUp} style={SaveButtonStyles.button}>
-        <ButtonText size="lg" style={SaveButtonStyles.buttonText}>
+        <ButtonText style={SaveButtonStyles.buttonText}>
           잔디 심으러 가기
         </ButtonText>
       </Button>
