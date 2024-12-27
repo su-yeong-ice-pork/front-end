@@ -1,18 +1,14 @@
 import React from 'react';
 import {Modal, TouchableOpacity, View, Text, Image} from 'react-native';
-import {ProfileScreenStyles} from '@/src/screens/ProfileScreen/ProfileScreenStyle.ts'; // 스타일 파일 경로를 확인하세요
+import {ProfileScreenStyles} from '@/src/screens/ProfileScreen/ProfileScreenStyle.ts';
+import {LogoutModalProps} from "@/src/components/types/ModalType/LogoutModalProps.ts"; // 스타일 파일 경로를 확인하세요
 const IMAGES = {
   sleepyFaceEmoji: require('@/assets/images/emoji/sleepyFaceEmoji.png'),
   closeLogout: require('@/assets/images/icons/closeLogout.png'),
 };
 
-export type UpcomingModalProps = {
-  showLogOut: boolean;
-  setShowLogOut: (value: boolean) => void;
-  handleLogout: (value: boolean) => void;
-};
 
-const LogoutModal: React.FC<UpcomingModalProps> = ({showLogOut, setShowLogOut, handleLogout}) => {
+const LogoutModal: React.FC<LogoutModalProps> = ({showLogOut, setShowLogOut, handleLogout}) => {
   return (
     <Modal
       animationType="slide"
