@@ -6,3 +6,8 @@ export type ProfileNameProps = {
 export type GrassCardProps = {
   name: string;
 }
+
+export type ProfileActionButtonProps={
+  imageType: 'changePassword' | 'logoutIcon',
+  text: string;
+}

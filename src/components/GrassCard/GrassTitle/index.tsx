@@ -3,7 +3,7 @@ import {Box, Text, Heading} from '@/components/ui/index.ts';
 
 import {GrassTitleStyles} from './GrassTitleStyles';
 import {GrassTitleProps} from '../../types/GrassCardType/GrassCardType';
-import {GRASS_TITLE} from '@/src/constants/GrassCard/GrassCard.ts';
+import {GRASS_TITLE} from '@/src/constants/Profile/GrassCard.ts';
 
 
 const GrassTitle = ({name, totalDays}: GrassTitleProps) => {

@@ -2,12 +2,12 @@ import React from 'react';
 import {Box,Text,Image} from '@/components/ui/index.ts';
 import {ILLUSTRATIONS} from '@/src/constants/image/illustrations';
 import {GrassCardInfoStyles} from './GrassInfoCardStyles';
+import {GrassInfoCardProps} from '../../types/GrassCardType/GrassCardType';
 import {
   GRASS_CARD_ALT_MESSAGE,
   GRASS_CARD_TOTAL_DAYS,
   GRASS_CARD_TOTAL_TIME
-} from '@/src/constants/GrassCard/GrassCard.ts';
-import {GrassInfoCardProps} from '../../types/GrassCardType/GrassCardType';
+} from "@/src/constants/Profile/GrassCard.ts";
 
 const GrassInfoCard: React.FC<GrassInfoCardProps> = ({type,highlightNumber,createDate}) => {
   const isType1 = type === 1;
