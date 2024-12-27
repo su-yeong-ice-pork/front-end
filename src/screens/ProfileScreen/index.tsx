@@ -1,24 +1,23 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
   Image
 } from 'react-native';
-import {Box, VStack} from '@/components/ui/index.ts'
+import { Box, VStack } from '@/components/ui/index.ts';
 
-import {ERROR_MESSAGE} from "@/src/constants/Profile/Profile.ts";
-import {ProfileScreenStyles} from "./ProfileScreenStyle.ts"
-import {useRecoilState, useRecoilValue} from 'recoil';
+import { ERROR_MESSAGE } from "@/src/constants/Profile/Profile.ts";
+import { ProfileScreenStyles } from "./ProfileScreenStyle.ts";
+import { useRecoilState, useRecoilValue } from 'recoil';
 import userState from '../../recoil/userAtom';
 import authState from '../../recoil/authAtom';
-import {useQuery} from "@tanstack/react-query";
-import {getUserDataApi} from "@/src/api/user/getUserDataApi.ts";
-import {getBadgesApi} from "@/src/api/badge/getBadgesApi.ts";
-import {useNavigation, useRoute} from "@react-navigation/native";
-import {getMemberData, Member} from '../../api/profile';
-import {getBadges, Badge} from '../../api/badge';
-import {RootStackRouteProp} from "@/src/components/types/NavigationType/NavigationType.ts";
+import { useQuery } from "@tanstack/react-query";
+import { getUserDataApi } from "@/src/api/user/getUserDataApi.ts";
+import { getBadgesApi } from "@/src/api/badge/getBadgesApi.ts";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Badge } from '../../api/badge';
+import { RootStackRouteProp } from "@/src/components/types/NavigationType/NavigationType.ts";
 
 import Profiles from '../../components/Profile';
 import ListViewBox from '../../components/ListViewBox';
@@ -28,7 +27,7 @@ import Freeze from "@/src/components/Freeze";
 import Badges from "@/src/components/Badges/index.tsx";
 import BottomBar from '../../components/BottomBar/index.tsx';
 import UpcomingModal from "@/src/components/Modal/UpcomingModal.tsx";
-import {MESSAGES} from "@/src/constants/BottomBar/Messages.ts";
+import { MESSAGES } from "@/src/constants/BottomBar/Messages.ts";
 
 const IMAGES = {
   profile: require('@/assets/images/illustration/typeThree.png'),
@@ -49,66 +48,63 @@ const IMAGES = {
 };
 
 const ProfileScreen = () => {
-  const navigation = useNavigation();
-  const route = useRoute<RootStackRouteProp<'Profile'>>();
-  const [member, setMember] = useState<Member | null>(null);
-
+  const navigation = useNavigation(); // 네비게이션 객체
+  const route = useRoute<RootStackRouteProp<'Profile'>>(); // 현재 라우트 정보
   const [badges, setBadges] = useState<Badge[] | null>(null);
   const authInfo = useRecoilValue(authState);
   const [user, setUser] = useRecoilState(userState);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
-
   const [showModal, setShowModal] = useState(false);
+
   const handleModalOpen = () => {
     setShowModal(true);
   };
 
-  const {data: memberData, error: memberDataError} = useQuery({
+  // 사용자 데이터 가져오기
+  const { data: memberData, error: memberDataError } = useQuery({
     queryKey: ['member'],
     queryFn: () => getUserDataApi(authInfo.authToken),
   });
 
-  const {data: badgesData, error: badgesDataError} = useQuery({
+  // 배지 데이터 가져오기
+  const { data: badgesData, error: badgesDataError } = useQuery({
     queryKey: ['badges', memberData?.id],
     queryFn: () => memberData ? getBadgesApi(memberData.id, authInfo.authToken) : Promise.resolve(null),
     enabled: !!memberData,
   });
 
+  // 사용자 데이터가 변경될 때
   useEffect(() => {
     if (memberData) {
-      //setMember(memberData);
       setUser(memberData);
     } else if (memberDataError) {
-      setModalMessage(ERROR_MESSAGE.MEMBER);
-      setModalVisible(true);
+      console.log(ERROR_MESSAGE.MEMBER);
     }
-  }, [memberData, memberDataError]);
+  }, [memberData, memberDataError, setUser]);
+
 
   useEffect(() => {
     if (badgesData) {
       setBadges(badgesData);
     } else if (badgesDataError) {
-      setModalMessage(ERROR_MESSAGE.BADGE);
-      setModalVisible(true);
+      console.log(ERROR_MESSAGE.BADGE);
     }
   }, [badgesData, badgesDataError]);
 
   return (
     <>
-      <SafeAreaView style={{flex: 1}}>
+      <SafeAreaView style={{ flex: 1 }}>
         <ScrollView
           style={ProfileScreenStyles.container}
-          contentContainerStyle={{paddingBottom: 80}}>
+          contentContainerStyle={{ paddingBottom: 80 }}>
           <Box style={ProfileScreenStyles.logoSection}>
             <Box style={ProfileScreenStyles.logoInfo}>
-              <Image source={IMAGES.logo} style={ProfileScreenStyles.logoImage}/>
+              <Image source={IMAGES.logo} style={ProfileScreenStyles.logoImage} />
             </Box>
           </Box>
 
           {/*Profiles*/}
-          {memberData?.mainBanner ? (
-            <Profiles/>
+          {user?.mainBanner ? (
+            <Profiles />
           ) : (
             <Box style={ProfileScreenStyles.upperSection}>
               <TouchableOpacity
@@ -122,17 +118,17 @@ const ProfileScreen = () => {
               <Box style={ProfileScreenStyles.profileInfo}>
                 <Image
                   source={
-                    memberData?.profileImage
-                      ? {uri: memberData.profileImage}
+                    user?.profileImage
+                      ? { uri: user.profileImage }
                       : IMAGES.profile
                   }
                   style={ProfileScreenStyles.profileImage}
                 />
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate('EditProfile', {id: memberData?.id})
+                    navigation.navigate('EditProfile', { id: user?.id })
                   }>
-                  <Image source={IMAGES.editProfile} style={ProfileScreenStyles.editIcon}/>
+                  <Image source={IMAGES.editProfile} style={ProfileScreenStyles.editIcon} />
                 </TouchableOpacity>
               </Box>
             </Box>
@@ -140,21 +136,22 @@ const ProfileScreen = () => {
           {/*Profiles*/}
 
           <VStack style={ProfileScreenStyles.content}>
-            <ListViewBox type="friend" count={memberData?.friendCount || 0} buttonOnPress={handleModalOpen}/>
-            <ListViewBox type="group" count={memberData?.studyCount || 0} buttonOnPress={handleModalOpen}/>
+            <ListViewBox type="friend" count={user?.friendCount || 0} buttonOnPress={handleModalOpen} />
+            <ListViewBox type="group" count={user?.studyCount || 0} buttonOnPress={handleModalOpen} />
 
             <Box style={ProfileScreenStyles.badgeContainer}>
-              {badgesData ? <Badges badges={badgesData} styleType={"profile"}/> : null}
+              {badges ? <Badges badges={badges} styleType={"profile"} /> : null}
             </Box>
 
-            <Freeze/>
-            <GrassCard name={memberData?.name || ''}/>
+            <Freeze />
+            <GrassCard name={user?.name || ''} />
           </VStack>
 
-          <ProfileAction/>
+          <ProfileAction />
         </ScrollView>
-        <BottomBar/>
+        <BottomBar />
       </SafeAreaView>
+
       <UpcomingModal
         showModal={showModal}
         setShowModal={setShowModal}

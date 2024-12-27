@@ -1,6 +1,7 @@
 import {Dimensions, StyleSheet} from "react-native";
 
 const {width, height} = Dimensions.get('window');
+const pixel10 = width*0.028;
 
 export const ProfileScreenStyles = StyleSheet.create({
   container: {
@@ -19,9 +20,9 @@ export const ProfileScreenStyles = StyleSheet.create({
     flexDirection: 'row',
   },
   logoImage: {
-    width: 80,
-    height: 50,
-    left: 20,
+    width: pixel10*8,
+    height: pixel10*5,
+    left: pixel10*2,
     resizeMode: 'contain',
   },
 
