@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Box,Text,HStack, Image} from '@/components/ui/index.ts';
 import {Button, ButtonText} from '@/components/ui/button';
 import useListViewBox from '@/src/hooks/useListViewBox';

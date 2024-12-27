@@ -1,9 +1,10 @@
 import React from 'react';
-import {Modal, TouchableOpacity, View, Text, Image} from 'react-native';
-import {ProfileScreenStyles} from '@/src/screens/ProfileScreen/ProfileScreenStyle.ts';
-import {LogoutModalProps} from "@/src/components/types/ModalType/LogoutModalProps.ts"; // 스타일 파일 경로를 확인하세요
+import {Modal, TouchableOpacity,Image} from 'react-native';
+import {VStack,HStack,Box,Text} from '@/components/ui/index.ts'
+import {LogoutModalProps} from "@/src/components/types/ModalType/LogoutModalProps.ts";
+import {LogoutModalStyles} from "@/src/components/Modal/LogoutModalStyle.ts";
+import {LOGOUT_MODAL} from "@/src/constants/Profile/LogoutModal.ts";
 const IMAGES = {
-  sleepyFaceEmoji: require('@/assets/images/emoji/sleepyFaceEmoji.png'),
   closeLogout: require('@/assets/images/icons/closeLogout.png'),
 };
 
@@ -15,41 +16,36 @@ const LogoutModal: React.FC<LogoutModalProps> = ({showLogOut, setShowLogOut, han
       visible={showLogOut}
       onRequestClose={() => setShowLogOut(false)}>
       <TouchableOpacity
-        style={ProfileScreenStyles.logoutModalOverlay}
+        style={LogoutModalStyles.logoutModalOverlay}
         activeOpacity={1}
         onPress={() => setShowLogOut(false)}>
-        <View style={ProfileScreenStyles.logoutModalView}>
-          <View style={ProfileScreenStyles.logoutModalHeader}>
-            <Image
-              source={IMAGES.sleepyFaceEmoji}
-              style={ProfileScreenStyles.logoutModalSleepyEmoji}
-            />
-            <View style={ProfileScreenStyles.logoutModalTextWrapper}>
-              <Text style={ProfileScreenStyles.logoutModalText}>
-                정말 로그아웃 하실건가요?
+        <VStack style={LogoutModalStyles.logoutModalView}>
+          <HStack style={LogoutModalStyles.logoutModalHeader}>
+            <Box style={LogoutModalStyles.logoutModalTextWrapper}>
+              <Text style={LogoutModalStyles.logoutModalText}>
+                {LOGOUT_MODAL.TITLE}
               </Text>
-            </View>
+            </Box>
             <TouchableOpacity
               onPress={() => setShowLogOut(false)}
-              style={ProfileScreenStyles.logoutModalCloseButton}>
+              style={LogoutModalStyles.logoutModalCloseButton}>
               <Image
                 source={IMAGES.closeLogout}
-                style={ProfileScreenStyles.logoutModalCloseIcon}
+                style={LogoutModalStyles.logoutModalCloseIcon}
               />
             </TouchableOpacity>
-          </View>
-          <View style={ProfileScreenStyles.logoutModalContent}>
-            <Text style={ProfileScreenStyles.logoutModalDescription}>
-              조금만 더 하면 잔디가 더 푸르게 자랄 수 있어요!{'\n'}
-              잔디는 언제나 기다리고 있을게요.
+          </HStack>
+          <VStack style={LogoutModalStyles.logoutModalContent}>
+            <Text style={LogoutModalStyles.logoutModalDescription}>
+              {LOGOUT_MODAL.CONTENT}
             </Text>
             <TouchableOpacity
-              style={ProfileScreenStyles.logoutModalButton}
+              style={LogoutModalStyles.logoutModalButton}
               onPress={handleLogout}>
-              <Text style={ProfileScreenStyles.logoutModalButtonText}>네, 잘가요!</Text>
+              <Text style={LogoutModalStyles.logoutModalButtonText}>{LOGOUT_MODAL.LOGOUT_BUTTON}</Text>
             </TouchableOpacity>
-          </View>
-        </View>
+          </VStack>
+        </VStack>
       </TouchableOpacity>
     </Modal>
   );
