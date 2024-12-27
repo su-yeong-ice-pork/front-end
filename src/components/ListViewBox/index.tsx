@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Box,Text,HStack, Image} from '@/components/ui/index.ts';
 import {Button, ButtonText} from '@/components/ui/button';
 import useListViewBox from '@/src/hooks/useListViewBox';
@@ -7,7 +7,7 @@ import {ListViewBoxStyles} from './ListViewBoxStyels';
 import {ListViewBoxProps} from '../types/ListViewBoxType/ListViewBoxType';
 import {ListViewBoxAltMessage} from '@/src/constants/ListViewBox/ListViewBox';
 
-const ListViewBox: React.FC<ListViewBoxProps> = ({type, count}) => {
+const ListViewBox: React.FC<ListViewBoxProps> = ({type, count,buttonOnPress}) => {
   const {boxTitle, icon, buttonIcon, typeLabel, buttonText, description} =
     useListViewBox(type);
 
@@ -32,7 +32,8 @@ const ListViewBox: React.FC<ListViewBoxProps> = ({type, count}) => {
             </Text>
         </HStack>
 
-        <Button style={ListViewBoxStyles.ButtonStyle}>
+        <Button style={ListViewBoxStyles.ButtonStyle}
+                onPress={buttonOnPress}>
           <Image
             source={buttonIcon}
             style={ListViewBoxStyles.Icon}

@@ -1,26 +1,23 @@
 import React, {useState, useEffect} from 'react';
 import {
-  View,
-  Modal,
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  Image
 } from 'react-native';
-import {Box, Image, VStack, Text} from '@/components/ui/index.ts'
+import {Box, VStack} from '@/components/ui/index.ts'
 
 import {ERROR_MESSAGE} from "@/src/constants/Profile/Profile.ts";
 import {ProfileScreenStyles} from "./ProfileScreenStyle.ts"
-import {useRecoilState, useRecoilValue, useSetRecoilState} from 'recoil';
+import {useRecoilState, useRecoilValue} from 'recoil';
 import userState from '../../recoil/userAtom';
 import authState from '../../recoil/authAtom';
-import {setItem} from '../../api/asyncStorage';
 import {useQuery} from "@tanstack/react-query";
 import {getUserDataApi} from "@/src/api/user/getUserDataApi.ts";
 import {getBadgesApi} from "@/src/api/badge/getBadgesApi.ts";
 import {useNavigation, useRoute} from "@react-navigation/native";
 import {getMemberData, Member} from '../../api/profile';
 import {getBadges, Badge} from '../../api/badge';
-import {getMyPageRecord} from '../../api/myPageRecord';
 import {RootStackRouteProp} from "@/src/components/types/NavigationType/NavigationType.ts";
 
 import Profiles from '../../components/Profile';
@@ -30,6 +27,8 @@ import ProfileAction from '../../components/ProfileAction';
 import Freeze from "@/src/components/Freeze";
 import Badges from "@/src/components/Badges/index.tsx";
 import BottomBar from '../../components/BottomBar/index.tsx';
+import UpcomingModal from "@/src/components/Modal/UpcomingModal.tsx";
+import {MESSAGES} from "@/src/constants/BottomBar/Messages.ts";
 
 const IMAGES = {
   profile: require('@/assets/images/illustration/typeThree.png'),
@@ -46,18 +45,8 @@ const IMAGES = {
   jandi2: require('@/assets/images/illustration/jandi2.png'),
   editProfile: require('@/assets/images/icons/profileEdit.png'),
   profileBackButton: require('@/assets/images/icons/profileBackButton.png'),
-  sleepyFaceEmoji: require('@/assets/images/emoji/sleepyFaceEmoji.png'),
-  closeLogout: require('@/assets/images/icons/closeLogout.png'),
   iIcon: require('@/assets/images/icons/iIcon.png'),
 };
-const BADGES = [
-  require('@/assets/images/badge/badge0.png'),
-  require('@/assets/images/badge/badge1.png'),
-  require('@/assets/images/badge/badge2.png'),
-  require('@/assets/images/badge/badge3.png'),
-  require('@/assets/images/badge/badge4.png'),
-  require('@/assets/images/badge/badge5.png'),
-];
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -69,13 +58,10 @@ const ProfileScreen = () => {
   const [user, setUser] = useRecoilState(userState);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-  const [totalDays, setTotalDays] = useState<number>(0);
-  const [showBadgeModal, setShowBadgeModal] = useState(false);
 
-  const handleNotUseableModal = () => {
-    setModalMessage('추가 예정인 기능입니다.');
-    setModalVisible(true);
-    return;
+  const [showModal, setShowModal] = useState(false);
+  const handleModalOpen = () => {
+    setShowModal(true);
   };
 
   const {data: memberData, error: memberDataError} = useQuery({
@@ -151,240 +137,31 @@ const ProfileScreen = () => {
               </Box>
             </Box>
           )}
+          {/*Profiles*/}
 
           <VStack style={ProfileScreenStyles.content}>
-            <ListViewBox type="friend" count={memberData?.friendCount || 0}/>
-            <ListViewBox type="group" count={memberData?.studyCount || 0}/>
+            <ListViewBox type="friend" count={memberData?.friendCount || 0} buttonOnPress={handleModalOpen}/>
+            <ListViewBox type="group" count={memberData?.studyCount || 0} buttonOnPress={handleModalOpen}/>
 
             <Box style={ProfileScreenStyles.badgeContainer}>
               {badgesData ? <Badges badges={badgesData} styleType={"profile"}/> : null}
             </Box>
 
             <Freeze/>
-
             <GrassCard name={memberData?.name || ''}/>
           </VStack>
+
           <ProfileAction/>
         </ScrollView>
         <BottomBar/>
       </SafeAreaView>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showBadgeModal}
-        onRequestClose={() => setShowBadgeModal(false)}>
-        <View style={ProfileScreenStyles.modalOverlay}>
-          <TouchableOpacity
-            style={ProfileScreenStyles.overlayTouchable}
-            activeOpacity={1}
-            onPress={() => setShowBadgeModal(false)}
-          />
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={showBadgeModal}
-            onRequestClose={() => setShowBadgeModal(false)}>
-            <View style={ProfileScreenStyles.modalOverlay}>
-              <TouchableOpacity
-                style={ProfileScreenStyles.overlayTouchable}
-                activeOpacity={1}
-                onPress={() => setShowBadgeModal(false)}
-              />
-
-              <View style={ProfileScreenStyles.modalView}>
-                <View style={ProfileScreenStyles.modalHeaderContainer}>
-                  <Text style={ProfileScreenStyles.modalHeaderText}>프로필 뱃지 </Text>
-                  <Text style={ProfileScreenStyles.modalHeaderHighlight}>
-                    총 {badges ? badges.length : 0}개 보유 중
-                  </Text>
-                </View>
-                <ScrollView style={ProfileScreenStyles.modalScrollView}>
-                  {badges &&
-                    badges.map(badge => (
-                      <View key={badge.id} style={ProfileScreenStyles.modalBadge}>
-                        <Image
-                          source={BADGES[Number(badge.fileName)]}
-                          style={ProfileScreenStyles.modalBadgeImage}
-                        />
-                        <View style={ProfileScreenStyles.modalBadgeInfo}>
-                          <Text style={ProfileScreenStyles.modalBadgeName}>
-                            {badge.name}
-                          </Text>
-                          <Text style={ProfileScreenStyles.modalBadgeDescription}>
-                            {badge.description}
-                          </Text>
-                        </View>
-                      </View>
-                    ))}
-                </ScrollView>
-                <TouchableOpacity
-                  style={ProfileScreenStyles.closeButton}
-                  onPress={() => setShowBadgeModal(false)}>
-                  <Text style={ProfileScreenStyles.closeButtonText}>닫기</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
-          {/* 추기 기능 예정입니다 모달창 */}
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}>
-            <TouchableOpacity
-              style={ProfileScreenStyles.modalOverlay}
-              activeOpacity={1}
-              onPress={() => setModalVisible(false)}>
-              <View style={ProfileScreenStyles.modalView}>
-                <Text style={ProfileScreenStyles.modalText}>{modalMessage}</Text>
-                <TouchableOpacity
-                  style={ProfileScreenStyles.closeButton}
-                  onPress={() => setModalVisible(false)}>
-                  <Text style={ProfileScreenStyles.closeButtonText}>닫기</Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-          </Modal>
-
-          <View style={ProfileScreenStyles.modalView}>
-            <View style={ProfileScreenStyles.modalHeaderContainer}>
-              <Text style={ProfileScreenStyles.modalHeaderText}>프로필 뱃지 </Text>
-              <Text style={ProfileScreenStyles.modalHeaderHighlight}>
-                총 {badges ? badges.length : 0}개 보유 중
-              </Text>
-            </View>
-            <ScrollView style={ProfileScreenStyles.modalScrollView}>
-              {badges &&
-                badges.map(badge => (
-                  <View key={badge.id} style={ProfileScreenStyles.modalBadge}>
-                    <Image
-                      source={BADGES[Number(badge.fileName)]}
-                      style={ProfileScreenStyles.modalBadgeImage}
-                    />
-                    <View style={ProfileScreenStyles.modalBadgeInfo}>
-                      <Text style={ProfileScreenStyles.modalBadgeName}>{badge.name}</Text>
-                      <Text style={ProfileScreenStyles.modalBadgeDescription}>
-                        {badge.description}
-                      </Text>
-                    </View>
-                  </View>
-                ))}
-            </ScrollView>
-            <TouchableOpacity
-              style={ProfileScreenStyles.closeButton}
-              onPress={() => setShowBadgeModal(false)}>
-              <Text style={ProfileScreenStyles.closeButtonText}>닫기</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-      {/* 추기 기능 예정입니다 모달창 */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}>
-        <TouchableOpacity
-          style={ProfileScreenStyles.modalOverlay}
-          activeOpacity={1}
-          onPress={() => setModalVisible(false)}>
-          <View style={ProfileScreenStyles.modalView}>
-            <Text style={ProfileScreenStyles.modalText}>{modalMessage}</Text>
-            <TouchableOpacity
-              style={ProfileScreenStyles.closeButton}
-              onPress={() => setModalVisible(false)}>
-              <Text style={ProfileScreenStyles.closeButtonText}>닫기</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </Modal>
+      <UpcomingModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        text={MESSAGES.MODAL}
+      />
     </>
   );
 };
 
 export default ProfileScreen;
-
-
-// ProfileFooter Component
-const ProfileFooter = ({navigation}) => {
-  const [showLogOut, setShowLogOut] = useState(false);
-  const setAuthState = useSetRecoilState(authState);
-  const handleLogout = async () => {
-    try {
-      await setItem('refreshToken', '');
-      await setItem('autoLogin', 'N');
-      setAuthState({email: '', authToken: ''});
-      setShowLogOut(false);
-      navigation.navigate('Landing');
-    } catch (error) {
-      console.error('Error during logout:', error);
-    }
-  };
-
-  return (
-    <View style={ProfileScreenStyles.footer}>
-      <TouchableOpacity
-        style={ProfileScreenStyles.footerButton}
-        onPress={() =>
-          navigation.navigate('FindPassword', {title: '비밀번호 변경하기'})
-        }
-        activeOpacity={0.7}>
-        <Image source={IMAGES.lockIcon} style={ProfileScreenStyles.footerIcon}/>
-        <Text style={ProfileScreenStyles.footerButtonText}>비밀번호 변경하기</Text>
-      </TouchableOpacity>
-      <View style={ProfileScreenStyles.footerDivider}/>
-      <TouchableOpacity
-        style={ProfileScreenStyles.footerButton}
-        onPress={() => setShowLogOut(true)}>
-        <Image source={IMAGES.logoutIcon} style={ProfileScreenStyles.footerIcon}/>
-        <Text style={ProfileScreenStyles.footerButtonText}>로그아웃</Text>
-      </TouchableOpacity>
-
-      {/* 로그아웃 팝업창 */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showLogOut}
-        onRequestClose={() => setShowLogOut(false)}>
-        <TouchableOpacity
-          style={ProfileScreenStyles.logoutModalOverlay}
-          activeOpacity={1}
-          onPress={() => setShowLogOut(false)}>
-          <View style={ProfileScreenStyles.logoutModalView}>
-            <View style={ProfileScreenStyles.logoutModalHeader}>
-              <Image
-                source={IMAGES.sleepyFaceEmoji}
-                style={ProfileScreenStyles.logoutModalSleepyEmoji}
-              />
-              <View style={ProfileScreenStyles.logoutModalTextWrapper}>
-                <Text style={ProfileScreenStyles.logoutModalText}>
-                  정말 로그아웃 하실건가요?
-                </Text>
-              </View>
-              <TouchableOpacity
-                onPress={() => setShowLogOut(false)}
-                style={ProfileScreenStyles.logoutModalCloseButton}>
-                <Image
-                  source={IMAGES.closeLogout}
-                  style={ProfileScreenStyles.logoutModalCloseIcon}
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={ProfileScreenStyles.logoutModalContent}>
-              <Text style={ProfileScreenStyles.logoutModalDescription}>
-                조금만 더 하면 잔디가 더 푸르게 자랄 수 있어요!{'\n'}
-                잔디는 언제나 기다리고 있을게요.
-              </Text>
-              <TouchableOpacity
-                style={ProfileScreenStyles.logoutModalButton}
-                onPress={handleLogout}>
-                <Text style={ProfileScreenStyles.logoutModalButtonText}>네, 잘가요!</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </Modal>
-    </View>
-  );
-};
