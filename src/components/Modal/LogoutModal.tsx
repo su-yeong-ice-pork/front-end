@@ -7,7 +7,6 @@ const IMAGES = {
   closeLogout: require('@/assets/images/icons/closeLogout.png'),
 };
 
-
 const LogoutModal: React.FC<LogoutModalProps> = ({showLogOut, setShowLogOut, handleLogout}) => {
   return (
     <Modal
