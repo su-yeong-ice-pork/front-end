@@ -1,15 +1,19 @@
 import {Box} from '@/components/ui/box';
 import React from 'react';
-import {BadgeStyles} from './BadgeStyles.ts';
+import {ProfileBadgeStyles} from './ProfileBadgeStyles.ts';
+import {HomeBadgeStyles} from './HomeBadgeStyles.ts';
+
 import BadgeText from './BadgeText';
 import BadgeView from './BadgeView';
 import {BadgesProps} from '@/src/api/badge/getBadgesPropsType';
 
-const Badges: React.FC<BadgesProps> = ({badges}) => {
+const Badges: React.FC<BadgesProps> = ({badges,styleType}) => {
+    const badgeContainerStyle = styleType === 'home' ? HomeBadgeStyles.badgeContainer : ProfileBadgeStyles.badgeContainer;
+
   return (
-    <Box style={BadgeStyles.badgeContainer}>
-      <BadgeText />
-      <BadgeView badges={badges} />
+    <Box style={badgeContainerStyle}>
+      <BadgeText styleType={styleType}/>
+      <BadgeView badges={badges} styleType={styleType}/>
     </Box>
   );
 };

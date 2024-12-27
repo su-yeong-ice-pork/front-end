@@ -4,7 +4,7 @@ import {HStack} from '@/components/ui/hstack';
 import {Heading} from '@/components/ui/heading';
 
 import {ProfileNameStyles} from './ProfileNameStyles';
-import {ProfileNameProps} from '../../types/ProfileType/ProfileNameType';
+import {ProfileNameProps} from '../../types/ProfileType/ProfileType.ts';
 
 const ProfileName = ({nickName, name}: ProfileNameProps) => {
   return (

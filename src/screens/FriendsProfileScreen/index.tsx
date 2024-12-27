@@ -71,7 +71,7 @@ const FriendsProfile = () => {
             <FriendsMessage />
 
             <Box style={FriendsProfileScreenStyles.badgeContainer}>
-              <Badges badges={badgesData} />
+              <Badges badges={badgesData} styleType={"profile"} />
             </Box>
           </Box>
 

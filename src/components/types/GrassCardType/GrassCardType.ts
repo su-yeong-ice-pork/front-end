@@ -5,4 +5,6 @@ export type GrassTitleProps = {
 
 export type GrassInfoCardProps = {
   type: 1 | 2;
+  highlightNumber: number;
+  createDate?:string;
 };

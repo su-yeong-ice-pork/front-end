@@ -13,7 +13,7 @@ import AlarmScreen from './src/screens/AlarmScreen/index';
 import HomeScreen from './src/screens/HomeScreen';
 import StudyRecordScreen from './src/screens/StudyRecordScreen';
 import FindPassword from './src/screens/FindPasswordScreen';
-import ProfileScreen from './src/screens/ProfileScreen';
+import ProfileScreen from './src/screens/ProfileScreen/index.tsx';
 import EditProfileScreen from './src/screens/EditProfileScreen';
 import FriendsProfile from './src/screens/FriendsProfileScreen';
 import SplashScreen from 'react-native-splash-screen';

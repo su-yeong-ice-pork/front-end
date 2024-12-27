@@ -3,7 +3,7 @@ const {width, height} = Dimensions.get('window');
 import {FONT} from '@/src/constants/styles/font/default-font';
 export const FreezeInfoStyles = StyleSheet.create({
   frozenTitle: {
-    fontSize: 10,
+    fontSize: width * 0.028,
     fontWeight: 'bold',
     color: '#838F8F',
     marginBottom: 5,
