@@ -1,3 +1,4 @@
+import {ImageResizeMode} from 'react-native';
 export const STYLE = {
   PLATFORM: {
     IOS: 'ios',
@@ -10,4 +11,5 @@ export const STYLE = {
   PADDING: {
     TITLE: 'padding',
   },
+  RESIZEMODE: 'contain' as ImageResizeMode,
 };
