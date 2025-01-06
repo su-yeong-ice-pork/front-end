@@ -1,41 +1,26 @@
 import React from 'react';
-
 import LinearGradient from 'react-native-linear-gradient';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
-import {useSetRecoilState} from 'recoil';
-import authState from '../../recoil/authAtom';
+import {useAutoLogin} from '@/src/hooks/useAutoLogin';
 
-import {fetchAutoLogin} from '../../api/login/LoginApi';
-import {useQuery} from '@tanstack/react-query';
+import Slides from '@/src/components/Landing/Slides';
+import SignSection from '@/src/components/Landing/SignSection';
+import LandingFooter from '@/src/components/Landing/LandingFooter';
+import Loader from '@/src/components/Loader';
 
-import Slides from '../../components/Landing/Slides';
-import LandingFooter from '../../components/Landing/LandingFooter';
-import SignSection from '../../components/Landing/SignSection';
-
-import {LANDING} from '../../constants/Landing/Landing';
-import {COLOR} from '../../constants/styles/color/color';
+import {LANDING} from '@/src/constants/Landing/Landing';
 import {LandingScreenStyles} from './LandingScreenStyles';
 
-import Loader from '@/src/components/Loader';
-import {AUTH, SIGN} from '@/src/constants/Api/Sign';
+import {COLOR} from '@/src/constants/styles/color/color';
+import {MAGIC_NUMBER} from '@/src/constants/Number/MagicNumber';
 
 const LandingScreen = ({navigation}) => {
-  const setAuthState = useSetRecoilState(authState);
-
-  const {isLoading} = useQuery({
-    queryKey: [SIGN.IN_AUTO],
-    queryFn: fetchAutoLogin,
-    select: async data => {
-      if (data?.headers) {
-        const authToken = await data?.headers[AUTH];
-        setAuthState({email: '', authToken});
-        navigation.reset({
-          index: 0,
-          routes: [{name: LANDING.PATH_HOME}],
-        });
-      }
-    },
+  const {isLoading} = useAutoLogin(() => {
+    navigation.reset({
+      index: MAGIC_NUMBER.ZERO,
+      routes: [{name: LANDING.PATH_HOME}],
+    });
   });
 
   if (isLoading) {
