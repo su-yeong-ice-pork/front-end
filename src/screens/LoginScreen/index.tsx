@@ -11,31 +11,27 @@ import Slides from '../../components/Landing/Slides';
 import {COLOR} from '../../constants/styles/color/color.ts';
 
 const LoginScreen = ({}) => {
-    const [isLoading,setIsLoading] = useState(false);
-    return (
-        <LinearGradient
-            colors={COLOR.GRADIENT.TONE}
-            start={COLOR.GRADIENT.START}
-            end={COLOR.GRADIENT.END}
-            style={LoginScreenStyles.gradient}>
-            <KeyboardAwareScrollView
-                style={LoginScreenStyles.keyboardAwareScrollView}
-                contentContainerStyle={
-                    LoginScreenStyles.keyboardAwareScrollViewContent
-                }
-                enableOnAndroid={true}
-                extraScrollHeight={20}
-                keyboardShouldPersistTaps="handled"
-                bounces={false}>
-                <Slides/>
+  const [isLoading, setIsLoading] = useState(false);
+  return (
+    <LinearGradient
+      colors={COLOR.GRADIENT.TONE}
+      start={COLOR.GRADIENT.START}
+      end={COLOR.GRADIENT.END}
+      style={LoginScreenStyles.gradient}>
+      <KeyboardAwareScrollView
+        style={LoginScreenStyles.keyboardAwareScrollView}
+        contentContainerStyle={LoginScreenStyles.keyboardAwareScrollViewContent}
+        enableOnAndroid={true}
+        extraScrollHeight={20}
+        keyboardShouldPersistTaps="handled"
+        bounces={false}>
+        <Slides />
 
-                <LoginForm setIsLoading={setIsLoading} />
-            </KeyboardAwareScrollView>
-            {
-                isLoading && <Loader/>
-            }
-        </LinearGradient>
-    );
+        <LoginForm setIsLoading={setIsLoading} />
+      </KeyboardAwareScrollView>
+      {isLoading && <Loader />}
+    </LinearGradient>
+  );
 };
 
 export default LoginScreen;
