@@ -3,4 +3,5 @@ export const MAGIC_NUMBER = {
   ONE: 1,
   ZERO: 0,
   SIXTY: 60,
+  MIN_PASSWORD: 0,
 };
