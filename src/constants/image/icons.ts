@@ -1,6 +1,7 @@
 export const ICONS = {
   CLOCK: require('@/assets/images/icons/Clock.png'),
   ALARM: require('@/assets/images/icons/alarm.png'),
+  ALLOW_BUTTON: require('@/assets/images/icons/allowButton.png'),
   ALARM_ON: require('@/assets/images/icons/alarmOn.png'),
   ATTENDANCE: require('@/assets/images/icons/attendance.png'),
   BACK_BUTTON: require('@/assets/images/icons/backButton.png'),
@@ -11,6 +12,7 @@ export const ICONS = {
   COLORED_FRIENDS_ICON: require('@/assets/images/icons/coloredFriendsIcon.png'),
   COLORED_GROUP_ICON: require('@/assets/images/icons/coloredGroupIcon.png'),
   CROWN: require('@/assets/images/icons/crown.png'),
+  DENY_BUTTON: require('@/assets/images/icons/denyButton.png'),
   FRIENDS_ICON: require('@/assets/images/icons/friendsIcon.png'),
   GROUPS_ICON: require('@/assets/images/icons/groupsIcon.png'),
   HOME: require('@/assets/images/icons/home.png'),
