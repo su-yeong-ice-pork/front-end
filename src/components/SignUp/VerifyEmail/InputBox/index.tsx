@@ -1,6 +1,6 @@
 import {Box} from '@/components/ui/box';
 import {Text} from '@/components/ui/text';
-import {Input, InputField, InputSlot, InputIcon} from '@/components/ui/input';
+import {Input, InputField} from '@/components/ui/input';
 
 import {InputBoxStyles} from './InputBoxStyles';
 
