@@ -8,7 +8,8 @@ export const BottomBarImages = (
     currentScreen === PATH_NAME.LOG ? IMAGE_PATH.NOTE_ON : IMAGE_PATH.NOTE_OFF,
   Study:
     currentScreen === PATH_NAME.STUDY ||
-    currentScreen === PATH_NAME.STUDY_DETAIL
+    currentScreen === PATH_NAME.STUDY_DETAIL ||
+    currentScreen === PATH_NAME.CREATE_STUDY
       ? IMAGE_PATH.STUDY_ON
       : IMAGE_PATH.STUDY_OFF,
   Home:

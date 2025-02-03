@@ -48,4 +48,5 @@ export const ICONS = {
   USERS: require('@/assets/images/icons/users.png'),
   WHITE_NOTE: require('@/assets/images/icons/whiteNote.png'),
   WHITE_USERS: require('@/assets/images/icons/whiteUsers.png'),
+  CREATE_STUDY: require('@/assets/images/icons/creatingIcon.png'),
 };
