@@ -5,4 +5,6 @@ export type InputFieldProps = {
   placeholder?: string;
   description?: string;
   icon?: ImageSourcePropType;
+  value: string;
+  onChange: (text: string) => void;
 };

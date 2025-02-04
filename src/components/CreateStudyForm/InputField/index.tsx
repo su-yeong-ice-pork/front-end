@@ -10,6 +10,8 @@ const CreateStudyInputField: React.FC<InputFieldProps> = ({
   placeholder,
   description,
   icon,
+  value,
+  onChange,
 }) => {
   const [inputValue, setInputValue] = useState('');
 
@@ -32,8 +34,8 @@ const CreateStudyInputField: React.FC<InputFieldProps> = ({
         </Box>
         <TextInput
           placeholder={placeholder}
-          value={inputValue}
-          onChangeText={setInputValue}
+          value={value}
+          onChangeText={onChange}
           style={InputFieldStyles.inputPlaceholder}
           placeholderTextColor={'#B9B9B9'}
         />
