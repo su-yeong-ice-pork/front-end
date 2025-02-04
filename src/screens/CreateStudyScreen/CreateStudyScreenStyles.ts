@@ -1,6 +1,5 @@
-import {StyleSheet, Dimensions} from 'react-native';
-import {COLOR} from "@/src/constants/styles/color/color.ts";
-//const {width, height} = Dimensions.get('window');
+import {StyleSheet} from 'react-native';
+import {COLOR} from '@/src/constants/styles/color/color.ts';
 
 export const CreateStudyScreenStyles = StyleSheet.create({
   safeArea: {

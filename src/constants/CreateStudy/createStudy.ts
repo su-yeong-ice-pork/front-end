@@ -16,3 +16,9 @@ export const CREATE_FORM = {
     DESCRIPTION:'목표 시간을 설정하고, 함께 성장하는 첫 걸음을 시작하세요!',
   },
 };
+
+export const INTRODUCTION = {
+  DESCRIPTION_1: '함께 세운 목표, 함께 이루는 시간',
+  DESCRIPTION_2: '당신의 성장 스토리',
+  DESCRIPTION_3: '를 시작하세요!',
+};

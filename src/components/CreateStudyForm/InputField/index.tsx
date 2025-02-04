@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Box, HStack} from '@/components/ui';
 import {InputFieldStyles} from './InputFieldStyles.ts';
 import {TextInput, Text, TouchableOpacity, Image} from 'react-native';
