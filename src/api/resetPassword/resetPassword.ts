@@ -1,6 +1,11 @@
 import apiClient from '../axiosInstance';
 import {ResetPasswordData, ResetPasswordResponse} from './types';
 
+/**
+ * 비밀번호 변경
+ * PATCH: /members
+ * Body: { name, email, password }
+ */
 const resetPassword = async (
   resetPasswordData: ResetPasswordData,
 ): Promise<ResetPasswordResponse> => {
