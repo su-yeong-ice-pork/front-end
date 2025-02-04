@@ -13,10 +13,8 @@ const CreateStudyInputField: React.FC<InputFieldProps> = ({
   value,
   onChange,
 }) => {
-  const [inputValue, setInputValue] = useState('');
-
   const handleClearInput = () => {
-    setInputValue('');
+    onChange(''); // 상위 컴포넌트에 상태 업데이트
   };
 
   return (
