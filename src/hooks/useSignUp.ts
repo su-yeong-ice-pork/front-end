@@ -3,10 +3,12 @@ import {useRecoilValue} from 'recoil';
 import signUpState from '@/src/recoil/signUpAtom';
 import {SignUpResponse} from '@/src/api/signUp/types';
 import handleSignup from '../api/signUp/signUp';
+import {useNavigation} from '@react-navigation/native';
+import {RootStackNavigationProp} from '../components/types/NavigationType/NavigationType';
 
 export const useSignUp = () => {
   const signUp = useRecoilValue(signUpState);
-
+  const navigation = useNavigation<RootStackNavigationProp>();
   const {mutate: signupMutate} = useMutation({
     mutationFn: async () => {
       if (!signUp.emailVerified) {
@@ -22,7 +24,7 @@ export const useSignUp = () => {
 
   const onSignUpPress = () => {
     signupMutate();
-    //Navigate -> Landing + Alert 추가 해야됨.
+    navigation.navigate('Landing');
   };
 
   return {onSignUpPress};
