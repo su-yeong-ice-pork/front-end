@@ -20,7 +20,7 @@ import {MAGIC_NUMBER} from '@/src/constants/Number/MagicNumber';
 import {FindPasswordStyles} from './FindPasswordScreenStyles';
 import {useRoute} from '@react-navigation/native';
 import {RootStackRouteProp} from '@/src/components/types/NavigationType/NavigationType';
-import useFindPassword from './hooks/useFindPassword';
+import useFindPassword from '../../hooks/useFindPassword';
 
 const FindPassword = () => {
   const route = useRoute<RootStackRouteProp<'FindPassword'>>();
