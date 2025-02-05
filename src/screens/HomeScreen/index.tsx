@@ -45,7 +45,6 @@ const HomeScreen = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [modalMessage, setModalMessage] = useState<string>('');
   const [member, setMember] = useState<Member | null>(null);
-  const [record, setRecord] = useState<Record | null>(null);
   const [badges, setBadges] = useState<Badge[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showModal, setShowModal] = useState(false);
@@ -61,11 +60,6 @@ const HomeScreen = () => {
     enabled: !!memberData,
   });
 
-  const {data: recordData, error: recordDataError} = useQuery({
-    queryKey: ['record', memberData?.id],
-    queryFn: () => getRecordDataApi(memberData.id, authInfo.authToken),
-  });
-
   useEffect(() => {
     if (memberData) {
       setMember(memberData);
@@ -75,15 +69,6 @@ const HomeScreen = () => {
       setModalVisible(true);
     }
   }, [memberData, memberDataError]);
-
-  useEffect(() => {
-    if (recordData) {
-      setRecord(recordData);
-    } else if (memberDataError) {
-      setModalMessage('기록을 불러오는 데 실패했습니다.');
-      setModalVisible(true);
-    }
-  }, [recordData, recordDataError]);
 
   useEffect(() => {
     if (badgesData) {
@@ -167,9 +152,7 @@ const HomeScreen = () => {
           {/* 현재 일수 표시 */}
 
           {/* 달력 부분 */}
-          <View>
-            {member && <MonthCalendar userId={member.id} record={recordData} />}
-          </View>
+          <View>{member && <MonthCalendar userId={member.id} />}</View>
         </ScrollView>
         <BottomBar />
         {/* 인증 결과 모달 */}

@@ -18,14 +18,7 @@ import authState from '@/src/recoil/authAtom';
 import '../../../constants/Calendar/LocalConfig';
 import Daycount from '../Daycount';
 import StudyStats from '../StudyStats';
-import {RecordType} from '@/src/api/record/getRecordDataType';
-const MonthCalendar = ({
-  userId,
-  record,
-}: {
-  userId: number;
-  record: RecordType[];
-}) => {
+const MonthCalendar = ({userId}: {userId: number}) => {
   const authInfo = useRecoilValue(authState);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState('');
@@ -196,7 +189,7 @@ const MonthCalendar = ({
             extraData={grassData}
           />
 
-          <StudyStats userId={userId} record={record} />
+          <StudyStats userId={userId} />
         </Box>
       ) : (
         <Box style={MonthCalendarStyles.yearlyView}>
@@ -204,7 +197,7 @@ const MonthCalendar = ({
             memberId={userId}
             onLoadComplete={handleYearlyDataLoad}
           />
-          <StudyStats userId={userId} record={record} />
+          <StudyStats userId={userId} />
         </Box>
       )}
       <DateModal

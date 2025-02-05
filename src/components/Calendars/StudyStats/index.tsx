@@ -4,9 +4,19 @@ import React, {useState, useEffect} from 'react';
 import {ICONS} from '@/src/constants/image/icons';
 import {StudyStatStyles} from './studyStatStyles';
 import {Image} from 'react-native';
-import {RecordType} from '@/src/api/record/getRecordDataType';
+import useRecord from '@/src/hooks/calendar/useRecord';
 
-const StudyStats = ({userId, record}: {userId: number; record: RecordType}) => {
+const StudyStats = ({userId}: {userId: number}) => {
+  const {record, isLoading, error} = useRecord();
+
+  if (isLoading) {
+    return <Text>로딩 중...</Text>;
+  }
+
+  if (error) {
+    return <Text>데이터를 불러오는 데 실패했습니다</Text>;
+  }
+
   return (
     <Box style={StudyStatStyles.statsContainer}>
       {record ? (
