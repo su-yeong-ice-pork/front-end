@@ -18,7 +18,7 @@ export const getRecordDataApi = async (
     const recordData = response.data.response;
     return recordData;
   } catch (error) {
-    console.error('³×Æ®¿öÅ© ¿¡·¯:', error);
+    console.error('ë„¤íŠ¸ì›Œí¬ ì—ëŸ¬:', error);
     return null;
   }
 };
