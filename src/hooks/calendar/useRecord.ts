@@ -15,13 +15,13 @@ interface UseRecordReturn {
 }
 
 const useRecord = (): UseRecordReturn => {
-  // Recoil¿¡¼­ record µ¥ÀÌÅÍ¸¦ °¡Á®¿À°í, ¾÷µ¥ÀÌÆ®ÇÒ ¼ö ÀÖ°Ô ÇÑ´Ù.
+  // Recoilì—ì„œ record ë°ì´í„°ë¥¼ ê°€ì ¸ì˜¤ê³ , ì—…ë°ì´íŠ¸í•  ìˆ˜ ìžˆê²Œ í•œë‹¤.
   const [record, setRecord] = useRecoilState(recordState);
 
   const authInfo = useRecoilValue(authState);
   const user = useRecoilValue(userState);
 
-  // react-query·Î record µ¥ÀÌÅÍ °¡Á®¿À±â
+  // react-queryë¡œ record ë°ì´í„° ê°€ì ¸ì˜¤ê¸°
   const {data, isLoading, error} = useQuery({
     queryKey: ['record', user?.id],
     queryFn: () => getRecordDataApi(user.id, authInfo.authToken),
