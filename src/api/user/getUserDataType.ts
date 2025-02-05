@@ -17,3 +17,7 @@ export type UserDataApiResponseType = {
   };
   error: any;
 };
+
+export type UsersProps = {
+  member: UserInformationType[];
+};
