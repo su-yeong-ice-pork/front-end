@@ -5,8 +5,6 @@ import {StudyGroupSectionStyles} from './StudyGroupSectionStyles';
 
 import StudyList from './StudyList/index';
 import StudyHeader from './StudyHeader/index';
-import CreateStudyButton from './CreateStudyButton/index';
-
 import {Box} from '@/components/ui/box';
 import {ScrollView} from '@/components/ui/scroll-view';
 
@@ -17,9 +15,6 @@ const StudyGroupSection: React.FC<StudyGroupListProps> = ({studyData}) => {
         <StudyHeader />
         <StudyList studyData={studyData} />
       </ScrollView>
-      <Box style={StudyGroupSectionStyles.buttonContainer}>
-        <CreateStudyButton />
-      </Box>
     </Box>
   );
 };

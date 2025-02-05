@@ -9,9 +9,4 @@ export const StudyListStyles = StyleSheet.create({
     backgroundColor: `${COLOR.WHITE}`,
     alignItems: 'center',
   },
-  separator: {
-    height: 1,
-    width: '100%',
-    backgroundColor: '#d1d5db',
-  },
 });

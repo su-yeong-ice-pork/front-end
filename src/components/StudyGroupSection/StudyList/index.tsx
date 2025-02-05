@@ -16,9 +16,6 @@ const StudyList: React.FC<StudyGroupListProps> = ({studyData}) => {
             totalStudyTime={study.totalStudyTime}
             memberCount={study.memberCount}
           />
-          {index < studyData.length - 1 && (
-            <Box style={StudyListStyles.separator} />
-          )}
         </Box>
       ))}
     </Box>

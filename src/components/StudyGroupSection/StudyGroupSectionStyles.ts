@@ -1,5 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
-const {width, height} = Dimensions.get('window');
+import {StyleSheet} from 'react-native';
 
 export const StudyGroupSectionStyles = StyleSheet.create({
   container: {
@@ -9,12 +8,7 @@ export const StudyGroupSectionStyles = StyleSheet.create({
   },
   main: {
     paddingTop: 30,
-    paddingBottom: 20,
+    marginBottom: 20,
     alignItems: 'center',
-  },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: height*0.07,
-    right: width*0.03,
   },
 });
