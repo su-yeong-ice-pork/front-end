@@ -56,4 +56,5 @@ const CreateStudyInputField: React.FC<InputFieldProps> = ({
     </Box>
   );
 };
+
 export default CreateStudyInputField;
