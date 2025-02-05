@@ -1,14 +1,10 @@
-import apiClient from './axiosInstance';
+import apiClient from '../axiosInstance';
+import {CheckNameResponse} from './types';
 
-export interface CheckNameResponse {
-  success: boolean;
-  response: null;
-  error: {
-    status: number;
-    message: string;
-  } | null;
-}
-
+/**
+ * 이름 (닉네임) 중복 체크
+ * GET: /members/check/name?name={name}
+ */
 const checkName = async (name: string): Promise<CheckNameResponse> => {
   try {
     const response = await apiClient.get('/members/check/name', {
@@ -17,7 +13,6 @@ const checkName = async (name: string): Promise<CheckNameResponse> => {
     return response.data;
   } catch (error: any) {
     if (error.response && error.response.data) {
-      // 서버로부터의 에러 응답
       return error.response.data as CheckNameResponse;
     } else {
       return {

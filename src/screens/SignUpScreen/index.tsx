@@ -1,25 +1,23 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React from 'react';
 import {Box} from '@/components/ui/box';
-
-import Header from '@/src/components/Header/index.tsx';
+import Header from '@/src/components/Header';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import SignUpHeader from '@/src/components/SignUp/SignUpHeader/index.tsx';
-
-import VerifyEmail from '@/src/components/SignUp/VerifyEmail/index.tsx';
-import RegisterDepart from '@/src/components/SignUp/RegisterDepart/index.tsx';
-import InputPassword from '@/src/components/SignUp/InputPassword/index.tsx';
-import NickName from '@/src/components/SignUp/NickName/index.tsx';
-import SaveButton from '@/src/components/SignUp/SaveButton/index.tsx';
-
+import SignUpHeader from '@/src/components/SignUp/SignUpHeader';
+import {SafeAreaView} from '@/components/ui/safe-area-view';
+import VerifyEmail from '@/src/components/SignUp/VerifyEmail';
+import RegisterDepart from '@/src/components/SignUp/RegisterDepart';
+import InputPassword from '@/src/components/SignUp/InputPassword';
+import NickName from '@/src/components/SignUp/NickName';
+import SaveButton from '@/src/components/SignUp/SaveButton';
 import {SignUpScreenStyles} from './SignUpScreenStyles';
 
 const SignUpScreen = () => {
   return (
-    <Box style={SignUpScreenStyles.container}>
+    <SafeAreaView style={SignUpScreenStyles.container}>
       <Header Title="회원가입" />
       <KeyboardAwareScrollView
         contentContainerStyle={SignUpScreenStyles.formContainer}
-        enableOnAndroid={true}
+        enableOnAndroid
         extraScrollHeight={100}
         keyboardShouldPersistTaps="handled">
         <SignUpHeader />
@@ -31,7 +29,7 @@ const SignUpScreen = () => {
         </Box>
       </KeyboardAwareScrollView>
       <SaveButton />
-    </Box>
+    </SafeAreaView>
   );
 };
 

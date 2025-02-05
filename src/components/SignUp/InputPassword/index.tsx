@@ -13,24 +13,25 @@ import {ICONS} from '@/src/constants/image/icons';
 
 import {passwordRegex} from '@/src/constants/Regex/password';
 import {PASSWORD, PasswordInputBox} from '@/src/constants/SignUp/Password';
-import {InputPasswordprops} from '../../types/SignUpType/InputPassword';
 import {MAGIC_NUMBER} from '@/src/constants/Number/MagicNumber';
 
+import {useRecoilState} from 'recoil';
+import signUpState from '@/src/recoil/signUpAtom';
+
 const InputPassword = () => {
-  const [inputPassword, setInputPassword] = useState<string>('');
+  const [signUp, setSignUp] = useRecoilState(signUpState);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   const deletePassword = () => {
-    setInputPassword('');
+    setSignUp({...signUp, password: ''});
   };
 
-  const validationPassword = ({password}: InputPasswordprops) => {
+  const handlePasswordChange = (password: string) => {
+    setSignUp({...signUp, password});
     if (!passwordRegex.test(password)) {
       setErrorMessage(PASSWORD.ERRORMESSAGE);
-      return false;
     } else {
       setErrorMessage(PASSWORD.SOLVED_ERROR);
-      return true;
     }
   };
 
@@ -41,10 +42,10 @@ const InputPassword = () => {
           <InputBox
             inputTitle={PasswordInputBox.TITLE}
             placeholderText={PasswordInputBox.PLACEHOLDER}
-            value={inputPassword}
-            setValue={setInputPassword}
+            value={signUp.password}
+            setValue={handlePasswordChange}
           />
-          {inputPassword.length > MAGIC_NUMBER.MIN_PASSWORD && (
+          {signUp.password.length > MAGIC_NUMBER.MIN_PASSWORD && (
             <Button
               style={InputPasswordStyles.codeButton}
               onPress={deletePassword}>

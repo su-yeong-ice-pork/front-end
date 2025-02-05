@@ -13,8 +13,10 @@ import {
   GradientLocation,
 } from '@/src/constants/SignUp/SaveButton';
 
+import {useSignUp} from '@/src/hooks/useSignUp';
+
 const SaveButton = () => {
-  const submitSignUp = () => {};
+  const {onSignUpPress} = useSignUp();
 
   return (
     <Box style={SaveButtonStyles.boxContiner}>
@@ -47,7 +49,7 @@ const SaveButton = () => {
         />
       </Svg>
 
-      <Button onPress={submitSignUp} style={SaveButtonStyles.button}>
+      <Button onPress={onSignUpPress} style={SaveButtonStyles.button}>
         <ButtonText style={SaveButtonStyles.buttonText}>
           잔디 심으러 가기
         </ButtonText>
