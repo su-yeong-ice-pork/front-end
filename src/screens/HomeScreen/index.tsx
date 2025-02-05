@@ -138,7 +138,7 @@ const HomeScreen = () => {
           contentContainerStyle={{paddingBottom: 80}}>
           {/* 상단 프로필 영역 */}
 
-          <Profiles member={[memberData]} />
+          {memberData && <Profiles member={[memberData]} />}
 
           <View style={HomeScreenStyles.profileTextContainer}>
             <Badges badges={badgesData} />
