@@ -18,8 +18,14 @@ import authState from '@/src/recoil/authAtom';
 import '../../../constants/Calendar/LocalConfig';
 import Daycount from '../Daycount';
 import StudyStats from '../StudyStats';
-
-const MonthCalendar = ({userId}: {userId: number}) => {
+import {RecordType} from '@/src/api/record/getRecordDataType';
+const MonthCalendar = ({
+  userId,
+  record,
+}: {
+  userId: number;
+  record: RecordType[];
+}) => {
   const authInfo = useRecoilValue(authState);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState('');
@@ -30,18 +36,6 @@ const MonthCalendar = ({userId}: {userId: number}) => {
   const [displayedDate, setDisplayedDate] = useState(
     moment().format('YYYY-MM-DD'),
   );
-  const [userRecord, setRecord] = useState<any>(null);
-
-  const fetchRecordData = async () => {
-    const userRecords = await getRecord(userId, authInfo.authToken);
-    if (userRecords) {
-      setRecord(userRecords);
-    }
-  };
-
-  useEffect(() => {
-    fetchRecordData();
-  }, []);
 
   const fetchMonthlyGrassData = async (year: number, month: number) => {
     const grassRecords = await getMonthlyGrass(
@@ -201,7 +195,8 @@ const MonthCalendar = ({userId}: {userId: number}) => {
             )}
             extraData={grassData}
           />
-          <StudyStats userId={userId} />
+
+          <StudyStats userId={userId} record={record} />
         </Box>
       ) : (
         <Box style={MonthCalendarStyles.yearlyView}>
@@ -209,7 +204,7 @@ const MonthCalendar = ({userId}: {userId: number}) => {
             memberId={userId}
             onLoadComplete={handleYearlyDataLoad}
           />
-          <StudyStats userId={userId} />
+          <StudyStats userId={userId} record={record} />
         </Box>
       )}
       <DateModal

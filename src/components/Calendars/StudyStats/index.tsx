@@ -1,45 +1,27 @@
 import {Box} from '@/components/ui/box';
 import {Text} from '@/components/ui/text';
-import {getRecord} from '@/src/api/record';
-import {useRecoilValue} from 'recoil';
-import authState from '@/src/recoil/authAtom';
 import React, {useState, useEffect} from 'react';
 import {ICONS} from '@/src/constants/image/icons';
 import {StudyStatStyles} from './studyStatStyles';
 import {Image} from 'react-native';
-const StudyStats = ({userId}: {userId: number}) => {
-  const authInfo = useRecoilValue(authState);
+import {RecordType} from '@/src/api/record/getRecordDataType';
 
-  const [userRecord, setRecord] = useState<any>(null);
-
-  const fetchRecordData = async () => {
-    const userRecords = await getRecord(userId, authInfo.authToken);
-    if (userRecords) {
-      setRecord(userRecords);
-    }
-  };
-
-  useEffect(() => {
-    fetchRecordData();
-  }, []);
-
+const StudyStats = ({userId, record}: {userId: number; record: RecordType}) => {
   return (
     <Box style={StudyStatStyles.statsContainer}>
-      {userRecord ? (
+      {record ? (
         <Box style={StudyStatStyles.rowContainer}>
           <Box>
             <Text style={StudyStatStyles.statsText}>
               <Image source={ICONS.CALENDAR} />
               최장{' '}
-              <Text style={StudyStatStyles.highlight}>
-                {userRecord.maxStreak}
-              </Text>
+              <Text style={StudyStatStyles.highlight}>{record.maxStreak}</Text>
               일 유지
             </Text>
             <Text style={StudyStatStyles.statsText}>
               <Image source={ICONS.STUDY_TIME} />총 공부시간{' '}
               <Text style={StudyStatStyles.highlight}>
-                {Math.floor(userRecord.totalStudyTime)}
+                {Math.floor(record.totalStudyTime)}
               </Text>
               시간
             </Text>
