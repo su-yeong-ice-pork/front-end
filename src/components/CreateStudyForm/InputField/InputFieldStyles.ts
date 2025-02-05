@@ -59,4 +59,11 @@ export const InputFieldStyles = StyleSheet.create({
     fontFamily: FONT,
     fontWeight:'semibold',
   },
+  errorMessage:{
+    fontSize: height*0.012,
+    color: '#FF7360',
+    fontFamily: FONT,
+    fontWeight:'semibold',
+    paddingLeft: width*0.05,
+  }
 });

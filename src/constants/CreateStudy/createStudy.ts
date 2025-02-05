@@ -12,7 +12,7 @@ export const CREATE_FORM = {
   },
   GOAL_TIME:{
     TITLE:'스터디 그룹 목표시간',
-    PLACEHOLDER:'스터디의 목표 시간을 입력해주세요!',
+    PLACEHOLDER:'스터디의 목표 시간을 입력해주세요!  ex)16',
     DESCRIPTION:'목표 시간을 설정하고, 함께 성장하는 첫 걸음을 시작하세요!',
   },
 };

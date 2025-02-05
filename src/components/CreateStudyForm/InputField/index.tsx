@@ -9,6 +9,7 @@ const CreateStudyInputField: React.FC<InputFieldProps> = ({
   title,
   placeholder,
   description,
+  errorMessage,
   icon,
   value,
   onChange,
@@ -42,7 +43,10 @@ const CreateStudyInputField: React.FC<InputFieldProps> = ({
         </TouchableOpacity>
       </HStack>
       <Box>
-        {description && (
+        {errorMessage && (
+          <Text style={InputFieldStyles.errorMessage}>{errorMessage}</Text>
+        )}
+        {description && !errorMessage && (
           <HStack>
             <Image source={ICONS.I_ICON} style={InputFieldStyles.i_Icon} />
             <Text style={InputFieldStyles.description}>{description}</Text>

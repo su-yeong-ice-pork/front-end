@@ -1,8 +1,7 @@
 import {Dimensions, StyleSheet} from 'react-native';
-import {FONT} from '@/src/constants/styles/font/default-font';
 import {COLOR} from '@/src/constants/styles/color/color.ts';
 
-const {width, height} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 export const CreateStudyFormStyles = StyleSheet.create({
   fullContainer: {
@@ -15,5 +14,4 @@ export const CreateStudyFormStyles = StyleSheet.create({
     backgroundColor: COLOR.BACK_GROUND,
     paddingBottom: height * 0.035,
   },
-
 });
