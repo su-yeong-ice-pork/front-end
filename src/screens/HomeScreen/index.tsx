@@ -6,14 +6,12 @@ import {
   Text,
   TouchableOpacity,
   Dimensions,
-  StyleSheet,
   ScrollView,
   SafeAreaView,
   Modal,
 } from 'react-native';
 import {HomeScreenStyles} from './HomeScreenStyles';
 import BottomBar from '@/src/components/BottomBar';
-const {width, height} = Dimensions.get('window');
 import MonthCalendar from '@/src/components/Calendars/MonthCalendar';
 import Loader from '@/src/components/Loader';
 import {Member} from '@/src/api/profile';
@@ -140,18 +138,16 @@ const HomeScreen = () => {
 
           {memberData && <Profiles member={[memberData]} />}
 
-          <View style={HomeScreenStyles.profileTextContainer}>
-            <Badges badges={badgesData} />
-          </View>
+            <View style={HomeScreenStyles.profileTextContainer}>
+              <Badges badges={badgesData} styleType={"home"}/>
+            </View>
 
           <AuthButtons />
 
           {/* 보유 프리즈 및 현재 일수 */}
           <Freeze />
 
-          {/* 현재 일수 표시 */}
 
-          {/* 달력 부분 */}
           <View>{member && <MonthCalendar userId={member.id} />}</View>
         </ScrollView>
         <BottomBar />

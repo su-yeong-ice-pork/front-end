@@ -16,4 +16,9 @@ export type getBadgesPropsType = {
 
 export type BadgesProps = {
   badges: BadgeType[];
+  styleType: 'home' | 'profile';
 };
+
+export type BadgeTextProps = {
+  styleType: 'home' | 'profile';
+}
