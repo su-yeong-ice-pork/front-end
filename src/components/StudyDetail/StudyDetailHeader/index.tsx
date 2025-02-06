@@ -40,7 +40,6 @@ const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyDetail}) => {
         </Button>
       </Box>
 
-      {/* 점선 */}
       <DashLine />
       <Box style={StudyDetailHeaderStyles.membersHeader}>
         <Text style={StudyDetailHeaderStyles.membersTitle}>구성원 목록</Text>
