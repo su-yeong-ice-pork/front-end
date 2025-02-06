@@ -54,11 +54,14 @@ const StudyDetailScreen = () => {
     <>
       <SafeAreaView style={StudyDeatilScreenStyle.outContainer}>
         <Box style={StudyDeatilScreenStyle.container}>
-          <Header Title={studyDetail?.studyName || '스터디 상세'} />
+          <Header
+            Title={
+              `${studyDetail?.studyName}${STUDY_DETAIL.ROOM}` ||
+              STUDY_DETAIL.HEADER
+            }
+          />
           <ScrollView contentContainerStyle={StudyDeatilScreenStyle.main}>
-            {/* 스터디 상세 정보 전달 */}
             <StudyDetailHeader studyDetail={studyDetail!} />
-            {/* 스터디 참가자 정보 전달 */}
             <StudyMemberList participants={participants!} />
           </ScrollView>
         </Box>
