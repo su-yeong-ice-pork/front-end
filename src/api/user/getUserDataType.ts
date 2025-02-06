@@ -19,5 +19,5 @@ export type UserDataApiResponseType = {
 };
 
 export type UsersProps = {
-  member: UserInformationType[];
+  member: UserInformationType;
 };

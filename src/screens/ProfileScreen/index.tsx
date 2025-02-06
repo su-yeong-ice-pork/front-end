@@ -1,33 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import {
-  TouchableOpacity,
-  ScrollView,
-  SafeAreaView,
-  Image
-} from 'react-native';
-import { Box, VStack } from '@/components/ui/index.ts';
+import React, {useState, useEffect} from 'react';
+import {TouchableOpacity, ScrollView, SafeAreaView, Image} from 'react-native';
+import {Box, VStack} from '@/components/ui/index.ts';
 
-import { ERROR_MESSAGE } from "@/src/constants/Profile/Profile.ts";
-import { ProfileScreenStyles } from "./ProfileScreenStyle.ts";
-import { useRecoilState, useRecoilValue } from 'recoil';
+import {ERROR_MESSAGE} from '@/src/constants/Profile/Profile.ts';
+import {ProfileScreenStyles} from './ProfileScreenStyle.ts';
+import {useRecoilState, useRecoilValue} from 'recoil';
 import userState from '../../recoil/userAtom';
 import authState from '../../recoil/authAtom';
-import { useQuery } from "@tanstack/react-query";
-import { getUserDataApi } from "@/src/api/user/getUserDataApi.ts";
-import { getBadgesApi } from "@/src/api/badge/getBadgesApi.ts";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { Badge } from '../../api/badge';
-import { RootStackRouteProp } from "@/src/components/types/NavigationType/NavigationType.ts";
+import {useQuery} from '@tanstack/react-query';
+import {getUserDataApi} from '@/src/api/user/getUserDataApi.ts';
+import {getBadgesApi} from '@/src/api/badge/getBadgesApi.ts';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {Badge} from '../../api/badge';
+import {RootStackRouteProp} from '@/src/components/types/NavigationType/NavigationType.ts';
 
 import Profiles from '../../components/Profile';
 import ListViewBox from '../../components/ListViewBox';
 import GrassCard from '../../components/GrassCard';
 import ProfileAction from '../../components/ProfileAction';
-import Freeze from "@/src/components/Freeze";
-import Badges from "@/src/components/Badges/index.tsx";
+import Freeze from '@/src/components/Freeze';
+import Badges from '@/src/components/Badges/index.tsx';
 import BottomBar from '../../components/BottomBar/index.tsx';
-import UpcomingModal from "@/src/components/Modal/UpcomingModal.tsx";
-import { MESSAGES } from "@/src/constants/BottomBar/Messages.ts";
+import UpcomingModal from '@/src/components/Modal/UpcomingModal.tsx';
+import {MESSAGES} from '@/src/constants/BottomBar/Messages.ts';
 
 const IMAGES = {
   profile: require('@/assets/images/illustration/typeThree.png'),
@@ -60,15 +55,18 @@ const ProfileScreen = () => {
   };
 
   // 사용자 데이터 가져오기
-  const { data: memberData, error: memberDataError } = useQuery({
+  const {data: memberData, error: memberDataError} = useQuery({
     queryKey: ['member'],
     queryFn: () => getUserDataApi(authInfo.authToken),
   });
 
   // 배지 데이터 가져오기
-  const { data: badgesData, error: badgesDataError } = useQuery({
+  const {data: badgesData, error: badgesDataError} = useQuery({
     queryKey: ['badges', memberData?.id],
-    queryFn: () => memberData ? getBadgesApi(memberData.id, authInfo.authToken) : Promise.resolve(null),
+    queryFn: () =>
+      memberData
+        ? getBadgesApi(memberData.id, authInfo.authToken)
+        : Promise.resolve(null),
     enabled: !!memberData,
   });
 
@@ -81,7 +79,6 @@ const ProfileScreen = () => {
     }
   }, [memberData, memberDataError, setUser]);
 
-
   useEffect(() => {
     if (badgesData) {
       setBadges(badgesData);
@@ -92,19 +89,22 @@ const ProfileScreen = () => {
 
   return (
     <>
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{flex: 1}}>
         <ScrollView
           style={ProfileScreenStyles.container}
-          contentContainerStyle={{ paddingBottom: 80 }}>
+          contentContainerStyle={{paddingBottom: 80}}>
           <Box style={ProfileScreenStyles.logoSection}>
             <Box style={ProfileScreenStyles.logoInfo}>
-              <Image source={IMAGES.logo} style={ProfileScreenStyles.logoImage} />
+              <Image
+                source={IMAGES.logo}
+                style={ProfileScreenStyles.logoImage}
+              />
             </Box>
           </Box>
 
           {/*Profiles*/}
-          {user?.mainBanner ? (
-            <Profiles />
+          {user ? (
+            <Profiles member={user} />
           ) : (
             <Box style={ProfileScreenStyles.upperSection}>
               <TouchableOpacity
@@ -119,16 +119,19 @@ const ProfileScreen = () => {
                 <Image
                   source={
                     user?.profileImage
-                      ? { uri: user.profileImage }
+                      ? {uri: user.profileImage}
                       : IMAGES.profile
                   }
                   style={ProfileScreenStyles.profileImage}
                 />
                 <TouchableOpacity
                   onPress={() =>
-                    navigation.navigate('EditProfile', { id: user?.id })
+                    navigation.navigate('EditProfile', {id: user?.id})
                   }>
-                  <Image source={IMAGES.editProfile} style={ProfileScreenStyles.editIcon} />
+                  <Image
+                    source={IMAGES.editProfile}
+                    style={ProfileScreenStyles.editIcon}
+                  />
                 </TouchableOpacity>
               </Box>
             </Box>
@@ -136,11 +139,19 @@ const ProfileScreen = () => {
           {/*Profiles*/}
 
           <VStack style={ProfileScreenStyles.content}>
-            <ListViewBox type="friend" count={user?.friendCount || 0} buttonOnPress={handleModalOpen} />
-            <ListViewBox type="group" count={user?.studyCount || 0} buttonOnPress={handleModalOpen} />
+            <ListViewBox
+              type="friend"
+              count={user?.friendCount || 0}
+              buttonOnPress={handleModalOpen}
+            />
+            <ListViewBox
+              type="group"
+              count={user?.studyCount || 0}
+              buttonOnPress={handleModalOpen}
+            />
 
             <Box style={ProfileScreenStyles.badgeContainer}>
-              {badges ? <Badges badges={badges} styleType={"profile"} /> : null}
+              {badges ? <Badges badges={badges} styleType={'profile'} /> : null}
             </Box>
 
             <Freeze />
