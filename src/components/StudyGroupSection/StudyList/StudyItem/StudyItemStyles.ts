@@ -10,6 +10,10 @@ export const StudyItemStyles = StyleSheet.create({
     height: height * 0.1,
     backgroundColor: `${COLOR.WHITE}`,
     paddingVertical: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#d1d5db',
+    justifyContent: 'center',
+    paddingTop: 5,
   },
   buttonContainer: {
     width: width,

@@ -11,6 +11,9 @@ import StudyGroupSection from '@/src/components/StudyGroupSection/index';
 import {useStudies} from '@/src/hooks/useStudies';
 import Loader from '@/src/components/Loader';
 import {Text} from '@/components/ui';
+import {Box} from '@/components/ui';
+import CreateStudyButton from '@/src/components/StudyGroupSection/CreateStudyButton';
+
 
 const StudyScreen = () => {
   const {data: studyData, isLoading, error} = useStudies();
@@ -35,6 +38,9 @@ const StudyScreen = () => {
     <SafeAreaView style={StudyScreenStyles.safeAreaContainer}>
       <Header Title={STUDY_GROUP.TITLE} />
       <StudyGroupSection studyData={studyData || []} />
+      <Box style={StudyScreenStyles.buttonContainer}>
+        <CreateStudyButton />
+      </Box>
       <BottomBar />
     </SafeAreaView>
   );
