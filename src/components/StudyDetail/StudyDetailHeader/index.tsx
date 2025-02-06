@@ -13,17 +13,7 @@ import {Button} from '@/components/ui/button';
 import {Image} from '@/components/ui/image';
 import {STUDY_DETAIL} from '@/src/constants/StudyDetail/studyDetail';
 
-//GET: /regular-studies/{studyId} 더미 데이터
-const studyDetail = {
-  id: 1,
-  studyName: 'CPA 메이트',
-  goalMessage: 'IT 개발 목적 동아리 모임',
-  goalTime: 145,
-  totalStudyTime: 40,
-  inviteCode: 'DJKS123',
-};
-
-const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyId}) => {
+const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyDetail}) => {
   return (
     <>
       <Box style={StudyDetailHeaderStyles.studyHeader}>

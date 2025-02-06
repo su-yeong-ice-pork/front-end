@@ -16,11 +16,14 @@ import {Image} from '@/components/ui/image';
 
 const StudyItem: React.FC<StudyItemProps> = ({
   name,
+  id,
   totalStudyTime,
   memberCount,
 }) => {
   const navigation = useNavigation();
-  const navigateToDetail = () => navigation.navigate(STUDY_GROUP.NAME);
+  console.log(id);
+  const navigateToDetail = () =>
+    navigation.navigate(STUDY_GROUP.NAME, {studyId: id});
   return (
     <StudyItemLayout name={name}>
       <Box style={StudyItemStyles.container}>
