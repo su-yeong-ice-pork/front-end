@@ -11,57 +11,50 @@ import YearlyCalendar from '../YearCalendar';
 import moment from 'moment';
 import Loader from '../../Loader';
 import LinearGradient from 'react-native-linear-gradient';
-import {getRecord} from '@/src/api/record';
-import {getMonthlyGrass} from '@/src/api/monthJandi';
-import {useRecoilValue} from 'recoil';
-import authState from '@/src/recoil/authAtom';
-import '../../../constants/Calendar/LocalConfig';
 import Daycount from '../Daycount';
 import StudyStats from '../StudyStats';
+import useMonthGrass from '@/src/hooks/calendar/useMonthGrass';
+
 const MonthCalendar = ({userId}: {userId: number}) => {
-  const authInfo = useRecoilValue(authState);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedDateData, setSelectedDateData] = useState<any>(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [viewMode, setViewMode] = useState<'monthly' | 'yearly'>('yearly');
+  const [viewMode, setViewMode] = useState<'monthly' | 'yearly'>('monthly');
   const [grassData, setGrassData] = useState<any>({});
+
   const [displayedDate, setDisplayedDate] = useState(
     moment().format('YYYY-MM-DD'),
   );
 
-  const fetchMonthlyGrassData = async (year: number, month: number) => {
-    const grassRecords = await getMonthlyGrass(
-      userId,
-      year,
-      month,
-      authInfo.authToken,
-    );
-    if (grassRecords) {
+  const {grass, isLoading, error, setYear, setMonth} = useMonthGrass();
+
+  useEffect(() => {
+    const year = moment(displayedDate).year();
+    const month = moment(displayedDate).month() + 1;
+    setYear(year);
+    setMonth(month);
+  }, [displayedDate, setYear, setMonth]);
+
+  useEffect(() => {
+    if (grass) {
+      const year = moment(displayedDate).year();
+      const month = moment(displayedDate).month() + 1;
+
       let newGrassData: any = {};
-      grassRecords.forEach(record => {
+      grass.forEach(record => {
         const dateKey = `${year}-${month < 10 ? `0${month}` : month}-${
           record.day < 10 ? `0${record.day}` : record.day
         }`;
-
         newGrassData[dateKey] = {
           studyTime: record.studyHour,
           grassScore: record.grassScore,
         };
       });
       setGrassData(newGrassData);
-      setIsLoading(false);
+    } else {
+      setGrassData({});
     }
-    console.log('월간', grassData);
-  };
-
-  useEffect(() => {
-    if (viewMode === 'monthly') {
-      const year = moment(displayedDate).year();
-      const month = moment(displayedDate).month() + 1;
-      fetchMonthlyGrassData(year, month);
-    }
-  }, [displayedDate, viewMode]);
+  }, [grass, displayedDate]);
 
   const onDayPress = (day: DateData) => {
     setSelectedDate(day.dateString);
@@ -75,14 +68,19 @@ const MonthCalendar = ({userId}: {userId: number}) => {
   const handleTabPressYearly = (mode: 'yearly') => {
     setViewMode(mode);
   };
-  const handleYearlyDataLoad = () => {
-    setIsLoading(false);
-  };
+  const handleYearlyDataLoad = () => {};
+
+  if (error) {
+    return <Text>잔디 데이터를 불러오는 중 에러가 발생했습니다.</Text>;
+  }
 
   return (
     <Box style={MonthCalendarStyles.container}>
       <Daycount userId={userId} />
+
+      {/* 리로딩, 로딩 표시 */}
       {isLoading && <Loader />}
+
       <Box style={MonthCalendarStyles.tabContainer}>
         <TouchableOpacity
           style={MonthCalendarStyles.tabButton}
@@ -136,48 +134,23 @@ const MonthCalendar = ({userId}: {userId: number}) => {
           </Box>
         </TouchableOpacity>
       </Box>
+
       {viewMode === 'monthly' ? (
         <Box style={MonthCalendarStyles.monthlyContainer}>
           <Calendar
             current={displayedDate}
-            onDayPress={onDayPress}
-            renderArrow={() => null}
-            renderHeader={() => {
-              return (
-                <Box style={MonthCalendarStyles.calendarHeader}>
-                  <Button
-                    onPress={() =>
-                      setDisplayedDate(
-                        moment(displayedDate)
-                          .subtract(1, 'months')
-                          .format('YYYY-MM-DD'),
-                      )
-                    }
-                    style={MonthCalendarStyles.arrowButton}>
-                    <ButtonText style={MonthCalendarStyles.arrowText}>
-                      {'<'}
-                    </ButtonText>
-                  </Button>
-                  <Text style={MonthCalendarStyles.headerTitle}>
-                    {moment(displayedDate).format('YYYY년 M월')}
-                  </Text>
-                  <Button
-                    onPress={() =>
-                      setDisplayedDate(
-                        moment(displayedDate)
-                          .add(1, 'months')
-                          .format('YYYY-MM-DD'),
-                      )
-                    }
-                    style={MonthCalendarStyles.arrowButton}>
-                    <Text style={MonthCalendarStyles.arrowText}>{'>'}</Text>
-                  </Button>
-                </Box>
-              );
+            onMonthChange={monthData => {
+              const newDateString = `${monthData.year}-${String(
+                monthData.month,
+              ).padStart(2, '0')}-01`;
+              setDisplayedDate(newDateString);
             }}
+            onDayPress={onDayPress}
             theme={calendarTheme}
             firstDay={0}
             hideExtraDays={true}
+            renderArrow={undefined}
+            renderHeader={undefined}
             dayComponent={({date, state}) => (
               <CustomDay
                 date={date}
@@ -200,6 +173,7 @@ const MonthCalendar = ({userId}: {userId: number}) => {
           <StudyStats userId={userId} />
         </Box>
       )}
+
       <DateModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
