@@ -1,45 +1,37 @@
 import {Box} from '@/components/ui/box';
 import {Text} from '@/components/ui/text';
-import {getRecord} from '@/src/api/record';
-import {useRecoilValue} from 'recoil';
-import authState from '@/src/recoil/authAtom';
 import React, {useState, useEffect} from 'react';
 import {ICONS} from '@/src/constants/image/icons';
 import {StudyStatStyles} from './studyStatStyles';
 import {Image} from 'react-native';
+import useRecord from '@/src/hooks/calendar/useRecord';
+
 const StudyStats = ({userId}: {userId: number}) => {
-  const authInfo = useRecoilValue(authState);
+  const {record, isLoading, error} = useRecord();
 
-  const [userRecord, setRecord] = useState<any>(null);
+  if (isLoading) {
+    return <Text>로딩 중...</Text>;
+  }
 
-  const fetchRecordData = async () => {
-    const userRecords = await getRecord(userId, authInfo.authToken);
-    if (userRecords) {
-      setRecord(userRecords);
-    }
-  };
-
-  useEffect(() => {
-    fetchRecordData();
-  }, []);
+  if (error) {
+    return <Text>데이터를 불러오는 데 실패했습니다</Text>;
+  }
 
   return (
     <Box style={StudyStatStyles.statsContainer}>
-      {userRecord ? (
+      {record ? (
         <Box style={StudyStatStyles.rowContainer}>
           <Box>
             <Text style={StudyStatStyles.statsText}>
               <Image source={ICONS.CALENDAR} />
               최장{' '}
-              <Text style={StudyStatStyles.highlight}>
-                {userRecord.maxStreak}
-              </Text>
+              <Text style={StudyStatStyles.highlight}>{record.maxStreak}</Text>
               일 유지
             </Text>
             <Text style={StudyStatStyles.statsText}>
               <Image source={ICONS.STUDY_TIME} />총 공부시간{' '}
               <Text style={StudyStatStyles.highlight}>
-                {Math.floor(userRecord.totalStudyTime)}
+                {Math.floor(record.totalStudyTime)}
               </Text>
               시간
             </Text>
