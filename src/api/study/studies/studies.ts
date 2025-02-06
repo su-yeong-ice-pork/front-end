@@ -2,6 +2,11 @@
 import apiClient from '@/src/api/axiosInstance';
 import {Study, GetRegularStudiesResponse} from '../types';
 
+/**
+ * 고정 스터디 가져오기
+ * GET: /regular-studies
+ * Header: Authorization: Auth Token
+ */
 export const fetchRegularStudies = async (
   authToken: string,
 ): Promise<Study[]> => {

@@ -1,6 +1,11 @@
 import apiClient from '@/src/api/axiosInstance';
 import {Participant, GetStudyParticipantsResponse} from '../types';
 
+/**
+ * 고정 스터디 소속 멤버 정보 가져오기
+ * GET: /regular-studies/${studyId}/participants
+ * Header: Authorization: Auth Token
+ */
 export const fetchStudyParticipants = async (
   studyId: number,
   authToken: string,
