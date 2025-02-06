@@ -2,6 +2,7 @@ import {FONT} from '@/src/constants/styles/font/default-font';
 import {COLOR} from '@/src/constants/styles/color/color.ts';
 import {GetLabelProps} from '../../types/BottomBarType/BottomBarType';
 import {StyleSheet} from 'react-native';
+import {PATH_NAME} from '@/src/constants/BottomBar/Images.ts';
 
 export const BottomBarButtonStyles = StyleSheet.create({
   iconContainer: {
@@ -32,9 +33,15 @@ export const BottomBarButtonStyles = StyleSheet.create({
   },
 });
 
-export const getLabelStyle = ({screen, currentScreen}: GetLabelProps) => {
+export const getLabelStyle = ({ screen, currentScreen }: GetLabelProps) => {
+  const isActive =
+    screen === 'Study' &&
+    (currentScreen === PATH_NAME.STUDY ||
+      currentScreen === PATH_NAME.STUDY_DETAIL ||
+      currentScreen === PATH_NAME.CREATE_STUDY);
+
   return [
     BottomBarButtonStyles.label,
-    currentScreen === screen && BottomBarButtonStyles.labelActive,
+    isActive ? BottomBarButtonStyles.labelActive : null,
   ];
 };

@@ -128,7 +128,7 @@ export const config = {
     '--color-outline-900': '39 38 36',
     '--color-outline-950': '26 23 23',
 
-    /* Background */
+    /* Introduction */
     '--color-background-0': '255 255 255',
     '--color-background-50': '246 246 246',
     '--color-background-100': '242 241 241',
@@ -142,7 +142,7 @@ export const config = {
     '--color-background-900': '39 38 37',
     '--color-background-950': '24 23 24',
 
-    /* Background Special */
+    /* Introduction Special */
     '--color-background-error': '254 241 241',
     '--color-background-warning': '255 244 235',
     '--color-background-success': '237 252 242',
@@ -280,7 +280,7 @@ export const config = {
     '--color-outline-900': '243 243 243',
     '--color-outline-950': '253 254 254',
 
-    /* Background */
+    /* Introduction */
     '--color-background-0': '18 18 18',
     '--color-background-50': '39 38 37',
     '--color-background-100': '65 64 64',
@@ -294,7 +294,7 @@ export const config = {
     '--color-background-900': '246 246 246',
     '--color-background-950': '254 254 254',
 
-    /* Background Special */
+    /* Introduction Special */
     '--color-background-error': '66 43 43',
     '--color-background-warning': '65 47 35',
     '--color-background-success': '28 43 33',

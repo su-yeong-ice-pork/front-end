@@ -16,6 +16,7 @@ import FindPassword from './src/screens/FindPasswordScreen';
 import ProfileScreen from './src/screens/ProfileScreen/index.tsx';
 import EditProfileScreen from './src/screens/EditProfileScreen';
 import FriendsProfile from './src/screens/FriendsProfileScreen';
+import CreateStudyScreen from './src/screens/CreateStudyScreen';
 import SplashScreen from 'react-native-splash-screen';
 import LoginScreen from './src/screens/LoginScreen/index.tsx';
 import {
@@ -62,6 +63,7 @@ const App = () => {
               <Stack.Screen name="Profile" component={ProfileScreen} />
               <Stack.Screen name="EditProfile" component={EditProfileScreen} />
               <Stack.Screen name="FriendsProfile" component={FriendsProfile} />
+              <Stack.Screen name="CreateStudy" component={CreateStudyScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </RecoilRoot>
