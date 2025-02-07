@@ -63,7 +63,7 @@ const FriendsProfile = () => {
           style={FriendsProfileScreenStyles.container}
           contentContainerStyle={{paddingBottom: 80}}>
           <Box>
-            <Profiles />
+            <Profiles edit={false} back={true}/>
             <Box style={FriendsProfileScreenStyles.profileTextContainer}>
               <FriendsLeaveButton />
             </Box>

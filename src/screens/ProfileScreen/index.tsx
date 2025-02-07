@@ -103,39 +103,8 @@ const ProfileScreen = () => {
           </Box>
 
           {/*Profiles*/}
-          {user ? (
-            <Profiles member={user} />
-          ) : (
-            <Box style={ProfileScreenStyles.upperSection}>
-              <TouchableOpacity
-                style={ProfileScreenStyles.backButtonWrapper}
-                onPress={() => navigation.goBack()}>
-                <Image
-                  source={IMAGES.profileBackButton}
-                  style={ProfileScreenStyles.profileBackButton}
-                />
-              </TouchableOpacity>
-              <Box style={ProfileScreenStyles.profileInfo}>
-                <Image
-                  source={
-                    user?.profileImage
-                      ? {uri: user.profileImage}
-                      : IMAGES.profile
-                  }
-                  style={ProfileScreenStyles.profileImage}
-                />
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate('EditProfile', {id: user?.id})
-                  }>
-                  <Image
-                    source={IMAGES.editProfile}
-                    style={ProfileScreenStyles.editIcon}
-                  />
-                </TouchableOpacity>
-              </Box>
-            </Box>
-          )}
+          {user && <Profiles member={user} edit={true} back={true}/>}
+
           {/*Profiles*/}
 
           <VStack style={ProfileScreenStyles.content}>

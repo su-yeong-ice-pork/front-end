@@ -20,4 +20,6 @@ export type UserDataApiResponseType = {
 
 export type UsersProps = {
   member: UserInformationType;
+  edit?: boolean;
+  back?: boolean;
 };
