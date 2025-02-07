@@ -26,23 +26,28 @@ export const EditProfileScreenStyles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: COLOR.WHITE,
     width: width * 0.3,
-    marginTop: 27,
+    marginTop: height * 0.031,
   },
   chooseImageStyle: {
     width: width * 0.25,
     height: height * 0.125,
+    marginTop:height * 0.045,
+    justifyContent: 'center',
   },
   imageContainer: {
     width: width * 0.25,
-    height: width * 0.25,
+    height: width * 0.27,
     borderRadius: (width * 0.25) / 2,
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop:height * 0.045,
+
   },
   selectedImageBorder: {
     borderWidth: 2,
     borderColor: '#00AAB0',
+
   },
   defaultImageStyle: {
     width: width * 0.25,

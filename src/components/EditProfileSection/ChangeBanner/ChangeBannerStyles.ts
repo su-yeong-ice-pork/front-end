@@ -26,11 +26,12 @@ export const ChangeBannerStyles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: COLOR.WHITE,
     width: width * 0.3,
-    marginTop: 27,
+    marginTop: height * 0.031,
   },
   chooseImageStyle: {
     width: width * 0.25,
     height: height * 0.125,
+    marginTop:height * 0.045,
   },
   bannerContainer: {
     width: width * 0.25,
@@ -39,6 +40,7 @@ export const ChangeBannerStyles = StyleSheet.create({
     overflow: 'hidden',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop:height * 0.045,
   },
   selectedBannerBorder: {
     borderWidth: 2,
