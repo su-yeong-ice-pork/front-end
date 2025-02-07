@@ -40,7 +40,7 @@ const StudyMember: React.FC<StudyMemberProps> = ({
         <Text style={StudyMemberStyles.memberStudyTime}>
           오늘 공부 시간:{' '}
           <Text style={StudyMemberStyles.totalStudyTimeValue}>
-            {todayStudyTime}시간
+            {todayStudyTime}
           </Text>
         </Text>
       </Box>

@@ -8,16 +8,61 @@ import {Box} from '@/components/ui/box';
 import {SafeAreaView} from '@/components/ui/safe-area-view';
 import {ScrollView} from '@/components/ui/scroll-view';
 import StudyMemberList from '@/src/components/StudyDetail/StudyMemberList';
+import {RouteProp, useRoute} from '@react-navigation/native';
+import {useStudyDetail} from '@/src/hooks/useStudyDetail';
+import {useStudyParticipants} from '@/src/hooks/useStudyParticipants';
+import Loader from '@/src/components/Loader';
+import {Text} from '@/components/ui';
+
+type StudyDetailScreenRouteProp = RouteProp<
+  {StudyDetail: {studyId: number}},
+  'StudyDetail'
+>;
 
 const StudyDetailScreen = () => {
+  const route = useRoute<StudyDetailScreenRouteProp>();
+  const {studyId} = route.params;
+
+  const {
+    data: studyDetail,
+    isLoading: isDetailLoading,
+    error: detailError,
+  } = useStudyDetail(studyId);
+  const {
+    data: participants,
+    isLoading: isParticipantsLoading,
+    error: participantsError,
+  } = useStudyParticipants(studyId);
+
+  if (isDetailLoading || isParticipantsLoading) {
+    return (
+      <SafeAreaView style={StudyDeatilScreenStyle.outContainer}>
+        <Loader />
+      </SafeAreaView>
+    );
+  }
+
+  if (detailError || participantsError) {
+    return (
+      <SafeAreaView style={StudyDeatilScreenStyle.outContainer}>
+        <Text>Error: {(detailError || participantsError)?.message}</Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <>
       <SafeAreaView style={StudyDeatilScreenStyle.outContainer}>
         <Box style={StudyDeatilScreenStyle.container}>
-          <Header Title={STUDY_DETAIL.HEADER} />
+          <Header
+            Title={
+              `${studyDetail?.studyName}${STUDY_DETAIL.ROOM}` ||
+              STUDY_DETAIL.HEADER
+            }
+          />
           <ScrollView contentContainerStyle={StudyDeatilScreenStyle.main}>
-            <StudyDetailHeader studyId={1} />
-            <StudyMemberList />
+            <StudyDetailHeader studyDetail={studyDetail!} />
+            <StudyMemberList participants={participants!} />
           </ScrollView>
         </Box>
       </SafeAreaView>

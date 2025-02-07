@@ -136,17 +136,16 @@ const HomeScreen = () => {
           contentContainerStyle={{paddingBottom: 80}}>
           {/* 상단 프로필 영역 */}
 
-          {memberData && <Profiles member={[memberData]} />}
+          {memberData && <Profiles member={memberData} />}
 
-            <View style={HomeScreenStyles.profileTextContainer}>
-              <Badges badges={badgesData} styleType={"home"}/>
-            </View>
+          <View style={HomeScreenStyles.profileTextContainer}>
+            <Badges badges={badgesData} styleType={'home'} />
+          </View>
 
           <AuthButtons />
 
           {/* 보유 프리즈 및 현재 일수 */}
           <Freeze />
-
 
           <View>{member && <MonthCalendar userId={member.id} />}</View>
         </ScrollView>
