@@ -6,7 +6,6 @@ import {FONT} from '@/src/constants/styles/font/default-font.ts';
 
 export const EditProfileScreenStyles = StyleSheet.create({
   changeContainer: {
-    marginTop: 10,
     marginBottom: 20,
   },
   textStyle: {
