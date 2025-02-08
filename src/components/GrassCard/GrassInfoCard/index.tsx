@@ -19,7 +19,7 @@ const GrassInfoCard: React.FC<GrassInfoCardProps> = ({type,highlightNumber,creat
               <Text style={{ fontWeight:800}}>{createDate}</Text>
             {isType1 ? `${GRASS_CARD_TOTAL_DAYS.START}` : GRASS_CARD_TOTAL_TIME.START}{" "}
             <Text style={GrassCardInfoStyles.grassCardTextPoint}>
-              {isType1 ? '36' : highlightNumber}
+              {highlightNumber}
             </Text>
             {isType1 ? GRASS_CARD_TOTAL_DAYS.END : GRASS_CARD_TOTAL_TIME.END}
           </Text>

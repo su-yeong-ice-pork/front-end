@@ -35,13 +35,6 @@ export const ProfileScreenStyles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#86C0AE',
   },
-  backButtonWrapper: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    zIndex: 1,
-    padding: 10, // 터치 영역 확대
-  },
   profileBackButton: {
     position: 'absolute',
     width: 26,
@@ -59,14 +52,6 @@ export const ProfileScreenStyles = StyleSheet.create({
     marginTop: 50,
     left: 30,
     borderRadius: 50,
-  },
-  editIcon: {
-    position: 'absolute',
-    width: 30, // 이전에 제안된 크기 유지
-    height: 30, // 이전에 제안된 크기 유지
-    right: -30, // profileImage의 우측 바깥쪽 경계에 위치시키기 위한 값
-    bottom: -5, // profileImage의 하단 바깥쪽 경계에 위치시키기 위한 값
-    resizeMode: 'contain', // 이미지 비율 유지
   },
 
   // Content
