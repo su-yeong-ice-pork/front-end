@@ -1,11 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {Image, ScrollView} from 'react-native';
-import {Text} from '@/components/ui/text';
-import {Box} from '@/components/ui/box';
+import {Text, Box} from '@/components/ui';
 import {Button} from '@/components/ui/button';
 import {ICONS} from '@/src/constants/image/icons';
 import {ChangeBannerStyles} from './ChangeBannerStyles';
 import {ChangeBannerImageProps} from '@/src/constants/EditProfile/ChangeBanner';
+import {CHANGE_BANNER_TITLE} from '@/src/constants/EditProfile/Message';
+
 const ChangeBannerImage: React.FC<ChangeBannerImageProps> = ({
   defaultBanners,
   customImages,
@@ -15,7 +16,7 @@ const ChangeBannerImage: React.FC<ChangeBannerImageProps> = ({
 }) => {
   return (
     <Box style={ChangeBannerStyles.changeContainer}>
-      <Text style={ChangeBannerStyles.textStyle}>배너 사진 변경</Text>
+      <Text style={ChangeBannerStyles.textStyle}>{CHANGE_BANNER_TITLE}</Text>
       <Box style={ChangeBannerStyles.imageBox}>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <Button onPress={ShowPicker} style={ChangeBannerStyles.buttonStyle}>

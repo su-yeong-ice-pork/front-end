@@ -1,7 +1,9 @@
 import {StyleSheet, Dimensions} from 'react-native';
+
 const {width, height} = Dimensions.get('window');
 import {FONT} from '@/src/constants/styles/font/default-font';
 import {COLOR} from '@/src/constants/styles/color/color';
+
 export const EditProfileScreenStyles = StyleSheet.create({
   safeArea: {
     flex: 1,
@@ -15,12 +17,13 @@ export const EditProfileScreenStyles = StyleSheet.create({
   },
   titleContainer: {
     paddingTop: 20,
-    paddingLeft: 20,
+    paddingLeft: width * 0.03,
     backgroundColor: COLOR.BACK_GROUND,
   },
   titleText: {
-    fontSize: 27,
+    fontSize: height * 0.027,
     fontWeight: '600',
+    fontFamily: FONT,
   },
   formContainer: {
     backgroundColor: COLOR.BACK_GROUND,
