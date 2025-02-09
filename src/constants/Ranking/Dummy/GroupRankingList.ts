@@ -1,8 +1,8 @@
 // 스터디 랭킹 더미 데이터
 // GET: /ranks/studies
 
-export const DummyStudyRankingData = {
-  date: '9월 26일',
+export const DummyGroupRankingData = {
+  date: '9월 27일',
   ranking: [
     {
       rank: 1,

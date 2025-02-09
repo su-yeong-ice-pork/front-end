@@ -2,24 +2,36 @@ import React, {useState} from 'react';
 import {Box} from '@/components/ui/box';
 import {Text} from '@/components/ui/text';
 import {RankingSectionStyles} from './RankingSectionStyles';
-import {Image, TouchableOpacity} from 'react-native';
+import {Image} from 'react-native';
 import {ICONS} from '@/src/constants/image/icons.ts';
-import RankingList from './IndividualRankingList';
+import IndividualRankingList from './RankingList/IndividualRankingList';
+import GroupRankingList from './RankingList/GroupRankingList';
+import {DummyGroupRankingData} from '@/src/constants/Ranking/Dummy/GroupRankingList.ts';
 import {DummyIndividualRankingData} from '@/src/constants/Ranking/Dummy/IndividualRankingList.ts';
 import {HStack, VStack} from '@/components/ui';
 import ChoiceRankingButton from '@/src/components/StudyRecord/RankingSection/ChoiceRankingButton';
+import {DATE, NO_DATA} from '@/src/constants/Ranking/Ranking.ts';
 
 const RankingSection = () => {
-  // API 연결 필요
-  const rankingData = DummyIndividualRankingData;
+  const [rankingType, setRankingType] = useState<'individual' | 'group'>(
+    'individual',
+  );
 
-  const [rankingType, setRankingType] = useState('individual');
-  const date = rankingData.date;
+  // API 연결 필요
+  const individualRankingData = DummyIndividualRankingData;
+  const groupRankingData = DummyGroupRankingData;
+
+  const date =
+    rankingType === 'individual'
+      ? individualRankingData.date
+      : groupRankingData.date;
 
   const [month, day] = date.split(/월|일/).filter(Boolean);
 
   const toggleRanking = () => {
-    setRankingType((prevType) => (prevType === 'individual' ? 'group' : 'individual'));
+    setRankingType(prevType =>
+      prevType === 'individual' ? 'group' : 'individual',
+    );
   };
 
   return (
@@ -32,9 +44,9 @@ const RankingSection = () => {
           />
           <Text>
             <Text style={RankingSectionStyles.dateNumber}>{month}</Text>
-            <Text style={RankingSectionStyles.dateText}>{'월'}</Text>
-            <Text style={RankingSectionStyles.dateNumber}>{` ${day}`}</Text>
-            <Text style={RankingSectionStyles.dateText}>{'일'}</Text>
+            <Text style={RankingSectionStyles.dateText}>{DATE.MONTH}</Text>
+            <Text style={RankingSectionStyles.dateNumber}>{day}</Text>
+            <Text style={RankingSectionStyles.dateText}>{DATE.DAY}</Text>
           </Text>
         </HStack>
 
@@ -44,10 +56,16 @@ const RankingSection = () => {
         />
       </VStack>
 
-      {rankingData ? (
-        <RankingList rankingData={rankingData.ranking} /> // 랭킹 리스트 컴포넌트
+      {rankingType === 'individual' ? (
+        individualRankingData ? (
+          <IndividualRankingList rankingData={individualRankingData.ranking} />
+        ) : (
+          <Text>{NO_DATA}</Text>
+        )
+      ) : groupRankingData ? (
+        <GroupRankingList rankingData={groupRankingData.ranking} />
       ) : (
-        <Text>데이터가 없습니다.</Text>
+        <Text>{NO_DATA}</Text>
       )}
     </Box>
   );
