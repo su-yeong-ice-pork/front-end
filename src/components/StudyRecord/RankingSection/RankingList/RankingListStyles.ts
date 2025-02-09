@@ -48,11 +48,12 @@ export const RankingListStyles = StyleSheet.create({
 
   // 개인 랭킹 관련 스타일
   profileImage: {
-    width: width * 0.14,
-    height: height * 0.071,
+    width: width * 0.15,
+    height: width * 0.15,
     borderRadius: 20,
     marginRight: width * 0.05,
     marginLeft: width * 0.03,
+
   },
   scoreText: {
     fontFamily: FONT,
