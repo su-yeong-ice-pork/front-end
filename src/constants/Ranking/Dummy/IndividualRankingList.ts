@@ -1,7 +1,7 @@
 // 개인 랭킹 조회 더미 데이터
 //GET: /ranks/individual
 
-export const DummyRankingData = {
+export const DummyIndividualRankingData = {
   date: '9월 26일',
   ranking: [
     {
