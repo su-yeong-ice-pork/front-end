@@ -65,7 +65,7 @@ const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyId}) => {
             alt={STUDY_DETAIL.HEADER}
           />
           <Text style={StudyDetailHeaderStyles.addMemberButtonText}>
-            구성원 추가
+            친구 초대하기
           </Text>
         </Button>
       </Box>
