@@ -12,6 +12,7 @@ export const ICONS = {
   COLORED_GROUP_ICON: require('@/assets/images/icons/coloredGroupIcon.png'),
   CROWN: require('@/assets/images/icons/crown.png'),
   FRIENDS_ICON: require('@/assets/images/icons/friendsIcon.png'),
+  FRIENDS_ICON_COLORED: require('@/assets/images/icons/friendsIconColored.png'),
   GROUPS_ICON: require('@/assets/images/icons/groupsIcon.png'),
   HOME: require('@/assets/images/icons/home.png'),
   HOME_ON: require('@/assets/images/icons/homeOn.png'),
