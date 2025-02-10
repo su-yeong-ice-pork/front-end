@@ -1,19 +1,18 @@
+// /src/components/MonthCalendar/MonthCalendar.tsx
 import React, {useState, useEffect} from 'react';
-import {TouchableOpacity} from 'react-native';
 import {Box} from '@/components/ui/box';
-import {Button, ButtonText} from '@/components/ui/button';
-import {Text} from '@/components/ui/text';
 import DateModal from '../DateModal';
-import CustomDay from '../CustomDay';
-import {MonthCalendarStyles, calendarTheme} from './monthCalendarStyles';
-import {Calendar, DateData} from 'react-native-calendars';
 import YearlyCalendar from '../YearCalendar';
 import moment from 'moment';
 import Loader from '../../Loader';
-import LinearGradient from 'react-native-linear-gradient';
+import '@/src/constants/Calendar/LocalConfig';
 import Daycount from '../Daycount';
 import StudyStats from '../StudyStats';
 import useMonthGrass from '@/src/hooks/calendar/useMonthGrass';
+import CalendarTabs from './CalendarTabs';
+import CustomCalendar from './CustomCalendar';
+import {MonthCalendarStyles} from './monthCalendarStyles';
+import {transformGrassData} from '@/src/utils/grassUtils';
 
 const MonthCalendar = ({userId}: {userId: number}) => {
   const [selectedDate, setSelectedDate] = useState('');
@@ -21,12 +20,12 @@ const MonthCalendar = ({userId}: {userId: number}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [viewMode, setViewMode] = useState<'monthly' | 'yearly'>('monthly');
   const [grassData, setGrassData] = useState<any>({});
-
+  const [yearlyDataLoaded, setYearlyDataLoaded] = useState<boolean>(false);
   const [displayedDate, setDisplayedDate] = useState(
     moment().format('YYYY-MM-DD'),
   );
 
-  const {grass, isLoading, error, setYear, setMonth} = useMonthGrass();
+  const {grass, isLoading, setYear, setMonth} = useMonthGrass();
 
   useEffect(() => {
     const year = moment(displayedDate).year();
@@ -37,131 +36,51 @@ const MonthCalendar = ({userId}: {userId: number}) => {
 
   useEffect(() => {
     if (grass) {
-      const year = moment(displayedDate).year();
-      const month = moment(displayedDate).month() + 1;
-
-      let newGrassData: any = {};
-      grass.forEach(record => {
-        const dateKey = `${year}-${month < 10 ? `0${month}` : month}-${
-          record.day < 10 ? `0${record.day}` : record.day
-        }`;
-        newGrassData[dateKey] = {
-          studyTime: record.studyHour,
-          grassScore: record.grassScore,
-        };
-      });
+      const newGrassData = transformGrassData(grass, displayedDate);
       setGrassData(newGrassData);
     } else {
       setGrassData({});
     }
   }, [grass, displayedDate]);
 
-  const onDayPress = (day: DateData) => {
+  const onDayPress = (day: any) => {
     setSelectedDate(day.dateString);
     setSelectedDateData(grassData[day.dateString]);
     setModalVisible(true);
   };
 
-  const handleTabPress = (mode: 'monthly') => {
+  const onTabPress = (mode: 'monthly' | 'yearly') => {
     setViewMode(mode);
   };
-  const handleTabPressYearly = (mode: 'yearly') => {
-    setViewMode(mode);
-  };
-  const handleYearlyDataLoad = () => {};
 
-  if (error) {
-    return <Text>잔디 데이터를 불러오는 중 에러가 발생했습니다.</Text>;
-  }
+  const onMonthChange = (monthData: any) => {
+    const newDateString = `${monthData.year}-${String(monthData.month).padStart(
+      2,
+      '0',
+    )}-01`;
+    setDisplayedDate(newDateString);
+  };
+
+  const handleYearlyDataLoad = () => {
+    setYearlyDataLoaded(true);
+  };
 
   return (
     <Box style={MonthCalendarStyles.container}>
       <Daycount userId={userId} />
 
-      {/* 리로딩, 로딩 표시 */}
       {isLoading && <Loader />}
 
-      <Box style={MonthCalendarStyles.tabContainer}>
-        <TouchableOpacity
-          style={MonthCalendarStyles.tabButton}
-          onPress={() => handleTabPress('monthly')}
-          activeOpacity={0.7}>
-          <Box style={MonthCalendarStyles.tabContent}>
-            {viewMode === 'monthly' && (
-              <LinearGradient
-                colors={['#0DD8EC', '#15EC89']}
-                style={MonthCalendarStyles.activeIndicator}>
-                <LinearGradient
-                  colors={['#0DD8EC', '#15EC89']}
-                  style={MonthCalendarStyles.dot}
-                />
-              </LinearGradient>
-            )}
-            <Text
-              style={
-                viewMode === 'monthly'
-                  ? MonthCalendarStyles.activeTabText
-                  : MonthCalendarStyles.tabText
-              }>
-              월간 잔디밭
-            </Text>
-          </Box>
-        </TouchableOpacity>
-
-        {/* 연간 잔디밭 탭 */}
-        <TouchableOpacity
-          style={MonthCalendarStyles.tabButton}
-          onPress={() => handleTabPressYearly('yearly')}>
-          <Box style={MonthCalendarStyles.tabContent}>
-            {viewMode === 'yearly' && (
-              <LinearGradient
-                colors={['#0DD8EC', '#15EC89']}
-                style={MonthCalendarStyles.activeIndicator}>
-                <LinearGradient
-                  colors={['#0DD8EC', '#15EC89']}
-                  style={MonthCalendarStyles.dot}
-                />
-              </LinearGradient>
-            )}
-            <Text
-              style={
-                viewMode === 'yearly'
-                  ? MonthCalendarStyles.activeTabText
-                  : MonthCalendarStyles.tabText
-              }>
-              연간 잔디밭
-            </Text>
-          </Box>
-        </TouchableOpacity>
-      </Box>
+      <CalendarTabs viewMode={viewMode} onTabPress={onTabPress} />
 
       {viewMode === 'monthly' ? (
         <Box style={MonthCalendarStyles.monthlyContainer}>
-          <Calendar
-            current={displayedDate}
-            onMonthChange={monthData => {
-              const newDateString = `${monthData.year}-${String(
-                monthData.month,
-              ).padStart(2, '0')}-01`;
-              setDisplayedDate(newDateString);
-            }}
+          <CustomCalendar
+            currentDate={displayedDate}
+            onMonthChange={onMonthChange}
             onDayPress={onDayPress}
-            theme={calendarTheme}
-            firstDay={0}
-            hideExtraDays={true}
-            renderArrow={undefined}
-            renderHeader={undefined}
-            dayComponent={({date, state}) => (
-              <CustomDay
-                date={date}
-                state={state}
-                grassData={grassData}
-                onDayPress={onDayPress}
-              />
-            )}
-            extraData={grassData}
+            grassData={grassData}
           />
-
           <StudyStats userId={userId} />
         </Box>
       ) : (
