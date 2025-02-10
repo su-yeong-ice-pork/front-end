@@ -11,6 +11,8 @@ import {Box, Text, HStack} from '@/components/ui';
 import {Input, InputField} from '@/components/ui/input';
 import {Button, ButtonText} from '@/components/ui/button';
 import {Image} from '@/components/ui/image';
+import Clipboard from '@react-native-clipboard/clipboard';
+import {Alert} from 'react-native';
 
 import {ICONS} from '@/src/constants/image/icons';
 import {InviteFriendStyles} from './InviteFriendStyles';
@@ -21,7 +23,14 @@ const InviteFriend: React.FC<InviteFriendProps> = ({isOpen, onClose}) => {
   if (!isOpen) return null;
   const [code, setCode] = useState<string>('');
 
-  const handleCodePaste = () => {};
+  const handleCodePaste = async () => {
+    try {
+      await Clipboard.setString(code);
+      Alert.alert(`${INVITE_FRIEND_MODAL.CLIPBOARD_SUCCESS}`);
+    } catch (e) {
+      Alert.alert(`${INVITE_FRIEND_MODAL.CLIPBOARD_FAIL}`);
+    }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
