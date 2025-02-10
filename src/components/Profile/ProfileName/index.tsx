@@ -12,7 +12,7 @@ const ProfileName: React.FC<UsersProps> = ({member: user}) => {
         <Text size="xs" bold={true} style={ProfileNameStyles.nickNameStyle}>
           {user.mainTitle}
         </Text>
-        <Heading>{user.mainTitle}</Heading>
+        <Heading>{user.name}</Heading>
       </HStack>
     </>
   );
