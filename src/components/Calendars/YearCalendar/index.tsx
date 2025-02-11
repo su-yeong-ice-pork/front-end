@@ -28,7 +28,7 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
   const {weeks, monthLabels} = useCalendarDates();
 
   const {grass: yearGrass, isLoading: isYearGrassLoading} = useYearGrass();
-
+  console.log(yearGrass);
   useEffect(() => {
     const combined: GrassData = {};
     if (yearGrass) {

@@ -1,6 +1,6 @@
 // src/utils/calendarUtils.ts
 export const getColorForActivity = (studyTime: number): string => {
-  if (studyTime === 0) return '#ebedf0';
+  if (studyTime === 0) return '#DCE1CB';
   else if (studyTime >= 1 && studyTime <= 2) return '#c6e48b';
   else if (studyTime >= 3 && studyTime <= 4) return '#7bc96f';
   else if (studyTime >= 5 && studyTime <= 6) return '#239a3b';
@@ -20,6 +20,7 @@ export const getColorForDate = (
   const day = String(date.getDate()).padStart(2, '0');
   const key = `${year}-${month}-${day}`;
   const entry = grassData[key];
-  const studyTime = entry ? entry.studyTime : 0;
-  return getColorForActivity(studyTime);
+  if (!entry) return '#ebedf0';
+
+  return getColorForActivity(entry.studyTime);
 };
