@@ -1,14 +1,15 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Image} from 'react-native';
-import {Text} from '@/components/ui/text';
+import {Text, Box} from '@/components/ui';
 import {Input, InputField} from '@/components/ui/input';
-import {Box} from '@/components/ui/box';
 import {Button} from '@/components/ui/button';
 import {useRecoilValue} from 'recoil';
 import userState from '@/src/recoil/userAtom';
 import {ICONS} from '@/src/constants/image/icons';
 import {ChangeMessageStyles} from './ChangeMessageStyles';
 import {ChangeMessageProps} from '@/src/constants/EditProfile/ChangeMessage';
+import {CHANGE_MESSAGE_TITLE} from '@/src/constants/EditProfile/Message';
+
 const ChangeMessage: React.FC<ChangeMessageProps> = ({
   currentMessage,
   setCurrentMessage,
@@ -30,7 +31,8 @@ const ChangeMessage: React.FC<ChangeMessageProps> = ({
     <Box>
       <Box style={ChangeMessageStyles.inputContainer2}>
         <Text style={ChangeMessageStyles.textStyle}>
-          상태 메시지 변경 {currentMessage && <Text>({messageLength}/30)</Text>}
+          {CHANGE_MESSAGE_TITLE}
+          {currentMessage && <Text>({messageLength}/30)</Text>}
         </Text>
 
         <Input style={ChangeMessageStyles.inputWrapper}>

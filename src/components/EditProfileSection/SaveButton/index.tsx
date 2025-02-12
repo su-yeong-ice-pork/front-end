@@ -1,6 +1,5 @@
 import React from 'react';
-import {Text} from '@/components/ui/text';
-import {Box} from '@/components/ui/box';
+import {Text,Box} from '@/components/ui';
 import {Button} from '@/components/ui/button';
 import {useRecoilValue} from 'recoil';
 import authState from '@/src/recoil/authAtom';
@@ -10,6 +9,11 @@ import changeMessage from '@/src/api/changeMessage';
 import sendDefaultImg from '@/src/api/sendDefaultImg';
 import {SaveButtonStyles} from './SaveButtonStyles';
 import {SaveButtonProps} from '@/src/constants/EditProfile/SaveButton';
+import {
+  CHANGE_PROFILE_SUBMIT,
+  CHANGE_PROFILE_SUBMIT_MESSAGE,
+} from '@/src/constants/EditProfile/Message';
+
 const SaveButton: React.FC<SaveButtonProps> = ({
   selectedProfile,
   selectedBanner,
@@ -40,14 +44,16 @@ const SaveButton: React.FC<SaveButtonProps> = ({
           });
 
           if (success) {
-            console.log('사용자 업로드 프로필 이미지 업로드 성공');
+            console.log(
+              CHANGE_PROFILE_SUBMIT_MESSAGE.profileImageUploadSuccess,
+            );
             successProfile = true;
             setSelectedImage(null);
           } else {
-            console.log('프로필 이미지 업로드 실패');
+            console.log(CHANGE_PROFILE_SUBMIT_MESSAGE.profileImageUploadFail);
           }
         } catch (error) {
-          console.log('에러 발생: ', error);
+          console.log(CHANGE_PROFILE_SUBMIT_MESSAGE.error, error);
         }
       } else {
         try {
@@ -55,78 +61,90 @@ const SaveButton: React.FC<SaveButtonProps> = ({
             url: selectedProfile,
           });
           if (response.success) {
-            console.log('프로필 기본 이미지 업로드 성공');
+            console.log(
+              CHANGE_PROFILE_SUBMIT_MESSAGE.defaultProfileImageUploadSuccess,
+            );
             successProfile = true;
             setSelectedImage(null);
           } else {
-            console.log('프로필 기본 이미지 업로드 실패');
+            console.log(
+              CHANGE_PROFILE_SUBMIT_MESSAGE.defaultProfileImageUploadFail,
+            );
           }
         } catch (error) {
-          console.log('error: ', error);
+          console.log(CHANGE_PROFILE_SUBMIT_MESSAGE.error, error);
         }
       }
-    }
-    if (selectedBanner) {
-      if (isCustomBanner) {
+
+      if (selectedBanner) {
+        if (isCustomBanner) {
+          try {
+            const success = await updateProfileImage(id, authToken, 'banner', {
+              uri: selectedBanner,
+              name: 'banner.jpg',
+              type: 'image/jpeg',
+            });
+
+            if (success) {
+              console.log(
+                CHANGE_PROFILE_SUBMIT_MESSAGE.bannerImageUploadSuccess,
+              );
+              successBanner = true;
+              setSelectedBanner(null);
+            } else {
+              console.log(CHANGE_PROFILE_SUBMIT_MESSAGE.bannerImageUploadFail);
+            }
+          } catch (error) {
+            console.log(CHANGE_PROFILE_SUBMIT_MESSAGE.error, error);
+          }
+        } else {
+          try {
+            const response = await sendDefaultImg(id, authToken, 'banner', {
+              url: selectedBanner,
+            });
+            if (response.success) {
+              console.log(
+                CHANGE_PROFILE_SUBMIT_MESSAGE.defaultBannerImageUploadSuccess,
+              );
+              successBanner = true;
+              setSelectedBanner(null);
+            } else {
+              console.log(
+                CHANGE_PROFILE_SUBMIT_MESSAGE.defaultBannerImageUploadFail,
+              );
+            }
+          } catch (error) {
+            console.log(CHANGE_PROFILE_SUBMIT_MESSAGE.error, error);
+          }
+        }
+      }
+
+      if (currentMessage) {
         try {
-          const success = await updateProfileImage(id, authToken, 'banner', {
-            uri: selectedBanner,
-            name: 'banner.jpg',
-            type: 'image/jpeg',
+          const success = await changeMessage(id, authToken, {
+            message: currentMessage,
           });
 
           if (success) {
-            console.log('사용자 업로드 배너 이미지 업로드 성공');
-            successBanner = true;
-            setSelectedBanner(null);
+            console.log(CHANGE_PROFILE_SUBMIT_MESSAGE.messageChangeSuccess);
+            successMessage = true;
           } else {
-            console.log('배너 이미지 업로드 실패');
+            console.log(CHANGE_PROFILE_SUBMIT_MESSAGE.messageChangeFail);
           }
         } catch (error) {
-          console.log('에러 발생: ', error);
+          console.log(CHANGE_PROFILE_SUBMIT_MESSAGE.error, error);
         }
+      }
+
+      if (successProfile || successBanner || successMessage) {
+        setUploadSuccess(true);
       } else {
-        try {
-          const response = await sendDefaultImg(id, authToken, 'banner', {
-            url: selectedBanner,
-          });
-          if (response.success) {
-            console.log('배너 기본 이미지 업로드 성공');
-            successBanner = true;
-            setSelectedBanner(null);
-          } else {
-            console.log('배너 기본 이미지 업로드 실패');
-          }
-        } catch (error) {
-          console.log('error: ', error);
-        }
+        console.log(CHANGE_PROFILE_SUBMIT_MESSAGE.imageUploadFail);
       }
-    }
-    if (currentMessage) {
-      try {
-        const success = await changeMessage(id, authToken, {
-          message: currentMessage,
-        });
 
-        if (success) {
-          console.log('상태 메시지 변경 완료');
-          successMessage = true;
-        } else {
-          console.log('상태 메시지 변경 실패');
-        }
-      } catch (error) {
-        console.log('에러 발생: ', error);
-      }
+      setIsLoading(false);
     }
-    if (successProfile || successBanner || successMessage) {
-      setUploadSuccess(true);
-    } else {
-      console.log('이미지 업로드 실패');
-    }
-
-    setIsLoading(false);
   };
-
   return (
     <Box>
       <Button
@@ -137,7 +155,9 @@ const SaveButton: React.FC<SaveButtonProps> = ({
           style={SaveButtonStyles.signUpButtonGradient}
           start={{x: 0, y: 0}}
           end={{x: 1, y: 1}}>
-          <Text style={SaveButtonStyles.signUpButtonText}>저장하기</Text>
+          <Text style={SaveButtonStyles.signUpButtonText}>
+            {CHANGE_PROFILE_SUBMIT}
+          </Text>
         </LinearGradient>
       </Button>
     </Box>

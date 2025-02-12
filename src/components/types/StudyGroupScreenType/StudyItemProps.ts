@@ -1,4 +1,5 @@
 export type StudyItemProps = {
+  id: number;
   name: string;
   totalStudyTime: number;
   memberCount: number;

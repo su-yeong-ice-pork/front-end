@@ -1,21 +1,25 @@
 import {StyleSheet, Dimensions} from 'react-native';
+
 const {width, height} = Dimensions.get('window');
 import {COLOR} from '@/src/constants/styles/color/color';
+import {FONT} from '@/src/constants/styles/font/default-font.ts';
+
 export const ChangeMessageStyles = StyleSheet.create({
   inputContainer2: {
     marginTop: 0,
     paddingTop: height * 0.02,
-    marginBottom: height * 0.025,
+    height: height * 0.125,
   },
   textStyle: {
     color: '#838F8F',
     fontWeight: 'bold',
-    fontSize: width * 0.035,
-    marginBottom: 5,
+    fontSize: width * 0.04,
+    marginBottom: 7,
+    fontFamily: FONT,
   },
   inputBox: {
-    height: height * 0.06,
-    fontSize: 10,
+    height: height * 0.15,
+    fontSize: 12,
     backgroundColor: COLOR.WHITE,
     borderRadius: 6,
     paddingHorizontal: 10,
@@ -25,6 +29,12 @@ export const ChangeMessageStyles = StyleSheet.create({
   inputWrapper: {
     position: 'relative',
     justifyContent: 'center',
+    height: height * 0.058,
+    backgroundColor: COLOR.WHITE,
+    borderRadius: 6,
+    paddingHorizontal: width * 0.046,
+    marginBottom: 5,
+    alignItems: 'center',
   },
   resetButton: {
     position: 'absolute',
@@ -33,8 +43,8 @@ export const ChangeMessageStyles = StyleSheet.create({
     backgroundColor: COLOR.WHITE,
   },
   clearIcon: {
-    width: width * 0.04,
-    height: height * 0.02,
+    width: width * 0.05,
+    height: height * 0.025,
     borderRadius: 10,
   },
 });

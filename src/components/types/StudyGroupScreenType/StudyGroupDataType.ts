@@ -1,9 +1,5 @@
-export type StudyGroupData = {
-  name: string;
-  totalStudyTime: number;
-  memberCount: number;
-};
+import {Study} from '@/src/api/study/types';
 
 export type StudyGroupListProps = {
-  studyData: StudyGroupData[];
+  studyData: Study[];
 };

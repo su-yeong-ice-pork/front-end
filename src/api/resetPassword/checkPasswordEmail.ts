@@ -1,17 +1,11 @@
-// checkPasswordEmail.ts
-import apiClient from './axiosInstance';
+import apiClient from '../axiosInstance';
+import {CheckPasswordEmailData, CheckPasswordEmailResponse} from './types';
 
-export interface CheckPasswordEmailData {
-  name: string;
-  email: string;
-}
-
-export interface CheckPasswordEmailResponse {
-  success: boolean;
-  response: null;
-  error: null;
-}
-
+/**
+ * 이름(닉네임) & 이메일 검증
+ * POST: /members/auth
+ * Body: { name, email }
+ */
 const checkPasswordEmail = async (
   data: CheckPasswordEmailData,
 ): Promise<CheckPasswordEmailResponse> => {

@@ -1,24 +1,16 @@
 import React from 'react';
-import {View} from 'react-native';
-import {Box} from '@/components/ui/box';
+import {VStack,Box} from '@/components/ui/index.ts';
 import ProfileActionButton from './ProfileActionButton';
+import {BUTTON_TEXT} from "@/src/constants/Profile/ProfileAction.ts";
+import {ProfileActionStyles} from "@/src/components/ProfileAction/ProfileActionStyle.ts";
 
 const ProfileAction = () => {
   return (
-    <Box style={{paddingTop: 30, paddingBottom: 30}}>
-      <ProfileActionButton
-        imageType="changePassword"
-        text="비밀번호 변경하기"
-      />
-      <View
-        style={{
-          height: 2,
-          backgroundColor: '#D1D5DB',
-          width: '100%',
-        }}
-      />
-      <ProfileActionButton imageType="logoutIcon" text="로그아웃" />
-    </Box>
+    <VStack style={ProfileActionStyles.buttonContainer}>
+      <ProfileActionButton imageType="changePassword" text={BUTTON_TEXT.CHANGE_PASSWORD}/>
+      <Box style={ProfileActionStyles.separator} />
+      <ProfileActionButton imageType="logoutIcon" text={BUTTON_TEXT.LOGOUT}/>
+    </VStack>
   );
 };
 

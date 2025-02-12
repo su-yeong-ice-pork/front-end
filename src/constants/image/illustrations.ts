@@ -19,4 +19,5 @@ export const ILLUSTRATIONS = {
   TYPE_ONE: require('@/assets/images/illustration/typeOne.png'),
   TYPE_TWO: require('@/assets/images/illustration/typeTwo.png'),
   TYPE_THREE: require('@/assets/images/illustration/typeThree.png'),
+  CREATE_STUDY: require('@/assets/images/illustration/createStudy.png'),
 };

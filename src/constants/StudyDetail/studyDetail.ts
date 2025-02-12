@@ -1,5 +1,6 @@
 export const STUDY_DETAIL = {
   HEADER: '스터디',
+  ROOM: '의 스터디 룸',
   TITLE: '기록장 / 랭킹',
   RECORD: '기록장',
   RANKING: '랭킹',
