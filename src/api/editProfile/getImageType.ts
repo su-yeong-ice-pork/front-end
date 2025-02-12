@@ -11,3 +11,10 @@ export type ApiResponse = {
   };
   error: any;
 };
+
+export type UseDefaultImagesResult = {
+  defaultProfile: DefaultImg[] | null;
+  defaultBanner: DefaultImg[] | null;
+  isLoading: boolean;
+  error: string | null;
+};
