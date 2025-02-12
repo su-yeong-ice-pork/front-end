@@ -1,13 +1,9 @@
 import {useState, useEffect} from 'react';
-import {DefaultImg} from '../api/editProfile/getImageType';
+import {
+  DefaultImg,
+  UseDefaultImagesResult,
+} from '../api/editProfile/getImageType';
 import {GetDefaultImages} from '../api/editProfile/getImageAPI';
-
-type UseDefaultImagesResult = {
-  defaultProfile: DefaultImg[] | null;
-  defaultBanner: DefaultImg[] | null;
-  isLoading: boolean;
-  error: string | null;
-};
 
 const useDefaultImages = (
   authToken: string,
