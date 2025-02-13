@@ -8,16 +8,12 @@ import {Box} from '@/components/ui/box';
 import {SafeAreaView} from '@/components/ui/safe-area-view';
 import {ScrollView} from '@/components/ui/scroll-view';
 import StudyMemberList from '@/src/components/StudyDetail/StudyMemberList';
-import {RouteProp, useRoute} from '@react-navigation/native';
+import {useRoute} from '@react-navigation/native';
 import {useStudyDetail} from '@/src/hooks/useStudyDetail';
 import {useStudyParticipants} from '@/src/hooks/useStudyParticipants';
 import Loader from '@/src/components/Loader';
 import {Text} from '@/components/ui';
-
-type StudyDetailScreenRouteProp = RouteProp<
-  {StudyDetail: {studyId: number}},
-  'StudyDetail'
->;
+import {StudyDetailScreenRouteProp} from '@/src/components/types/StudyDetailType/StudyDetailType';
 
 const StudyDetailScreen = () => {
   const route = useRoute<StudyDetailScreenRouteProp>();

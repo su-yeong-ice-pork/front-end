@@ -44,3 +44,17 @@ export type GetStudyParticipantsResponse = {
   };
   error: string | null;
 };
+
+export type CreateStudyRequest = {
+  name: string;
+  goalMessage: string;
+  goalTime: number;
+};
+
+export type CreateStudyResponse = {
+  success: boolean;
+  response: {
+    inviteCode: string;
+  };
+  error: string | null;
+};
