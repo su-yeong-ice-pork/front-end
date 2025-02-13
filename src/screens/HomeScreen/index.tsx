@@ -45,7 +45,6 @@ const HomeScreen = () => {
   const [member, setMember] = useState<Member | null>(null);
   const [badges, setBadges] = useState<Badge[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState(false);
 
   const {data: memberData, error: memberDataError} = useQuery({
     queryKey: ['member'],
