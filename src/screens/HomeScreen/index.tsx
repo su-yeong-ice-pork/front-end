@@ -135,7 +135,9 @@ const HomeScreen = () => {
           contentContainerStyle={{paddingBottom: 80}}>
           {/* 상단 프로필 영역 */}
 
-          {memberData && <Profiles member={memberData} edit={false} back={false}/>}
+          {memberData && (
+            <Profiles member={memberData} edit={false} back={false} />
+          )}
 
           <View style={HomeScreenStyles.profileTextContainer}>
             <Badges badges={badgesData} styleType={'home'} />
