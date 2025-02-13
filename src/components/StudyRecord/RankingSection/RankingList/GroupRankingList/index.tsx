@@ -4,8 +4,9 @@ import {Box, HStack, Text, VStack} from '@/components/ui';
 import {RankingListStyles} from '../RankingListStyles.ts';
 import {LIST_TEXT} from '@/src/constants/Ranking/Ranking.ts';
 import {ICONS} from '@/src/constants/image/icons.ts';
+import {GroupRankingListProps} from '@/src/components/types/RankingType/RankingSectionType.ts';
 
-const GroupRankingList = ({rankingData}) => {
+const GroupRankingList: React.FC<GroupRankingListProps> = ({rankingData}) => {
   return (
     <ScrollView style={RankingListStyles.container}>
       {rankingData.map((item, index) => (

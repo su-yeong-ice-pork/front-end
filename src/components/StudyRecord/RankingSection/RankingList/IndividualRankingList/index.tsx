@@ -3,8 +3,11 @@ import {Image, ScrollView} from 'react-native';
 import {Box, HStack, Text, VStack} from '@/components/ui';
 import {RankingListStyles} from '../RankingListStyles.ts';
 import {LIST_TEXT} from '@/src/constants/Ranking/Ranking.ts';
+import {IndividualRankingListProps} from '@/src/components/types/RankingType/RankingSectionType.ts';
 
-const IndividualRankingList = ({rankingData}) => {
+const IndividualRankingList: React.FC<IndividualRankingListProps> = ({
+  rankingData,
+}) => {
   return (
     <ScrollView style={RankingListStyles.container}>
       {rankingData.map((item, index) => (
@@ -23,21 +26,17 @@ const IndividualRankingList = ({rankingData}) => {
             style={RankingListStyles.profileImage}
           />
           <VStack>
-            <Text style={RankingListStyles.nameText}>
-              {item.name}
-            </Text>
+            <Text style={RankingListStyles.nameText}>{item.name}</Text>
             <HStack>
               <Text style={RankingListStyles.titleText}>
-                {LIST_TEXT.TODAY_TOTAL_TIME}
+                {LIST_TEXT.TOTAL_TIME}
               </Text>
               <Text style={RankingListStyles.scoreText}>
                 {`${item.totalStudyTime}`}
               </Text>
             </HStack>
             <HStack>
-              <Text style={RankingListStyles.titleText}>
-                {LIST_TEXT.SCORE}
-              </Text>
+              <Text style={RankingListStyles.titleText}>{LIST_TEXT.SCORE}</Text>
               <Text style={RankingListStyles.scoreText}>
                 {` ${item.grassScore}`}
               </Text>
