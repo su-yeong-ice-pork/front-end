@@ -60,13 +60,9 @@ const InviteFriend: React.FC<InviteFriendProps> = ({isOpen, onClose}) => {
               {INVITE_FRIEND_MODAL.SUB_TITLE}
             </Text>
             <Box style={InviteFriendStyles.codeContainer}>
-              <Input style={InviteFriendStyles.input}>
-                <InputField
-                  style={InviteFriendStyles.inputField}
-                  value={code}
-                  onChangeText={text => setCode(text)}
-                />
-              </Input>
+              <Box style={InviteFriendStyles.input}>
+                <Text style={InviteFriendStyles.inputField}>{code}</Text>
+              </Box>
               <Button
                 onPress={handleCodePaste}
                 style={InviteFriendStyles.copyButton}>

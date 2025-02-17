@@ -51,15 +51,17 @@ export const InviteFriendStyles = StyleSheet.create({
   input: {
     flex: 1,
     height: 40,
-    fontSize: 20,
-    fontWeight: 'bold',
+    justifyContent: 'center',
   },
   inputField: {
-    fontSize: 15,
+    fontSize: 20,
+    fontWeight: 'bold',
     color: '#5E5E5E',
   },
   copyButton: {
     backgroundColor: `${COLOR.MAIN}`,
+    position: 'absolute',
+    right: 0,
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 20,
