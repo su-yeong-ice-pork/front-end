@@ -8,7 +8,7 @@ export const StudyGroupSectionStyles = StyleSheet.create({
   },
   main: {
     paddingTop: 30,
-    paddingBottom: 20,
+    marginBottom: 20,
     alignItems: 'center',
   },
 });

@@ -9,4 +9,8 @@ export const COLOR = {
     START: {x: 0, y: 0},
     END: {x: 0, y: 1},
   },
+  GRADIENT_2: {
+    START: {x: 0.9, y: 0},
+    END: {x: 0, y: 0},
+  },
 };

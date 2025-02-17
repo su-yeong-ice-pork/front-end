@@ -5,7 +5,6 @@ import {StudyGroupSectionStyles} from './StudyGroupSectionStyles';
 
 import StudyList from './StudyList/index';
 import StudyHeader from './StudyHeader/index';
-
 import {Box} from '@/components/ui/box';
 import {ScrollView} from '@/components/ui/scroll-view';
 

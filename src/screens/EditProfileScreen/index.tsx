@@ -1,8 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {SafeAreaView} from 'react-native';
-import {Box} from '@/components/ui';
-import {Text} from '@/components/ui';
-import {Button} from '@/components/ui/button';
+import {Box, Text} from '@/components/ui';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Header from '../../components/Header';
 import Loader from '../../components/Loader';
@@ -16,6 +14,13 @@ import authState from '../../recoil/authAtom';
 import ChangeMessage from '../../components/EditProfileSection/ChangeMessage';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {EditProfileScreenStyles} from './EditProfileScreenStyles';
+import {
+  LOAD_PROFILE_MESSAGE,
+  TITLE,
+  TITLE_MESSAGE,
+} from '@/src/constants/EditProfile/Message';
+import {FONT} from '@/src/constants/styles/font/default-font.ts';
+
 const fetchDefaultImages = async (
   authToken: string,
   id: string,
@@ -26,20 +31,20 @@ const fetchDefaultImages = async (
     const defaultProfileImgs = await GetDefaultImages(authToken, id, 'profile');
     if (defaultProfileImgs) {
       setDefaultProfile(defaultProfileImgs);
-      console.log('프로필 이미지를 불러오는데 성공했습니다');
+      console.log(LOAD_PROFILE_MESSAGE.loadProfileImageSuccess);
     } else {
-      console.log('프로필 이미지를 불러오는 데 실패했습니다.');
+      console.log(LOAD_PROFILE_MESSAGE.loadProfileImageFail);
     }
 
     const defaultBannerImgs = await GetDefaultImages(authToken, id, 'banner');
     if (defaultBannerImgs) {
       setDefaultBanner(defaultBannerImgs);
-      console.log('배너 이미지를 불러오는 데 성공했습니다.');
+      console.log(LOAD_PROFILE_MESSAGE.loadBannerImageSuccess);
     } else {
-      console.log('배너 이미지를 불러오는 데 실패했습니다.');
+      console.log(LOAD_PROFILE_MESSAGE.loadBannerImageFail);
     }
   } catch (error) {
-    console.error('데이터를 불러오는 중 오류가 발생했습니다.', error);
+    console.error(LOAD_PROFILE_MESSAGE.dataFetchError, error);
   }
 };
 
@@ -94,7 +99,7 @@ const EditProfileScreen = ({route}) => {
   return (
     <>
       <SafeAreaView style={EditProfileScreenStyles.safeArea}>
-        <Header Title={'프로필/배너 꾸미기'} />
+        <Header Title={TITLE} />
         <KeyboardAwareScrollView
           contentContainerStyle={EditProfileScreenStyles.container}
           enableOnAndroid={true}
@@ -102,11 +107,12 @@ const EditProfileScreen = ({route}) => {
           keyboardShouldPersistTaps="handled">
           <Box style={EditProfileScreenStyles.titleContainer}>
             <Text style={EditProfileScreenStyles.titleText}>
-              나의{' '}
-              <Text style={{color: '#00AAB0', fontWeight: '800'}}>
-                잔디 프로필
+              {TITLE_MESSAGE.MESSAGE_1}
+              <Text
+                style={{color: '#00AAB0', fontWeight: '800', fontFamily: FONT}}>
+                {TITLE_MESSAGE.MESSAGE_2}
               </Text>
-              을{'\n'}원하는 대로 예쁘게 꾸며봐요!
+              {TITLE_MESSAGE.MESSAGE_3}
             </Text>
           </Box>
 

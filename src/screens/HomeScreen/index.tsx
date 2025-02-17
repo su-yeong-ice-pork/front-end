@@ -6,18 +6,15 @@ import {
   Text,
   TouchableOpacity,
   Dimensions,
-  StyleSheet,
   ScrollView,
   SafeAreaView,
   Modal,
 } from 'react-native';
 import {HomeScreenStyles} from './HomeScreenStyles';
 import BottomBar from '@/src/components/BottomBar';
-const {width, height} = Dimensions.get('window');
 import MonthCalendar from '@/src/components/Calendars/MonthCalendar';
 import Loader from '@/src/components/Loader';
 import {Member} from '@/src/api/profile';
-import {Badge} from '@/components/ui/badge';
 import {postGrass} from '@/src/api/grass';
 import {
   requestLocationPermission,
@@ -34,10 +31,12 @@ import authState from '../../recoil/authAtom';
 import AuthButtons from '../../components/AuthButtons';
 import {getUserDataApi} from '../../api/user/getUserDataApi';
 import {getBadgesApi} from '../../api/badge/getBadgesApi';
+import {getRecordDataApi} from '@/src/api/record/getRecordDataApi';
 import {useQuery} from '@tanstack/react-query';
 import Badges from '../../components/Badges';
 import Profiles from '../../components/Profile';
 import Freeze from '../../components/Freeze';
+import {Record} from '@/src/api/record/getRecordDataType';
 const HomeScreen = () => {
   const authInfo = useRecoilValue(authState);
   const [user, setUser] = useRecoilState(userState);
@@ -46,7 +45,6 @@ const HomeScreen = () => {
   const [member, setMember] = useState<Member | null>(null);
   const [badges, setBadges] = useState<Badge[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState(false);
 
   const {data: memberData, error: memberDataError} = useQuery({
     queryKey: ['member'],
@@ -64,7 +62,7 @@ const HomeScreen = () => {
       setMember(memberData);
       setUser(memberData);
     } else if (memberDataError) {
-      setModalMessage('ÇÁ·ÎÇÊÀ» ºÒ·¯¿À´Â µ¥ ½ÇÆĞÇß½À´Ï´Ù.');
+      setModalMessage('í”„ë¡œí•„ì„ ë¶ˆëŸ¬ì˜¤ëŠ” ë° ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.');
       setModalVisible(true);
     }
   }, [memberData, memberDataError]);
@@ -73,13 +71,13 @@ const HomeScreen = () => {
     if (badgesData) {
       setBadges(badgesData);
     } else if (badgesDataError) {
-      setModalMessage('¹îÁö¸¦ ºÒ·¯¿À´Â µ¥ ½ÇÆĞÇß½À´Ï´Ù.');
+      setModalMessage('ë±ƒì§€ë¥¼ ë¶ˆëŸ¬ì˜¤ëŠ” ë° ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.');
       setModalVisible(true);
     }
   }, [badgesData, badgesDataError]);
 
   const handleNotUseableModal = () => {
-    setModalMessage('Ãß°¡ ¿¹Á¤ÀÎ ±â´ÉÀÔ´Ï´Ù.');
+    setModalMessage('ì¶”ê°€ ì˜ˆì •ì¸ ê¸°ëŠ¥ì…ë‹ˆë‹¤.');
     setModalVisible(true);
     return;
   };
@@ -87,7 +85,7 @@ const HomeScreen = () => {
     setIsLoading(true);
     const hasPermission = await requestLocationPermission();
     if (!hasPermission) {
-      setModalMessage('À§Ä¡ ±ÇÇÑÀÌ ÇÊ¿äÇÕ´Ï´Ù.');
+      setModalMessage('ìœ„ì¹˜ ê¶Œí•œì´ í•„ìš”í•©ë‹ˆë‹¤.');
       setModalVisible(true);
       setIsLoading(false);
       return;
@@ -106,24 +104,24 @@ const HomeScreen = () => {
       if (isInside || user.name === 'ADMIN') {
         const token = authInfo.authToken;
         if (!token) {
-          setModalMessage('ÀÎÁõ ÅäÅ«ÀÌ ¾ø½À´Ï´Ù.');
+          setModalMessage('ì¸ì¦ í† í°ì´ ì—†ìŠµë‹ˆë‹¤.');
           setModalVisible(true);
           setIsLoading(false);
           return;
         }
         const response = await postGrass(token);
         if (response.success) {
-          setModalMessage('ÀÎÁõ¿¡ ¼º°øÇß½À´Ï´Ù!');
+          setModalMessage('ì¸ì¦ì— ì„±ê³µí–ˆìŠµë‹ˆë‹¤!');
         } else {
           setModalMessage(`${response.error.error.message}`);
         }
       } else {
-        setModalMessage('¼­ºñ½º Áö¿ªÀÌ ¾Æ´Õ´Ï´Ù.');
+        setModalMessage('ì„œë¹„ìŠ¤ ì§€ì—­ì´ ì•„ë‹™ë‹ˆë‹¤.');
       }
       setModalVisible(true);
     } catch (error) {
-      console.warn('À§Ä¡ °¡Á®¿À±â ½ÇÆĞ:', error);
-      setModalMessage('À§Ä¡ °¡Á®¿À±â¿¡ ½ÇÆĞÇß½À´Ï´Ù.');
+      console.warn('ìœ„ì¹˜ ê°€ì ¸ì˜¤ê¸° ì‹¤íŒ¨:', error);
+      setModalMessage('ìœ„ì¹˜ ê°€ì ¸ì˜¤ê¸°ì— ì‹¤íŒ¨í–ˆìŠµë‹ˆë‹¤.');
       setModalVisible(true);
     } finally {
       setIsLoading(false);
@@ -135,26 +133,23 @@ const HomeScreen = () => {
         <ScrollView
           style={HomeScreenStyles.container}
           contentContainerStyle={{paddingBottom: 80}}>
-          {/* »ó´Ü ÇÁ·ÎÇÊ ¿µ¿ª */}
+          {/* ìƒë‹¨ í”„ë¡œí•„ ì˜ì—­ */}
 
-          <Profiles />
+          {memberData && <Profiles member={memberData} edit={false} back={false}/>}
 
           <View style={HomeScreenStyles.profileTextContainer}>
-            <Badges badges={badgesData} />
+            <Badges badges={badgesData} styleType={'home'} />
           </View>
 
           <AuthButtons />
 
-          {/* º¸À¯ ÇÁ¸®Áî ¹× ÇöÀç ÀÏ¼ö */}
+          {/* ë³´ìœ  í”„ë¦¬ì¦ˆ ë° í˜„ì¬ ì¼ìˆ˜ */}
           <Freeze />
 
-          {/* ÇöÀç ÀÏ¼ö Ç¥½Ã */}
-
-          {/* ´Ş·Â ºÎºĞ */}
           <View>{member && <MonthCalendar userId={member.id} />}</View>
         </ScrollView>
         <BottomBar />
-        {/* ÀÎÁõ °á°ú ¸ğ´Ş */}
+        {/* ì¸ì¦ ê²°ê³¼ ëª¨ë‹¬ */}
         <Modal
           animationType="slide"
           transparent={true}
@@ -171,7 +166,7 @@ const HomeScreen = () => {
               <TouchableOpacity
                 style={HomeScreenStyles.closeButton}
                 onPress={() => setModalVisible(!modalVisible)}>
-                <Text style={HomeScreenStyles.closeButtonText}>´İ±â</Text>
+                <Text style={HomeScreenStyles.closeButtonText}>ë‹«ê¸°</Text>
               </TouchableOpacity>
             </View>
           </TouchableOpacity>

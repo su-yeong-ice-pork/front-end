@@ -9,13 +9,14 @@ import LandingScreen from './src/screens/LandingScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
 import StudyScreen from './src/screens/StudyScreen';
 import StudyDetailScreen from './src/screens/StudyDetailScreen/index';
+import StudyRecordScreen from './src/screens/StudyRecordScreen/index.tsx';
 import AlarmScreen from './src/screens/AlarmScreen/index';
 import HomeScreen from './src/screens/HomeScreen';
-import StudyRecordScreen from './src/screens/StudyRecordScreen';
 import FindPassword from './src/screens/FindPasswordScreen';
-import ProfileScreen from './src/screens/ProfileScreen';
+import ProfileScreen from './src/screens/ProfileScreen/index.tsx';
 import EditProfileScreen from './src/screens/EditProfileScreen';
 import FriendsProfile from './src/screens/FriendsProfileScreen';
+import CreateStudyScreen from './src/screens/CreateStudyScreen';
 import SplashScreen from 'react-native-splash-screen';
 import LoginScreen from './src/screens/LoginScreen/index.tsx';
 import {
@@ -62,6 +63,7 @@ const App = () => {
               <Stack.Screen name="Profile" component={ProfileScreen} />
               <Stack.Screen name="EditProfile" component={EditProfileScreen} />
               <Stack.Screen name="FriendsProfile" component={FriendsProfile} />
+              <Stack.Screen name="CreateStudy" component={CreateStudyScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </RecoilRoot>

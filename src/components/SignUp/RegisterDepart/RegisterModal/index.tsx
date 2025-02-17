@@ -18,6 +18,9 @@ import {RegisterModalStyles} from './RegisterModalStyles';
 import {RegisterModalProps} from '@/src/components/types/SignUpType/RegisterModal';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
+import {useRecoilState} from 'recoil';
+import signUpState from '@/src/recoil/signUpAtom';
+
 const RegisterModal = ({
   selectedCollege,
   setSelectedCollege,
@@ -28,6 +31,7 @@ const RegisterModal = ({
 }: RegisterModalProps) => {
   const [openCollege, setOpenCollege] = useState<boolean>(false);
   const [openDepartment, setOpenDepartment] = useState<boolean>(false);
+  const [signUp, setSignUp] = useRecoilState(signUpState);
 
   const [colleges, setColleges] = useState(
     collegeData.map(item => ({label: item.college, value: item.college})),
@@ -46,6 +50,11 @@ const RegisterModal = ({
 
   const confirmSelection = () => {
     if (selectedCollege && selectedDepartment) {
+      setSignUp({
+        ...signUp,
+        college: selectedCollege,
+        department: selectedDepartment,
+      });
       setDepartModalVisible(false);
     } else {
       alert(DepartModal.MESSAGE_SELECT1);

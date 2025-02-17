@@ -7,6 +7,7 @@ export const PATH_NAME = {
   PROFILE: 'Profile',
   FRIENDSPROFILE: 'FriendsProfile',
   EDITPROFILE: 'EditProfile',
+  CREATE_STUDY: 'CreateStudy',
 };
 
 export const IMAGE_PATH = {

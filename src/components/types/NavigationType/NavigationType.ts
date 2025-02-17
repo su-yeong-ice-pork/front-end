@@ -14,6 +14,7 @@ export type RootStackParamList = {
   Profile: undefined;
   EditProfile: undefined;
   FriendsProfile: undefined;
+  CreateStudy: undefined;
 };
 
 export type RootStackNavigationProp =

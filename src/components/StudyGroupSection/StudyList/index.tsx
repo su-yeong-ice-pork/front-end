@@ -12,11 +12,12 @@ const StudyList: React.FC<StudyGroupListProps> = ({studyData}) => {
       {studyData.map((study, index) => (
         <Box key={index}>
           <StudyItem
-            name={study.name}
+            name={study.studyName}
+            id={study.id}
             totalStudyTime={study.totalStudyTime}
             memberCount={study.memberCount}
           />
-          {index < studyData.length - 1 && (
+          {index < studyData.length && (
             <Box style={StudyListStyles.separator} />
           )}
         </Box>

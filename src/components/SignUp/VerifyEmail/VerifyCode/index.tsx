@@ -1,63 +1,34 @@
-import React, {useState} from 'react';
+import React from 'react';
+import {TextInput} from 'react-native';
 import {Box} from '@/components/ui/box';
 import {Text} from '@/components/ui/text';
-import {TextInput} from 'react-native';
-import {VerifyCodeStyles} from './VerifyCodeStyles';
-import ErrorMessage from '../ErrorMessage';
 import {Button, ButtonText} from '@/components/ui/button';
+import {VerifyCodeStyles} from './VerifyCodeStyles';
+import {VerifyCodeProps} from '@/src/components/types/SignUpType/VerifyEmail';
+import {formatTime} from '@/src/utils/FormatTime';
 
-import {
-  VerifyCodeProps,
-  SecondsProps,
-} from '@/src/components/types/SignUpType/VerifyEmail';
-import {
-  VERIFYCODE,
-  VERIFICATION,
-  VerifyCodeInputBox,
-} from '@/src/constants/SignUp/VerifyEmail';
-
-const VerifyCode = ({timeLeft = 1000}: VerifyCodeProps) => {
-  const [verificationCode, setVerificationCode] = useState<string>(
-    VERIFICATION.DEFAULT_CODE,
-  );
-  const [showError, setShowError] = useState<Boolean>(true);
-
-  const formatTime = ({seconds}: SecondsProps) => {
-    const minutes = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(
-      2,
-      '0',
-    )}`;
-  };
-
-  const verifyCode = () => {
-    if (!verificationCode) {
-      setShowError(true);
-      return;
-    }
-    setShowError(false);
-  };
-
+const VerifyCode: React.FC<VerifyCodeProps> = ({
+  timeLeft,
+  code,
+  setCode,
+  onVerify,
+}) => {
   return (
     <Box style={VerifyCodeStyles.inputContainer}>
       <Box style={VerifyCodeStyles.inputRow}>
         <TextInput
           style={VerifyCodeStyles.inputText}
-          placeholder={VerifyCodeInputBox.PLACEHOLDER}
-          value={verificationCode}
-          onChangeText={text => {
-            setVerificationCode(text);
-          }}
+          placeholder="인증 코드를 입력하세요"
+          value={code}
+          onChangeText={setCode}
         />
         <Text style={VerifyCodeStyles.timerText}>{formatTime(timeLeft)}</Text>
-        <Button style={VerifyCodeStyles.verifyButton} onPress={verifyCode}>
+        <Button style={VerifyCodeStyles.verifyButton} onPress={onVerify}>
           <ButtonText style={VerifyCodeStyles.verifyButtonText}>
             확인
           </ButtonText>
         </Button>
       </Box>
-      {showError && <ErrorMessage errorMessage={VERIFYCODE.ERRORMESSAGE} />}
     </Box>
   );
 };

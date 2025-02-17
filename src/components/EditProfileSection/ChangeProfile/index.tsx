@@ -1,12 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {Image, ScrollView} from 'react-native';
-import {Text} from '@/components/ui/text';
-import {Box} from '@/components/ui/box';
+import {Text, Box} from '@/components/ui';
 import {Button} from '@/components/ui/button';
 import {EditProfileScreenStyles} from './ChangeProfileStyles';
 import {ICONS} from '@/src/constants/image/icons';
 import {STYLE} from '@/src/constants/styles/style/style';
 import {ChangeProfileImageProps} from '@/src/constants/EditProfile/ChangeProfile';
+import {CHANGE_IMAGE_TITLE} from '@/src/constants/EditProfile/Message';
+
 const ChangeProfileImage: React.FC<ChangeProfileImageProps> = ({
   defaultImages,
   customImages,
@@ -16,7 +17,9 @@ const ChangeProfileImage: React.FC<ChangeProfileImageProps> = ({
 }) => {
   return (
     <Box style={EditProfileScreenStyles.changeContainer}>
-      <Text style={EditProfileScreenStyles.textStyle}>프로필 사진 변경</Text>
+      <Text style={EditProfileScreenStyles.textStyle}>
+        {CHANGE_IMAGE_TITLE}
+      </Text>
       <Box style={EditProfileScreenStyles.imageBox}>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           <Button
