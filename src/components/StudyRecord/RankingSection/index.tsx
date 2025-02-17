@@ -1,38 +1,55 @@
-import React, {useState} from 'react';
-import {Box} from '@/components/ui/box';
-import {Text} from '@/components/ui/text';
+import React from 'react';
+import {ActivityIndicator, Image} from 'react-native';
+import {Box, HStack, Text, VStack} from '@/components/ui';
 import {RankingSectionStyles} from './RankingSectionStyles';
-import {Image} from 'react-native';
-import {ICONS} from '@/src/constants/image/icons.ts';
+import {ICONS} from '@/src/constants/image/icons';
 import IndividualRankingList from './RankingList/IndividualRankingList';
 import GroupRankingList from './RankingList/GroupRankingList';
-import {DummyGroupRankingData} from '@/src/constants/Ranking/Dummy/GroupRankingList.ts';
-import {DummyIndividualRankingData} from '@/src/constants/Ranking/Dummy/IndividualRankingList.ts';
-import {HStack, VStack} from '@/components/ui';
 import ChoiceRankingButton from '@/src/components/StudyRecord/RankingSection/ChoiceRankingButton';
-import {DATE, NO_DATA} from '@/src/constants/Ranking/Ranking.ts';
+import {DATE, NO_DATA} from '@/src/constants/Ranking/Ranking';
+import {useIndividualRanking} from '@/src/hooks/rankings/useIndividualRanking';
+import {useGroupRanking} from '@/src/hooks/rankings/useGroupRanking';
+import {useRankingSectionForm} from '@/src/hooks/rankings/useRankingSection';
 
 const RankingSection = () => {
-  const [rankingType, setRankingType] = useState<'individual' | 'group'>(
-    'individual',
+  const {
+    data: individualData,
+    isLoading: isIndividualLoading,
+    error: individualError,
+  } = useIndividualRanking();
+
+  const {
+    data: groupData,
+    isLoading: isGroupLoading,
+    error: groupError,
+  } = useGroupRanking();
+
+  const {rankingType, toggleRanking, month, day} = useRankingSectionForm(
+    individualData,
+    groupData,
   );
 
-  // API 연결 필요
-  const individualRankingData = DummyIndividualRankingData;
-  const groupRankingData = DummyGroupRankingData;
-
-  const date =
-    rankingType === 'individual'
-      ? individualRankingData.date
-      : groupRankingData.date;
-
-  const [month, day] = date.split(/월|일/).filter(Boolean);
-
-  const toggleRanking = () => {
-    setRankingType(prevType =>
-      prevType === 'individual' ? 'group' : 'individual',
+  if (
+    (rankingType === 'individual' && isIndividualLoading) ||
+    (rankingType === 'group' && isGroupLoading)
+  ) {
+    return (
+      <Box style={RankingSectionStyles.container}>
+        <ActivityIndicator size="large" />
+      </Box>
     );
-  };
+  }
+
+  if (
+    (rankingType === 'individual' && individualError) ||
+    (rankingType === 'group' && groupError)
+  ) {
+    return (
+      <Box style={RankingSectionStyles.container}>
+        <Text>Error: {(individualError || groupError)?.message}</Text>
+      </Box>
+    );
+  }
 
   return (
     <Box style={RankingSectionStyles.container}>
@@ -49,7 +66,6 @@ const RankingSection = () => {
             <Text style={RankingSectionStyles.dateText}>{DATE.DAY}</Text>
           </Text>
         </HStack>
-
         <ChoiceRankingButton
           rankingType={rankingType}
           toggleRanking={toggleRanking}
@@ -57,13 +73,13 @@ const RankingSection = () => {
       </VStack>
 
       {rankingType === 'individual' ? (
-        individualRankingData ? (
-          <IndividualRankingList rankingData={individualRankingData.ranking} />
+        individualData && individualData.ranking.length > 0 ? (
+          <IndividualRankingList rankingData={individualData.ranking} />
         ) : (
           <Text>{NO_DATA}</Text>
         )
-      ) : groupRankingData ? (
-        <GroupRankingList rankingData={groupRankingData.ranking} />
+      ) : groupData && groupData.ranking.length > 0 ? (
+        <GroupRankingList rankingData={groupData.ranking} />
       ) : (
         <Text>{NO_DATA}</Text>
       )}
