@@ -21,7 +21,7 @@ import {InviteFriendProps} from '../types/InviteFriendType/InviteFriend';
 
 const InviteFriend: React.FC<InviteFriendProps> = ({isOpen, onClose}) => {
   if (!isOpen) return null;
-  const [code, setCode] = useState<string>('');
+  const [code, setCode] = useState<string>('ABCD');
 
   const handleCodePaste = async () => {
     try {

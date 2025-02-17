@@ -57,11 +57,12 @@ export const InviteFriendStyles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#5E5E5E',
+    padding: 5,
   },
   copyButton: {
     backgroundColor: `${COLOR.MAIN}`,
     position: 'absolute',
-    right: 0,
+    right: 5,
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 20,
