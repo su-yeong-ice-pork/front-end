@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import DashLine from '../../DashLine';
 
 import {StudyDetailHeaderStyles} from './StudyDetailHeaderStyles';
 import {StudyDetailHeaderProps} from '@/src/components/types/StudyDetailType/StudyDetailType';
+import InviteFriend from '../../InviteFriend';
 
 import {Box} from '@/components/ui/box';
 
@@ -12,8 +13,21 @@ import {ICONS} from '@/src/constants/image/icons';
 import {Button} from '@/components/ui/button';
 import {Image} from '@/components/ui/image';
 import {STUDY_DETAIL} from '@/src/constants/StudyDetail/studyDetail';
+import {useSafeAreaEnv} from 'react-native-css-interop/dist/runtime';
 
-const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyDetail}) => {
+//GET: /regular-studies/{studyId} 더미 데이터
+const studyDetail = {
+  id: 1,
+  studyName: 'CPA 메이트',
+  goalMessage: 'IT 개발 목적 동아리 모임',
+  goalTime: 145,
+  totalStudyTime: 40,
+  inviteCode: 'DJKS123',
+};
+
+const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyId}) => {
+  const [showModal, setShowModal] = useState<boolean>(false);
+
   return (
     <>
       <Box style={StudyDetailHeaderStyles.studyHeader}>
@@ -46,7 +60,7 @@ const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyDetail}) => {
         <Button
           style={StudyDetailHeaderStyles.addMemberButton}
           onPress={() => {
-            /* 구성원 추가 기능 */
+            setShowModal(true);
           }}>
           <Image
             source={ICONS.WHITE_USERS}
@@ -54,10 +68,13 @@ const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyDetail}) => {
             alt={STUDY_DETAIL.HEADER}
           />
           <Text style={StudyDetailHeaderStyles.addMemberButtonText}>
-            구성원 추가
+            친구 초대하기
           </Text>
         </Button>
       </Box>
+      {showModal && (
+        <InviteFriend isOpen={showModal} onClose={() => setShowModal(false)} />
+      )}
     </>
   );
 };
