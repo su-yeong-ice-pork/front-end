@@ -18,40 +18,43 @@ const useYearGrass = (): UseYearGrassReturn => {
   const user = useRecoilValue(userState);
   const authInfo = useRecoilValue(authState);
 
-  // 2024년도 데이터
+  const currentYear = new Date().getFullYear();
+  const previousYear = currentYear - 1;
+
   const {
-    data: data2024,
-    isLoading: loading2024,
-    error: error2024,
+    data: dataPrevYear,
+    isLoading: loadingPrevYear,
+    error: errorPrevYear,
   } = useQuery({
-    queryKey: ['yearGrass', user?.id, 2024],
-    queryFn: () => getYearGrassApi(user!.id, 2024, authInfo!.authToken),
+    queryKey: ['yearGrass', user?.id, previousYear],
+    queryFn: () => getYearGrassApi(user!.id, previousYear, authInfo!.authToken),
     enabled: !!user && !!authInfo?.authToken,
   });
 
-  // 2025년도 데이터
   const {
-    data: data2025,
-    isLoading: loading2025,
-    error: error2025,
+    data: dataCurrYear,
+    isLoading: loadingCurrYear,
+    error: errorCurrYear,
   } = useQuery({
-    queryKey: ['yearGrass', user?.id, 2025],
-    queryFn: () => getYearGrassApi(user!.id, 2025, authInfo!.authToken),
+    queryKey: ['yearGrass', user?.id, currentYear],
+    queryFn: () => getYearGrassApi(user!.id, currentYear, authInfo!.authToken),
     enabled: !!user && !!authInfo?.authToken,
   });
 
   useEffect(() => {
-    // 두 해의 데이터가 모두 존재할 때 통합
-    if (data2024 && data2025) {
-      // 두 배열을 합쳐서 저장
-      setGrass([...data2024, ...data2025]);
+    if (dataPrevYear && dataCurrYear) {
+      setGrass([...dataPrevYear, ...dataCurrYear]);
+    } else if (dataPrevYear && !dataCurrYear) {
+      setGrass([...dataPrevYear]);
+    } else if (!dataPrevYear && dataCurrYear) {
+      setGrass([...dataCurrYear]);
     }
-  }, [data2024, data2025, setGrass]);
+  }, [dataPrevYear, dataCurrYear, setGrass]);
 
   return {
     grass,
-    isLoading: loading2024 || loading2025,
-    error: error2024 || error2025,
+    isLoading: loadingPrevYear || loadingCurrYear,
+    error: errorPrevYear || errorCurrYear,
   };
 };
 
