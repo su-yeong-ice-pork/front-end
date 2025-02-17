@@ -3,6 +3,7 @@ import {COLOR} from '@/src/constants/styles/color/color';
 import {FONT} from '@/src/constants/styles/font/default-font';
 
 export const SelectDateStyles = StyleSheet.create({
+
   container: {
     width: '100%',
     justifyContent: 'space-between',
@@ -38,11 +39,11 @@ export const SelectDateStyles = StyleSheet.create({
     color: COLOR.MAIN,
   },
   selectedItemContainerStyle: {
-    backgroundColor: '#f0f0f0', // 선택된 항목의 배경색
-    borderRadius: 5, // 선택된 항목의 테두리 반경
+    backgroundColor: '#f0f0f0',
+    borderRadius: 5,
   },
   selectedItemLabelStyle: {
-    color: COLOR.MAIN, // 선택된 항목의 텍스트 색상
-    fontWeight: 'bold', // 선택된 항목의 텍스트 두께
+    color: COLOR.MAIN,
+    fontWeight: 'bold',
   },
 });
