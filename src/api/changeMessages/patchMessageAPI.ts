@@ -1,15 +1,5 @@
-// changeMessage.ts
-import apiClient from './axiosInstance';
-
-export interface changeMessageData {
-  message: string;
-}
-
-export interface changeMessageResponse {
-  success: boolean;
-  response: null;
-  error: null;
-}
+import apiClient from '../axiosInstance';
+import {changeMessageData, changeMessageResponse} from './patchMessageType';
 
 const changeMessage = async (
   id: number,
@@ -28,7 +18,7 @@ const changeMessage = async (
     );
     return response.data;
   } catch (error: any) {
-    throw new Error('ì—ëŸ¬ê°€ ë°œìƒí–ˆìŠµë‹ˆë‹¤.');
+    throw new Error('¿¡·¯°¡ ¹ß»ıÇß½À´Ï´Ù.');
   }
 };
 
