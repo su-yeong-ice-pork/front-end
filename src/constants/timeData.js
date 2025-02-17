@@ -1,5 +1,4 @@
 export const timeData = [
-  {hour: '05', minute: ['30']},
   {hour: '06', minute: ['00', '30']},
   {hour: '07', minute: ['00', '30']},
   {hour: '08', minute: ['00', '30']},
