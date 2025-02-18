@@ -58,7 +58,7 @@ const FriendsProfile = () => {
             <FriendsLeaveButton />
           </Box>
 
-          <FriendsMessage />
+          <FriendsMessage otherMember={user} />
 
           <Box style={FriendsProfileScreenStyles.badgeContainer}>
             <Badges badges={badges} styleType="profile" />
@@ -76,7 +76,6 @@ const FriendsProfile = () => {
         </Box>
       </ScrollView>
       <BottomBar />
-      {/* 모달이나 에러 처리 UI를 추가할 수 있습니다. */}
       {modalVisible && (
         <View>
           <Text>{modalMessage}</Text>
