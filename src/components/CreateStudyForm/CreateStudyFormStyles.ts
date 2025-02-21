@@ -6,8 +6,8 @@ const {height} = Dimensions.get('window');
 export const CreateStudyFormStyles = StyleSheet.create({
   fullContainer: {
     width: '100%',
-    height: '100%',
     backgroundColor: '#1B9DC1',
+    paddingBottom: height * 0.2,
   },
 
   inputContainer: {
