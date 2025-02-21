@@ -12,7 +12,7 @@ export const deleteFriendApi = async (
 ): Promise<null> => {
   try {
     if (!authToken) {
-      console.error('ÅäÅ«ÀÌ ¾ø½À´Ï´Ù. ·Î±×ÀÎÀÌ ÇÊ¿äÇÕ´Ï´Ù.');
+      console.error('í† í°ì´ ì—†ìŠµë‹ˆë‹¤. ë¡œê·¸ì¸ì´ í•„ìš”í•©ë‹ˆë‹¤.');
       return null;
     }
     const response = await apiClient.delete<DeleteFriendApiResponse>(
@@ -27,11 +27,11 @@ export const deleteFriendApi = async (
     if (response.data.success) {
       return response.data.response;
     } else {
-      console.error('API ¿¡·¯:', response.data.error);
+      console.error('API ì—ëŸ¬:', response.data.error);
       return null;
     }
   } catch (error) {
-    console.error('³×Æ®¿öÅ© ¿¡·¯:', error);
+    console.error('ë„¤íŠ¸ì›Œí¬ ì—ëŸ¬:', error);
     return null;
   }
 };
