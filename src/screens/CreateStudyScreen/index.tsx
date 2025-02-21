@@ -10,9 +10,9 @@ import CreateStudyForm from '@/src/components/CreateStudyForm';
 const CreateStudyScreen = ({}) => {
   return (
     <SafeAreaView style={CreateStudyScreenStyles.safeArea}>
-      <ScrollView>
       <Header Title={TITLE} />
-      <CreateStudyForm/>
+      <ScrollView style={CreateStudyScreenStyles.scrollView}>
+        <CreateStudyForm />
       </ScrollView>
       <BottomBar />
     </SafeAreaView>
