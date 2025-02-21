@@ -5,7 +5,10 @@ import BottomBar from '../../components/BottomBar/index';
 import NotificationList from '../../components/AlarmScreenSection/NotificationList';
 
 import {AlarmScreenStyles} from './AlramScreenStyles';
-import {DummyNotification} from '../../constants/Alarm/Dummy';
+import {
+  DummyFriendNotification,
+  DummyNotification,
+} from '../../constants/Alarm/Dummy';
 
 import {
   ALARM_TYPE,
@@ -27,10 +30,16 @@ const AlarmScreen = () => {
             <NotificationList
               title={ALARM_TYPE.TODAY}
               notifications={DummyNotification.filter(item => item.isToday)}
+              friendRequests={DummyFriendNotification.filter(
+                item => item.isToday,
+              )}
             />
             <NotificationList
               title={ALARM_TYPE.PREV}
               notifications={DummyNotification.filter(item => !item.isToday)}
+              friendRequests={DummyFriendNotification.filter(
+                item => !item.isToday,
+              )}
             />
             <Text style={AlarmScreenStyles.footerText}>
               {NOTIFICATION_COMMENT.DEAD_LINE}

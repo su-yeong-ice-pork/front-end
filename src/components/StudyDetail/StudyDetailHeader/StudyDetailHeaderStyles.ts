@@ -72,8 +72,8 @@ export const StudyDetailHeaderStyles = StyleSheet.create({
   },
   addMemberButton: {
     backgroundColor: '#1AA5AA',
-    width: 120,
-    height: 30,
+    width: 130,
+    height: 35,
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
