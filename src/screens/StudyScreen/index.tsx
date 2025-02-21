@@ -15,26 +15,14 @@ import {Box} from '@/components/ui';
 import CreateStudyButton from '@/src/components/StudyGroupSection/CreateStudyButton';
 import {ScrollView} from 'react-native';
 
-const randomStudyData = [
-  {
-    id: 1,
-    studyName: '아침 9시 스터디',
-    memberCount: 6,
-    totalStudyTime: 10,
-  },
-  {
-    id: 2,
-    studyName: '오전 11시 스터디',
-    memberCount: 6,
-    totalStudyTime: 10,
-  },
-  {
-    id: 3,
-    studyName: '오후 1시 스터디',
-    memberCount: 6,
-    totalStudyTime: 10,
-  },
-];
+// GET: /random-studies API 연결 필요
+const randomStudyData = {
+  id: 1,
+  studyName: '아침 9시 스터디',
+  memberCount: 6,
+  totalStudyTime: 10,
+};
+
 
 const StudyScreen = () => {
   const {data: studyData, isLoading, error} = useStudies();
