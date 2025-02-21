@@ -29,6 +29,7 @@ const FriendsProfile = () => {
   const [badges, setBadges] = useState<Badge[] | null>(null);
   const authInfo = useRecoilValue(authState);
   const [user, setUser] = useRecoilState(otherUsersState);
+  const friend = Array.isArray(user) ? user[0] : user;
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const {data: otherMemberData, error: memberDataError} = useQuery({
