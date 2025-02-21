@@ -7,7 +7,7 @@ import {Image} from 'react-native';
 import useRecord from '@/src/hooks/calendar/useRecord';
 
 const StudyStats = ({userId}: {userId: number}) => {
-  const {record, isLoading, error} = useRecord();
+  const {record, isLoading, error} = useRecord(userId);
 
   if (isLoading) {
     return <Text>로딩 중...</Text>;
