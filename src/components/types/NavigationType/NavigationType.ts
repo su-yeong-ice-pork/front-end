@@ -7,6 +7,7 @@ export type RootStackParamList = {
   SignUp: undefined;
   Study: undefined;
   StudyDetail: {id: number};
+  RandomStudyDetail:{id: number};
   Alarm: undefined;
   Home: undefined;
   Log: undefined;

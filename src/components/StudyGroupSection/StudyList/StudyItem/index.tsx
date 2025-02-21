@@ -19,11 +19,19 @@ const StudyItem: React.FC<StudyItemProps> = ({
   id,
   totalStudyTime,
   memberCount,
+  isRandom,
 }) => {
-  const navigation = useNavigation();
   console.log(id);
-  const navigateToDetail = () =>
-    navigation.navigate(STUDY_GROUP.NAME, {studyId: id});
+  const navigation = useNavigation();
+
+  const navigateToDetail = () => {
+    if (isRandom) {
+      navigation.navigate(STUDY_GROUP.RANDOM, {studyId: id}); // 랜덤 스터디 디테일 화면 이동
+    } else {
+      navigation.navigate(STUDY_GROUP.NAME, {studyId: id}); // 정규 스터디 디테일 화면 이동
+    }
+  };
+
   return (
     <StudyItemLayout name={name}>
       <Box style={StudyItemStyles.container}>

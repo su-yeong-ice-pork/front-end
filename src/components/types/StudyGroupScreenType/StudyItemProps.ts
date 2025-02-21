@@ -3,7 +3,7 @@ export type StudyItemProps = {
   name: string;
   totalStudyTime: number;
   memberCount: number;
-  onPress?: () => void;
+  isRandom:Boolean;
 };
 
 export type StudyLeaveButtonProps = {

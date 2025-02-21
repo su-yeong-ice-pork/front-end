@@ -1,5 +1,6 @@
 export const STUDY_GROUP = {
   NAME: 'StudyDetail',
+  RANDOM:'RandomStudyDetail',
   TITLE: '스터디',
 };
 

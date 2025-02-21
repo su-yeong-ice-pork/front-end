@@ -1,6 +1,5 @@
 import {Dimensions, StyleSheet} from 'react-native';
 import {FONT} from '@/src/constants/styles/font/default-font';
-import {COLOR} from '@/src/constants/styles/color/color';
 
 const {width} = Dimensions.get('window');
 
@@ -11,20 +10,20 @@ export const StudyHeaderStyle = StyleSheet.create({
     justifyContent: 'space-between',
     width: width - 40,
     marginBottom: 20,
+    marginTop:20,
   },
   title: {
-    fontSize: 24,
-    fontWeight: '800',
+    fontSize: width * 0.052,
+    fontWeight: 700,
     color: '#1e293b',
     lineHeight: 32,
-    fontFamily: `${FONT}`,
+    fontFamily: FONT,
   },
   highlight: {
-    color: `${COLOR.HIGHLIGHT}`,
-    fontSize: 24,
-    fontWeight: '800',
-    lineHeight: 32,
-    fontFamily: `${FONT}`,
+    fontSize: width * 0.057,
+    fontWeight: 800,
+    fontFamily: FONT,
+    color: '#009499',
   },
   headerImage: {
     width: 30,

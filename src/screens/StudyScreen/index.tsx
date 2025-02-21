@@ -13,6 +13,15 @@ import Loader from '@/src/components/Loader';
 import {Text} from '@/components/ui';
 import {Box} from '@/components/ui';
 import CreateStudyButton from '@/src/components/StudyGroupSection/CreateStudyButton';
+import {ScrollView} from 'react-native';
+
+// GET: /random-studies API 연결 필요
+const randomStudyData = {
+  id: 1,
+  studyName: '아침 9시 스터디',
+  memberCount: 6,
+  totalStudyTime: 10,
+};
 
 
 const StudyScreen = () => {
@@ -37,7 +46,12 @@ const StudyScreen = () => {
   return (
     <SafeAreaView style={StudyScreenStyles.safeAreaContainer}>
       <Header Title={STUDY_GROUP.TITLE} />
-      <StudyGroupSection studyData={studyData || []} />
+      <ScrollView contentContainerStyle={StudyScreenStyles.main}>
+        {/*랜덤 스터디*/}
+        <StudyGroupSection studyData={randomStudyData || []} isRandom={true} />
+        {/*정규 스터디*/}
+        <StudyGroupSection studyData={studyData || []} isRandom={false} />
+      </ScrollView>
       <Box style={StudyScreenStyles.buttonContainer}>
         <CreateStudyButton />
       </Box>
