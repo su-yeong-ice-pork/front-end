@@ -20,7 +20,6 @@ const FriendsProfileHeader: React.FC<OtherUsersProps> = ({
   back,
 }) => {
   const navigation = useNavigation();
-  console.log('Dd', user);
   return (
     <>
       <Box key={user.id} style={ProfileStyles.profileBox}>
