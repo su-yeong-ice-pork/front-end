@@ -27,13 +27,18 @@ const YearlyCalendar: React.FC<YearlyCalendarProps> = ({
 
   const {weeks, monthLabels} = useCalendarDates();
 
-  const {grass: yearGrass, isLoading: isYearGrassLoading} = useYearGrass();
-  console.log(yearGrass);
+  const {grass: yearGrass, isLoading: isYearGrassLoading} =
+    useYearGrass(memberId);
+
   useEffect(() => {
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1; // 1~12
     const combined: GrassData = {};
     if (yearGrass) {
       yearGrass.forEach(record => {
-        const recordYear = (record as any).year || 2024;
+        const recordYear =
+          (record as any).year ??
+          (record.month > currentMonth ? currentYear - 1 : currentYear);
         const monthStr = String(record.month).padStart(2, '0');
         const dayStr = String(record.day).padStart(2, '0');
         const key = `${recordYear}-${monthStr}-${dayStr}`;
