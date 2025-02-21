@@ -37,6 +37,21 @@ const FriendsProfile = () => {
     enabled: !!authInfo.authToken && !!friendId,
   });
 
+  const {data: badgesData, error: badgesDataError} = useQuery({
+    queryKey: ['badges', otherMemberData?.member.id],
+    queryFn: () => getBadgesApi(otherMemberData.member.id, authInfo.authToken),
+    enabled: !!otherMemberData,
+  });
+
+  useEffect(() => {
+    if (badgesData) {
+      setBadges(badgesData);
+    } else if (badgesDataError) {
+      setModalMessage('뱃지를 불러오는 데 실패했습니다.');
+      setModalVisible(true);
+    }
+  }, [badgesData, badgesDataError]);
+
   useEffect(() => {
     if (otherMemberData) {
       setMember(otherMemberData.member);
@@ -55,21 +70,21 @@ const FriendsProfile = () => {
         <Box>
           <FriendsProfiles otherMember={user} edit={false} back={true} />
           <Box style={FriendsProfileScreenStyles.profileTextContainer}>
-            <FriendsLeaveButton />
+            <FriendsLeaveButton otherMember={user} />
           </Box>
 
           <FriendsMessage otherMember={user} />
 
           <Box style={FriendsProfileScreenStyles.badgeContainer}>
-            <Badges badges={badges} styleType="profile" />
+            <Badges badges={badgesData} styleType="profile" />
           </Box>
         </Box>
 
-        <Sticker />
+        <Sticker otherMember={user} />
 
-        <CheerupWords />
+        <CheerupWords otherMember={user} />
 
-        <CheerupText />
+        {/* <CheerupText otherMember={user} /> */}
 
         <Box style={FriendsProfileScreenStyles.calendarContainer}>
           {member && <MonthCalendar userId={member.id} />}

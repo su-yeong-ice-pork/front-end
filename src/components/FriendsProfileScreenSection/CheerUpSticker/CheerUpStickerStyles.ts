@@ -33,8 +33,7 @@ export const CheerUpStickerStyles = StyleSheet.create({
     marginLeft: -10,
   },
   enlargedStickerImage: {
-    width: width * 0.15,
-    height: width * 0.15,
+    transform: [{scale: 1.5}],
   },
   infoText: {
     fontSize: width * 0.03,
