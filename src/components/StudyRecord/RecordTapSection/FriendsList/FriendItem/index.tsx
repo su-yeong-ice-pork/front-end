@@ -8,7 +8,8 @@ import {Image} from '@/components/ui/image';
 import {Box} from '@/components/ui/box';
 import {Text} from '@/components/ui/text';
 import {ICONS} from '@/src/constants/image/icons';
-
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {PATH_NAME} from '@/src/constants/BottomBar/Images';
 import {FriendsListType} from '@/src/components/types/StudyDetailType/FriendsType/FriendsListType';
 import {STUDY_DETAIL} from '@/src/constants/StudyDetail/studyDetail';
 
@@ -17,14 +18,18 @@ const FriendItem: React.FC<FriendsListType> = ({
   name,
   todayStudyTime,
   studyStatus,
+  id,
   message,
 }) => {
+  const navigation = useNavigation();
+  console.log(id);
+  const navigateTo = (screen: string, params?: any) => {
+    navigation.navigate(screen, params);
+  };
   return (
     <TouchableOpacity
       style={FriendItemStyles.memberItem}
-      onPress={() => {
-        /* 구성원 터치 기능 */
-      }}>
+      onPress={() => navigateTo(PATH_NAME.FRIENDSPROFILE, {friendId: id})}>
       <Image
         source={profileImage ? {uri: profileImage} : ICONS.BASE_ICON}
         style={FriendItemStyles.memberImage}

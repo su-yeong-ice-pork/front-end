@@ -13,11 +13,11 @@ interface UseYearGrassReturn {
   error: any;
 }
 
-const useYearGrass = (): UseYearGrassReturn => {
+const useYearGrass = (userId: number): UseYearGrassReturn => {
   const [grass, setGrass] = useRecoilState(yearGrassState);
   const user = useRecoilValue(userState);
   const authInfo = useRecoilValue(authState);
-
+  console.log(grass);
   const currentYear = new Date().getFullYear();
   const previousYear = currentYear - 1;
 
@@ -26,8 +26,8 @@ const useYearGrass = (): UseYearGrassReturn => {
     isLoading: loadingPrevYear,
     error: errorPrevYear,
   } = useQuery({
-    queryKey: ['yearGrass', user?.id, previousYear],
-    queryFn: () => getYearGrassApi(user!.id, previousYear, authInfo!.authToken),
+    queryKey: ['yearGrass', userId, previousYear],
+    queryFn: () => getYearGrassApi(userId, previousYear, authInfo!.authToken),
     enabled: !!user && !!authInfo?.authToken,
   });
 
@@ -36,8 +36,8 @@ const useYearGrass = (): UseYearGrassReturn => {
     isLoading: loadingCurrYear,
     error: errorCurrYear,
   } = useQuery({
-    queryKey: ['yearGrass', user?.id, currentYear],
-    queryFn: () => getYearGrassApi(user!.id, currentYear, authInfo!.authToken),
+    queryKey: ['yearGrass', userId, currentYear],
+    queryFn: () => getYearGrassApi(userId, currentYear, authInfo!.authToken),
     enabled: !!user && !!authInfo?.authToken,
   });
 

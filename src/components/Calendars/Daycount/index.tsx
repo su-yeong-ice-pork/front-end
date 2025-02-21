@@ -4,9 +4,9 @@ import {DayCountStyle} from './daycountStyle';
 import useRecord from '@/src/hooks/calendar/useRecord';
 import React, {useState, useEffect} from 'react';
 
-const Daycount = () => {
-  const {record, isLoading, error} = useRecord();
-
+const Daycount = ({userId}: {userId: number}) => {
+  const {record, isLoading, error} = useRecord(userId);
+  console.log(record);
   if (isLoading) {
     return <Text>로딩 중...</Text>;
   }

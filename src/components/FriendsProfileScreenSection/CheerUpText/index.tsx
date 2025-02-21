@@ -5,13 +5,32 @@ import {CheerUpTextStyles} from './CheerUpTextStyles';
 import {Button} from '@/components/ui/button';
 import {INFO} from '@/src/constants/Info/Messages';
 import {InputField, Input} from '@/components/ui/input';
-const supportTextPlaceholder = '예시) 잔디야! 오늘 8시에 새도 스터디 기억하지?';
+import {PLACEHOLDER} from '@/src/constants/FriendsScreen/cheerupText';
+import useSendCheerMessage from '@/src/hooks/friends/useSendMessage';
+import {OtherUsersProps} from '@/src/api/otherUsers/getOtherUsersTypes';
+import {useRecoilValue} from 'recoil';
+import authState from '@/src/recoil/authAtom';
 
-const CheerupText = () => {
+const CheerupText: React.FC<OtherUsersProps> = ({otherMember: user}) => {
   const [supportText, setSupportText] = useState('');
+  const authInfo = useRecoilValue(authState);
+  const friendId = user.id;
+  const {mutate, isLoading, error} = useSendCheerMessage(
+    friendId,
+    authInfo.authToken,
+  );
 
   const handleSendPress = () => {
-    setSupportText('');
+    if (supportText.trim() === '') return;
+    mutate(supportText, {
+      onSuccess: data => {
+        console.log('응원 메시지 전송 성공:', data);
+        setSupportText('');
+      },
+      onError: err => {
+        console.error('응원 메시지 전송 실패:', err);
+      },
+    });
   };
 
   return (
@@ -20,8 +39,10 @@ const CheerupText = () => {
       <Input>
         <InputField
           style={CheerUpTextStyles.textInputPlaceholder}
-          placeholder={supportTextPlaceholder}
+          placeholder={PLACEHOLDER.text}
           maxLength={20}
+          value={supportText}
+          onChangeText={text => setSupportText(text)}
         />
 
         <Button
@@ -30,10 +51,11 @@ const CheerupText = () => {
             supportText.trim() === '' && CheerUpTextStyles.sendButtonDisabled,
           ]}
           onPress={handleSendPress}
-          disabled={supportText.trim() === ''}>
+          disabled={supportText.trim() === '' || isLoading}>
           <Text style={CheerUpTextStyles.sendButtonText}>보내기</Text>
         </Button>
       </Input>
+      {error && <Text style={{color: 'red'}}>메시지 전송 실패</Text>}
       <Text style={CheerUpTextStyles.infoText}>{INFO.TEXT}</Text>
     </Box>
   );

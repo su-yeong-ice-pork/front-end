@@ -25,7 +25,7 @@ const MonthCalendar = ({userId}: {userId: number}) => {
     moment().format('YYYY-MM-DD'),
   );
 
-  const {grass, isLoading, setYear, setMonth} = useMonthGrass();
+  const {grass, isLoading, setYear, setMonth} = useMonthGrass(userId);
 
   useEffect(() => {
     const year = moment(displayedDate).year();
