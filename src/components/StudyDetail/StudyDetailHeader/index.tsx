@@ -12,6 +12,7 @@ import {ICONS} from '@/src/constants/image/icons';
 import {Button} from '@/components/ui/button';
 import {Image} from '@/components/ui/image';
 import {STUDY_DETAIL} from '@/src/constants/StudyDetail/studyDetail';
+import {REGULAR_DETAIL_HEADER} from "@/src/constants/StudyGroup/regualrStudy.ts";
 
 const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyDetail}) => {
   return (
@@ -22,11 +23,11 @@ const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyDetail}) => {
             {studyDetail.studyName}
           </Text>
           <Text style={StudyDetailHeaderStyles.totalStudyTime}>
-            총 공부시간:{'  '}
+            {REGULAR_DETAIL_HEADER.TOTAL_STUDY_TIME}
             <Text style={StudyDetailHeaderStyles.totalStudyTimeValue}>
               {studyDetail.totalStudyTime}
             </Text>
-            시간
+            {REGULAR_DETAIL_HEADER.TIME}
           </Text>
         </Box>
         <Button
@@ -42,7 +43,7 @@ const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyDetail}) => {
 
       <DashLine />
       <Box style={StudyDetailHeaderStyles.membersHeader}>
-        <Text style={StudyDetailHeaderStyles.membersTitle}>구성원 목록</Text>
+        <Text style={StudyDetailHeaderStyles.membersTitle}>{REGULAR_DETAIL_HEADER.MEMBER_LIST}</Text>
         <Button
           style={StudyDetailHeaderStyles.addMemberButton}
           onPress={() => {
@@ -54,7 +55,7 @@ const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyDetail}) => {
             alt={STUDY_DETAIL.HEADER}
           />
           <Text style={StudyDetailHeaderStyles.addMemberButtonText}>
-            구성원 추가
+            {REGULAR_DETAIL_HEADER.ADD_MEMBER}
           </Text>
         </Button>
       </Box>
