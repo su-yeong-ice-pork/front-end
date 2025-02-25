@@ -35,9 +35,6 @@ const StudyList: React.FC<StudyGroupListProps> = ({studyData, isRandom}) => {
               memberCount={study.memberCount}
               isRandom={isRandom}
             />
-            {index < studyData.length - 1 && (
-              <Box style={StudyListStyles.separator} />
-            )}
           </Box>
         ))
       )}
