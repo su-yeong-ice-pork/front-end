@@ -9,6 +9,7 @@ export const BottomBarImages = (
   Study:
     currentScreen === PATH_NAME.STUDY ||
     currentScreen === PATH_NAME.STUDY_DETAIL ||
+    currentScreen === PATH_NAME.RANDOM_STUDY_DETAIL ||
     currentScreen === PATH_NAME.CREATE_STUDY
       ? IMAGE_PATH.STUDY_ON
       : IMAGE_PATH.STUDY_OFF,

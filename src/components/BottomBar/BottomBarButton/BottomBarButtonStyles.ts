@@ -35,10 +35,16 @@ export const BottomBarButtonStyles = StyleSheet.create({
 
 export const getLabelStyle = ({ screen, currentScreen }: GetLabelProps) => {
   const isActive =
-    screen === 'Study' &&
-    (currentScreen === PATH_NAME.STUDY ||
+    (screen === 'Study' && (
+      currentScreen === PATH_NAME.STUDY ||
       currentScreen === PATH_NAME.STUDY_DETAIL ||
-      currentScreen === PATH_NAME.CREATE_STUDY);
+      currentScreen === PATH_NAME.RANDOM_STUDY_DETAIL ||
+      currentScreen === PATH_NAME.CREATE_STUDY
+    )) ||
+    (screen === 'Log' && currentScreen === PATH_NAME.LOG) ||
+    (screen === 'Home' && currentScreen === PATH_NAME.HOME) ||
+    (screen === 'Alarm' && currentScreen === PATH_NAME.ALARM) ||
+    (screen === 'Profile' && currentScreen === PATH_NAME.PROFILE);
 
   return [
     BottomBarButtonStyles.label,
