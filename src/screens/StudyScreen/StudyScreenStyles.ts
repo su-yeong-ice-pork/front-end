@@ -13,7 +13,7 @@ export const StudyScreenStyles = StyleSheet.create({
   },
   main: {
     paddingTop: 10,
-    paddingBottom: 50,
+    paddingBottom: height * 0.12,
     alignItems: 'center',
   },
 });

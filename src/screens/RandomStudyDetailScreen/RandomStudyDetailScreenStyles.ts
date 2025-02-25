@@ -17,6 +17,6 @@ export const RandomStudyDetailScreenStyles = StyleSheet.create({
     alignItems: 'center',
   },
   scrollView: {
-    marginBottom: height * 0.07,
+    marginBottom: height * 0.1,
   },
 });

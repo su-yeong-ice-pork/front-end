@@ -1,7 +1,8 @@
-import {StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 import {COLOR} from '@/src/constants/styles/color/color';
 import {FONT} from '@/src/constants/styles/font/default-font';
 
+const {height} = Dimensions.get('window');
 export const StudyLeaveButtonStyles = StyleSheet.create({
   leftAction: {
     width: 95,
@@ -18,7 +19,7 @@ export const StudyLeaveButtonStyles = StyleSheet.create({
   actionIcon: {
     width: 19,
     height: 24,
-    marginBottom: 5,
+    marginBottom: height * 0.013,
   },
   actionText: {
     position: 'absolute',

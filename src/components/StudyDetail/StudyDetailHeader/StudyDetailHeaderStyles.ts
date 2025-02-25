@@ -1,6 +1,11 @@
 import {COLOR} from '@/src/constants/styles/color/color';
 import {FONT} from '@/src/constants/styles/font/default-font';
-import {StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
+
+const {width, height} = Dimensions.get('window');
+
+const h10Px = height * 0.0115;
+const w10Px = width * 0.025;
 
 export const StudyDetailHeaderStyles = StyleSheet.create({
   studyHeader: {
@@ -8,7 +13,7 @@ export const StudyDetailHeaderStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: h10Px * 2,
     marginTop: 0,
   },
   studyInfo: {
@@ -16,19 +21,19 @@ export const StudyDetailHeaderStyles = StyleSheet.create({
     justifyContent: 'center',
   },
   studyTitle: {
-    fontSize: 27,
+    fontSize: w10Px * 2.7,
     fontWeight: '900',
     color: '#454545',
     fontFamily: `${FONT}`,
-    marginTop: 20,
-    marginBottom: 5,
+    marginTop: h10Px * 2,
+    marginBottom: h10Px * 0.5,
     width: '100%',
   },
   totalStudyTimeValue: {
     color: '#009499',
   },
   totalStudyTime: {
-    fontSize: 14,
+    fontSize: w10Px * 1.4,
     color: '#454545',
     fontWeight: '700',
     fontFamily: `${FONT}`,
@@ -36,18 +41,19 @@ export const StudyDetailHeaderStyles = StyleSheet.create({
   },
   certifyButton: {
     backgroundColor: '#1AA5AA',
-    width: 170,
-    height: 50,
+    width: w10Px * 15,
+    height: h10Px * 5,
     borderRadius: 4,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: w10Px,
+    paddingRight: w10Px,
+    marginTop: h10Px,
   },
   certifyButtonText: {
     color: `${COLOR.WHITE}`,
-    fontSize: 14,
+    fontSize: w10Px * 1.4,
     fontWeight: 'bold',
     fontFamily: `${FONT}`,
   },
@@ -65,15 +71,15 @@ export const StudyDetailHeaderStyles = StyleSheet.create({
     marginBottom: 10,
   },
   membersTitle: {
-    fontSize: 16,
+    fontSize: w10Px * 1.6,
     color: '#454545',
     fontWeight: '900',
     fontFamily: `${FONT}`,
   },
   addMemberButton: {
     backgroundColor: '#1AA5AA',
-    width: 120,
-    height: 30,
+    width: w10Px * 12.5,
+    height: h10Px * 3.5,
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
@@ -81,7 +87,7 @@ export const StudyDetailHeaderStyles = StyleSheet.create({
   },
   addMemberButtonText: {
     color: `${COLOR.WHITE}`,
-    fontSize: 12,
+    fontSize: w10Px * 1.2,
     letterSpacing: 1,
     fontWeight: '900',
     fontFamily: `${FONT}`,
