@@ -1,6 +1,5 @@
 import React from 'react';
 import {useRecoilValue} from 'recoil';
-import {View} from 'react-native';
 import {Box} from '@/components/ui/box';
 import {Text} from '@/components/ui';
 import {FriendsListStyles} from './FriendsListStyles';
@@ -17,29 +16,18 @@ const FriendsList = () => {
 
   const {friends, isLoading, error} = useFriends(authInfo?.authToken, user?.id);
   console.log(friends);
+  console.log(error);
 
   if (isLoading) {
     return (
-      <View>
+      <Box>
         <Text>Loading...</Text>
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View>
-        <Text>Error: {error}</Text>
-      </View>
+      </Box>
     );
   }
 
   if (!friends || friends.length === 0) {
-    return (
-      <View>
-        <Text>No friends found</Text>
-      </View>
-    );
+    return <Box></Box>;
   }
 
   return (
