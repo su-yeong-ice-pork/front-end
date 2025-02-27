@@ -5,6 +5,7 @@ export const ICONS = {
   ATTENDANCE: require('@/assets/images/icons/attendance.png'),
   BACK_BUTTON: require('@/assets/images/icons/backButton.png'),
   BASE_ICON: require('@/assets/images/icons/baseIcon.png'),
+  BOOK: require('@/assets/images/icons/book.png'),
   CALENDAR: require('@/assets/images/icons/calendar.png'),
   CLOSE_BUTTON: require('@/assets/images/icons/closeButton.png'),
   CLOSE_LOGOUT: require('@/assets/images/icons/closeLogout.png'),

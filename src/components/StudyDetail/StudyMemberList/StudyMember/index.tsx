@@ -11,6 +11,7 @@ import {Image} from '@/components/ui/image';
 import {Box} from '@/components/ui/box';
 import {Text} from '@/components/ui/text';
 import {ICONS} from '@/src/constants/image/icons';
+import {REGULAR_STUDY_MEMBER} from '@/src/constants/StudyGroup/regualrStudy.ts';
 
 const StudyMember: React.FC<StudyMemberProps> = ({
   profileImage,
@@ -38,7 +39,7 @@ const StudyMember: React.FC<StudyMemberProps> = ({
           </Text>
         </Text>
         <Text style={StudyMemberStyles.memberStudyTime}>
-          오늘 공부 시간:{' '}
+          {REGULAR_STUDY_MEMBER.TODAY_STUDY_TIME}
           <Text style={StudyMemberStyles.totalStudyTimeValue}>
             {todayStudyTime}
           </Text>

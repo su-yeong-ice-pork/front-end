@@ -2,7 +2,7 @@ import {Dimensions, StyleSheet} from 'react-native';
 
 const {width, height} = Dimensions.get('window');
 
-export const StudyScreenStyles = StyleSheet.create({
+export const RandomStudyDetailScreenStyles = StyleSheet.create({
   safeAreaContainer: {
     flex: 1,
   },
@@ -13,7 +13,10 @@ export const StudyScreenStyles = StyleSheet.create({
   },
   main: {
     paddingTop: 10,
-    paddingBottom: height * 0.12,
+    marginBottom: 20,
     alignItems: 'center',
+  },
+  scrollView: {
+    marginBottom: height * 0.1,
   },
 });
