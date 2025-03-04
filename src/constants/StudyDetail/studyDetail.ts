@@ -9,3 +9,12 @@ export const STUDY_DETAIL = {
   DEFAULT_IMAGE: 'null',
   DEFAULT_TITLE: '',
 };
+
+export const ADD_FRIEND = {
+  HEADER_TITLE: '친구 찾기',
+  CLICK_ICON_ALT: 'clickIcon',
+  CLOSE_IOCN_ALT: 'closeButton',
+  SEARCH_ICON_ALT: 'searchIcon',
+  INPUT_PLACEHOLER: '잔디 친구의 이름을 탐색해주세요!',
+  INPUT_TYPE: 'text',
+};

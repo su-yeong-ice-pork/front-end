@@ -6,3 +6,8 @@ export type FriendsListType = {
   todayStudyTime: string;
   studyStatus: boolean;
 };
+
+export type AddFriendProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};

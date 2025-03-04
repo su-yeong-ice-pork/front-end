@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import {TouchableOpacity} from 'react-native';
 import {FriendsListHeaderStyles} from './FriendsListHeaderStyles';
@@ -9,23 +9,32 @@ import {Image} from '@/components/ui/image';
 
 import {ICONS} from '@/src/constants/image/icons';
 import {STUDY_DETAIL} from '@/src/constants/StudyDetail/studyDetail';
+import {Button, ButtonText} from '@/components/ui/button';
+import AddFriend from '../AddFriend';
 
 const FriendsListHeader = () => {
+  const [showModal, setShowModal] = useState<boolean>(false);
+
   return (
     <Box style={FriendsListHeaderStyles.membersHeader}>
       <Text style={FriendsListHeaderStyles.membersTitle}>친구 목록</Text>
-      <TouchableOpacity
+      <Button
         style={FriendsListHeaderStyles.addMemberButton}
-        onPress={() => {}}>
+        onPress={() => {
+          setShowModal(true);
+        }}>
         <Image
           source={ICONS.WHITE_USERS}
           style={FriendsListHeaderStyles.redStar}
           alt={STUDY_DETAIL.HEADER}
         />
-        <Text style={FriendsListHeaderStyles.addMemberButtonText}>
+        <ButtonText style={FriendsListHeaderStyles.addMemberButtonText}>
           친구 추가
-        </Text>
-      </TouchableOpacity>
+        </ButtonText>
+      </Button>
+      {showModal && (
+        <AddFriend isOpen={showModal} onClose={() => setShowModal(false)} />
+      )}
     </Box>
   );
 };
