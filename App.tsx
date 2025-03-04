@@ -8,6 +8,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import LandingScreen from './src/screens/LandingScreen';
 import SignUpScreen from './src/screens/SignUpScreen';
 import StudyScreen from './src/screens/StudyScreen';
+import RandomStudyDetailScreen from './src/screens/RandomStudyDetailScreen';
 import StudyDetailScreen from './src/screens/StudyDetailScreen/index';
 import StudyRecordScreen from './src/screens/StudyRecordScreen/index.tsx';
 import AlarmScreen from './src/screens/AlarmScreen/index';
@@ -56,6 +57,7 @@ const App = () => {
               <Stack.Screen name="SignUp" component={SignUpScreen} />
               <Stack.Screen name="Study" component={StudyScreen} />
               <Stack.Screen name="StudyDetail" component={StudyDetailScreen} />
+              <Stack.Screen name="RandomStudyDetail" component={RandomStudyDetailScreen} />
               <Stack.Screen name="Alarm" component={AlarmScreen} />
               <Stack.Screen name="Home" component={HomeScreen} />
               <Stack.Screen name="Log" component={StudyRecordScreen} />

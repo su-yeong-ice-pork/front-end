@@ -8,6 +8,7 @@ export const PATH_NAME = {
   FRIENDSPROFILE: 'FriendsProfile',
   EDITPROFILE: 'EditProfile',
   CREATE_STUDY: 'CreateStudy',
+  RANDOM_STUDY_DETAIL: 'RandomStudyDetail',
 };
 
 export const IMAGE_PATH = {
