@@ -11,10 +11,18 @@ export const STUDY_DETAIL = {
 };
 
 export const ADD_FRIEND = {
-  HEADER_TITLE: '친구 찾기',
+  HEADER_TITLE_FIND: '친구 찾기',
+  HEADER_TITLE_ADD: '친구 추가하기',
   CLICK_ICON_ALT: 'clickIcon',
   CLOSE_IOCN_ALT: 'closeButton',
   SEARCH_ICON_ALT: 'searchIcon',
+  GROUP_ICON_ALT: 'groupIcon',
   INPUT_PLACEHOLER: '잔디 친구의 이름을 탐색해주세요!',
   INPUT_TYPE: 'text',
+  ERROR_MESSAGE: '검색하신 친구가 없습니다',
+};
+
+export const FRIEND_SEARCH_RESULT = {
+  PROFILE_IMG_ALT: 'profileImage',
+  FRIEND_ADD_BUTTON: '추가하기',
 };

@@ -11,3 +11,11 @@ export type AddFriendProps = {
   isOpen: boolean;
   onClose: () => void;
 };
+
+export type FriendSearchProps = {
+  friendData: {
+    id: number;
+    profileImage: string | null;
+    name: string;
+  };
+};

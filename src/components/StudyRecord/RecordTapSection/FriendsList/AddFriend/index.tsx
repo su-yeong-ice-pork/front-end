@@ -15,9 +15,21 @@ import {Input, InputField, InputIcon, InputSlot} from '@/components/ui/input';
 import {AddFriendStyles} from './AddFriendStyles';
 import {AddFriendProps} from '@/src/components/types/StudyDetailType/FriendsType/FriendsListType';
 import {ADD_FRIEND} from '@/src/constants/StudyDetail/studyDetail';
+import {DummyAddFriendsList} from '@/src/constants/StudyDetail/Dummy/AddFriendList';
+import FriendSearchResult from './FriendSearchResult';
 
 const AddFriend: React.FC<AddFriendProps> = ({isOpen, onClose}) => {
   const [friend, setFriend] = useState<string>('');
+  const [friendData, setFriendData] = useState<any | null>(null);
+
+  const handleAddFriend = () => {
+    if (DummyAddFriendsList.success) {
+      const member = DummyAddFriendsList.response.member;
+      setFriendData(member);
+    } else {
+      setFriendData(null);
+    }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -30,7 +42,9 @@ const AddFriend: React.FC<AddFriendProps> = ({isOpen, onClose}) => {
               alt={ADD_FRIEND.CLICK_ICON_ALT}
               style={AddFriendStyles.clickIcon}
             />
-            <Text style={AddFriendStyles.titleText}>친구 찾기</Text>
+            <Text style={AddFriendStyles.titleText}>
+              {ADD_FRIEND.HEADER_TITLE_FIND}
+            </Text>
           </HStack>
           <ModalCloseButton
             onPress={onClose}
@@ -54,7 +68,7 @@ const AddFriend: React.FC<AddFriendProps> = ({isOpen, onClose}) => {
             />
             <InputSlot>
               <Button
-                onPress={() => console.log(friend)}
+                onPress={handleAddFriend}
                 style={AddFriendStyles.buttonContainer}>
                 <ButtonIcon>
                   <Image
@@ -66,6 +80,31 @@ const AddFriend: React.FC<AddFriendProps> = ({isOpen, onClose}) => {
               </Button>
             </InputSlot>
           </Input>
+
+          <Box>
+            <HStack style={AddFriendStyles.modalHeader}>
+              <Image
+                source={ICONS.USERS}
+                style={AddFriendStyles.clickIcon}
+                alt={ADD_FRIEND.GROUP_ICON_ALT}
+              />
+              <Text style={AddFriendStyles.titleText}>
+                {ADD_FRIEND.HEADER_TITLE_ADD}
+              </Text>
+            </HStack>
+          </Box>
+
+          <Box style={AddFriendStyles.friendListContainer}>
+            {friendData ? (
+              <FriendSearchResult friendData={friendData} />
+            ) : (
+              <Box style={AddFriendStyles.friendList}>
+                <Text style={AddFriendStyles.friendListText}>
+                  {ADD_FRIEND.ERROR_MESSAGE}
+                </Text>
+              </Box>
+            )}
+          </Box>
         </ModalBody>
       </ModalContent>
     </Modal>

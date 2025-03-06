@@ -70,4 +70,21 @@ export const AddFriendStyles = StyleSheet.create({
     fontFamily: FONT,
     color: '#323232',
   },
+  friendList: {
+    paddingTop: 15,
+    alignContent: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  friendListText: {
+    fontFamily: FONT,
+    color: '#323232',
+  },
+  friendListContainer: {
+    width: '100%',
+    height: width * 0.13,
+    paddingLeft: 5,
+    borderRadius: 5,
+    backgroundColor: '#DADADA',
+  },
 });
