@@ -1,15 +1,12 @@
 import {Button, ButtonText, ButtonIcon} from '@/components/ui/button';
 import React, {useState} from 'react';
 import {Image} from 'react-native';
-import UpcomingModal from '../../Modal/UpcomingModal';
+import DailyStudyModal from '../../DailyStudyModal';
 import {GroupAuthStyles} from './GroupAuth';
 import {ILLUSTRATIONS} from '@/src/constants/image/illustrations';
-import {MESSAGES} from '@/src/constants/BottomBar/Messages';
+
 const GroupAuth = () => {
-  const [showModal, setShowModal] = useState(false);
-  const handleModalOpen = () => {
-    setShowModal(true);
-  };
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   return (
     <>
@@ -18,7 +15,7 @@ const GroupAuth = () => {
         variant="solid"
         action="primary"
         style={GroupAuthStyles.button}
-        onPress={handleModalOpen}>
+        onPress={() => setShowModal(true)}>
         <ButtonIcon>
           <Image source={ILLUSTRATIONS.TYPE_ONE} style={GroupAuthStyles.icon} />
         </ButtonIcon>
@@ -26,11 +23,7 @@ const GroupAuth = () => {
           랜덤 스터디 매칭하기
         </ButtonText>
       </Button>
-      <UpcomingModal
-        showModal={showModal}
-        setShowModal={setShowModal}
-        text={MESSAGES.MODAL}
-      />
+      <DailyStudyModal isOpen={showModal} onClose={() => setShowModal(false)} />
     </>
   );
 };

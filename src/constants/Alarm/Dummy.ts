@@ -1,4 +1,5 @@
 import {NotificationData} from '@/src/components/types/AlarmScreenType/NotificationData';
+import {FriendNotificationData} from '@/src/components/types/AlarmScreenType/NotificationData';
 
 export const DummyNotification: NotificationData[] = [
   {
@@ -30,5 +31,22 @@ export const DummyNotification: NotificationData[] = [
     isToday: false,
     time: '오후 10:03',
     date: '4월 24일',
+  },
+];
+
+export const DummyFriendNotification: FriendNotificationData[] = [
+  {
+    id: 4,
+    memberName: '채원',
+    isToday: true,
+    time: '오늘 오전 10:10',
+    date: '10월24일',
+  },
+  {
+    id: 5,
+    memberName: '솔',
+    isToday: false,
+    time: '오전 10시',
+    date: '9월10일',
   },
 ];

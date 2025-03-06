@@ -3,6 +3,7 @@ export const ILLUSTRATIONS = {
   BANNER_IMAGE2: require('@/assets/images/illustration/bannerImage2.png'),
   BANNER_IMAGE3: require('@/assets/images/illustration/bannerImage3.png'),
   BANNER_IMAGE4: require('@/assets/images/illustration/bannerImage4.png'),
+  FLOWER_GRASS: require('@/assets/images/illustration/flowerNgrass.png'),
   FREEZE: require('@/assets/images/illustration/freeze.png'),
   INTRO: require('@/assets/images/illustration/intro.png'),
   INTRO_FOUR: require('@/assets/images/illustration/introFour.png'),

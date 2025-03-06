@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 import DashLine from '../../DashLine';
 
 import {StudyDetailHeaderStyles} from './StudyDetailHeaderStyles';
 import {StudyDetailHeaderProps} from '@/src/components/types/StudyDetailType/StudyDetailType';
+import InviteFriend from '../../InviteFriend';
 
 import {Box} from '@/components/ui/box';
 
@@ -12,9 +13,11 @@ import {ICONS} from '@/src/constants/image/icons';
 import {Button} from '@/components/ui/button';
 import {Image} from '@/components/ui/image';
 import {STUDY_DETAIL} from '@/src/constants/StudyDetail/studyDetail';
-import {REGULAR_DETAIL_HEADER} from "@/src/constants/StudyGroup/regualrStudy.ts";
+import {REGULAR_DETAIL_HEADER} from '@/src/constants/StudyGroup/regualrStudy.ts';
 
-const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyDetail}) => {
+const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyId}) => {
+  const [showModal, setShowModal] = useState<boolean>(false);
+
   return (
     <>
       <Box style={StudyDetailHeaderStyles.studyHeader}>
@@ -43,11 +46,13 @@ const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyDetail}) => {
 
       <DashLine />
       <Box style={StudyDetailHeaderStyles.membersHeader}>
-        <Text style={StudyDetailHeaderStyles.membersTitle}>{REGULAR_DETAIL_HEADER.MEMBER_LIST}</Text>
+        <Text style={StudyDetailHeaderStyles.membersTitle}>
+          {REGULAR_DETAIL_HEADER.MEMBER_LIST}
+        </Text>
         <Button
           style={StudyDetailHeaderStyles.addMemberButton}
           onPress={() => {
-            /* 구성원 추가 기능 */
+            setShowModal(true);
           }}>
           <Image
             source={ICONS.WHITE_USERS}
@@ -59,6 +64,9 @@ const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyDetail}) => {
           </Text>
         </Button>
       </Box>
+      {showModal && (
+        <InviteFriend isOpen={showModal} onClose={() => setShowModal(false)} />
+      )}
     </>
   );
 };
