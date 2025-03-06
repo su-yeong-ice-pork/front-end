@@ -13,17 +13,7 @@ import {ICONS} from '@/src/constants/image/icons';
 import {Button} from '@/components/ui/button';
 import {Image} from '@/components/ui/image';
 import {STUDY_DETAIL} from '@/src/constants/StudyDetail/studyDetail';
-import {useSafeAreaEnv} from 'react-native-css-interop/dist/runtime';
-
-//GET: /regular-studies/{studyId} 더미 데이터
-const studyDetail = {
-  id: 1,
-  studyName: 'CPA 메이트',
-  goalMessage: 'IT 개발 목적 동아리 모임',
-  goalTime: 145,
-  totalStudyTime: 40,
-  inviteCode: 'DJKS123',
-};
+import {REGULAR_DETAIL_HEADER} from '@/src/constants/StudyGroup/regualrStudy.ts';
 
 const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyId}) => {
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -36,11 +26,11 @@ const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyId}) => {
             {studyDetail.studyName}
           </Text>
           <Text style={StudyDetailHeaderStyles.totalStudyTime}>
-            총 공부시간:{'  '}
+            {REGULAR_DETAIL_HEADER.TOTAL_STUDY_TIME}
             <Text style={StudyDetailHeaderStyles.totalStudyTimeValue}>
               {studyDetail.totalStudyTime}
             </Text>
-            시간
+            {REGULAR_DETAIL_HEADER.TIME}
           </Text>
         </Box>
         <Button
@@ -56,7 +46,9 @@ const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyId}) => {
 
       <DashLine />
       <Box style={StudyDetailHeaderStyles.membersHeader}>
-        <Text style={StudyDetailHeaderStyles.membersTitle}>구성원 목록</Text>
+        <Text style={StudyDetailHeaderStyles.membersTitle}>
+          {REGULAR_DETAIL_HEADER.MEMBER_LIST}
+        </Text>
         <Button
           style={StudyDetailHeaderStyles.addMemberButton}
           onPress={() => {
@@ -68,7 +60,7 @@ const StudyDetailHeader: React.FC<StudyDetailHeaderProps> = ({studyId}) => {
             alt={STUDY_DETAIL.HEADER}
           />
           <Text style={StudyDetailHeaderStyles.addMemberButtonText}>
-            친구 초대하기
+            {REGULAR_DETAIL_HEADER.ADD_MEMBER}
           </Text>
         </Button>
       </Box>

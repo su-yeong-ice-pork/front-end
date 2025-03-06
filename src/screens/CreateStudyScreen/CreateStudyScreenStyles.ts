@@ -6,4 +6,7 @@ export const CreateStudyScreenStyles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLOR.BACK_GROUND,
   },
+  scrollView: {
+    flexGrow: 1,
+  },
 });

@@ -1,23 +1,10 @@
-import apiClient from './axiosInstance';
-import {getItem} from './asyncStorage';
-
-export interface DefaultImg {
-  id: number;
-  url: string;
-}
-
-interface ApiResponse {
-  success: boolean;
-  response: {
-    profileImages: DefaultImg[];
-  };
-  error: any;
-}
+import apiClient from '../axiosInstance';
+import {ApiResponse, DefaultImg} from './getImageType';
 
 export const GetDefaultImages = async (
   authToken: string,
-  id: string, // 매개변수로 id 받아옴
-  Imgtype: string, // 'profile' or 'banner'
+  id: string,
+  Imgtype: string,
 ): Promise<DefaultImg[] | null> => {
   try {
     if (!authToken) {
@@ -29,15 +16,24 @@ export const GetDefaultImages = async (
       `/members/${id}/${Imgtype}-images`,
       {
         headers: {
-          Authorization: `${authToken}`,
+          Authorization: authToken,
         },
       },
     );
+
     if (response.data.success) {
-      if (Imgtype == 'profile') {
+      if (Imgtype === 'profile') {
         return response.data.response.profileImages;
-      } else if (Imgtype == 'banner') {
-        return response.data.response.bannerImages;
+      } else if (Imgtype === 'banner') {
+        if (response.data.response.bannerImages) {
+          return response.data.response.bannerImages;
+        } else {
+          console.error('배너 이미지 데이터가 없습니다.');
+          return null;
+        }
+      } else {
+        console.error('알 수 없는 이미지 타입:', Imgtype);
+        return null;
       }
     } else {
       console.error('API 에러:', response.data.error);

@@ -31,12 +31,10 @@ import authState from '../../recoil/authAtom';
 import AuthButtons from '../../components/AuthButtons';
 import {getUserDataApi} from '../../api/user/getUserDataApi';
 import {getBadgesApi} from '../../api/badge/getBadgesApi';
-import {getRecordDataApi} from '@/src/api/record/getRecordDataApi';
 import {useQuery} from '@tanstack/react-query';
 import Badges from '../../components/Badges';
 import Profiles from '../../components/Profile';
 import Freeze from '../../components/Freeze';
-import {Record} from '@/src/api/record/getRecordDataType';
 const HomeScreen = () => {
   const authInfo = useRecoilValue(authState);
   const [user, setUser] = useRecoilState(userState);
@@ -135,7 +133,9 @@ const HomeScreen = () => {
           contentContainerStyle={{paddingBottom: 80}}>
           {/* 상단 프로필 영역 */}
 
-          {memberData && <Profiles member={memberData} edit={false} back={false}/>}
+          {memberData && (
+            <Profiles member={memberData} edit={false} back={false} />
+          )}
 
           <View style={HomeScreenStyles.profileTextContainer}>
             <Badges badges={badgesData} styleType={'home'} />

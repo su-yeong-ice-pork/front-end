@@ -1,7 +1,7 @@
 import {COLOR} from '@/src/constants/styles/color/color';
 import {Dimensions, StyleSheet} from 'react-native';
 
-const {width} = Dimensions.get('window');
+const {width,height} = Dimensions.get('window');
 
 export const StudyDeatilScreenStyle = StyleSheet.create({
   outContainer: {
@@ -15,6 +15,6 @@ export const StudyDeatilScreenStyle = StyleSheet.create({
     paddingHorizontal: 20,
     alignItems: 'center',
     width: width,
-    paddingBottom: 10,
+    paddingBottom: height * 0.07,
   },
 });
