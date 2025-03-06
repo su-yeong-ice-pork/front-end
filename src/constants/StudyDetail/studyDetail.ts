@@ -11,15 +11,17 @@ export const STUDY_DETAIL = {
 };
 
 export const ADD_FRIEND = {
+  MODAL_HEADER: '친구 추가',
   HEADER_TITLE_FIND: '친구 찾기',
   HEADER_TITLE_ADD: '친구 추가하기',
   CLICK_ICON_ALT: 'clickIcon',
   CLOSE_IOCN_ALT: 'closeButton',
   SEARCH_ICON_ALT: 'searchIcon',
   GROUP_ICON_ALT: 'groupIcon',
-  INPUT_PLACEHOLER: '잔디 친구의 이름을 탐색해주세요!',
+  INPUT_PLACEHOLER: '친구를 검색해보세요',
   INPUT_TYPE: 'text',
-  ERROR_MESSAGE: '검색하신 친구가 없습니다',
+  ERROR_MESSAGE: '검색하신 친구가 없어요',
+  SWEAT_ICON_ALT: 'sweatIcon',
 };
 
 export const FRIEND_SEARCH_RESULT = {

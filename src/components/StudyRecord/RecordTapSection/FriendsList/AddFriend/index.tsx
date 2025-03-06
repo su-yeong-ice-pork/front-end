@@ -17,6 +17,8 @@ import {AddFriendProps} from '@/src/components/types/StudyDetailType/FriendsType
 import {ADD_FRIEND} from '@/src/constants/StudyDetail/studyDetail';
 import {DummyAddFriendsList} from '@/src/constants/StudyDetail/Dummy/AddFriendList';
 import FriendSearchResult from './FriendSearchResult';
+import {ILLUSTRATIONS} from '@/src/constants/image/illustrations';
+import {EMOJIS} from '@/src/constants/image/emojis';
 
 const AddFriend: React.FC<AddFriendProps> = ({isOpen, onClose}) => {
   const [friend, setFriend] = useState<string>('');
@@ -35,15 +37,10 @@ const AddFriend: React.FC<AddFriendProps> = ({isOpen, onClose}) => {
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalBackdrop />
       <ModalContent>
-        <ModalHeader style={AddFriendStyles.modalHeader}>
-          <HStack>
-            <Image
-              source={ICONS.CLICK_ICON}
-              alt={ADD_FRIEND.CLICK_ICON_ALT}
-              style={AddFriendStyles.clickIcon}
-            />
-            <Text style={AddFriendStyles.titleText}>
-              {ADD_FRIEND.HEADER_TITLE_FIND}
+        <ModalHeader style={AddFriendStyles.ModalHeader}>
+          <HStack style={AddFriendStyles.headerContainer}>
+            <Text style={AddFriendStyles.headerText}>
+              {ADD_FRIEND.MODAL_HEADER}
             </Text>
           </HStack>
           <ModalCloseButton
@@ -82,7 +79,7 @@ const AddFriend: React.FC<AddFriendProps> = ({isOpen, onClose}) => {
           </Input>
 
           <Box>
-            <HStack style={AddFriendStyles.modalHeader}>
+            <HStack style={AddFriendStyles.header}>
               <Image
                 source={ICONS.USERS}
                 style={AddFriendStyles.clickIcon}
@@ -99,9 +96,16 @@ const AddFriend: React.FC<AddFriendProps> = ({isOpen, onClose}) => {
               <FriendSearchResult friendData={friendData} />
             ) : (
               <Box style={AddFriendStyles.friendList}>
-                <Text style={AddFriendStyles.friendListText}>
-                  {ADD_FRIEND.ERROR_MESSAGE}
-                </Text>
+                <HStack>
+                  <Text style={AddFriendStyles.friendListText}>
+                    {ADD_FRIEND.ERROR_MESSAGE}
+                  </Text>
+                  <Image
+                    source={EMOJIS.SWEAT}
+                    style={AddFriendStyles.emojiIcon}
+                    alt={ADD_FRIEND.SWEAT_ICON_ALT}
+                  />
+                </HStack>
               </Box>
             )}
           </Box>

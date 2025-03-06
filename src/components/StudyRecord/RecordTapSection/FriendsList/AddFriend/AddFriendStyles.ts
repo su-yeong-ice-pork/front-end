@@ -10,7 +10,25 @@ export const AddFriendStyles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#E1E6E8',
   },
-  modalHeader: {
+  ModalHeader: {
+    backgroundColor: 'white',
+    padding: 6,
+  },
+  headerContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    padding: 6,
+  },
+  headerText: {
+    flex: 1,
+    textAlign: 'center',
+    fontFamily: `${FONT}`,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#00838F',
+  },
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 15,
@@ -48,7 +66,7 @@ export const AddFriendStyles = StyleSheet.create({
   },
   modalBody: {
     backgroundColor: '#E1E6E8',
-    paddingTop: 5,
+    paddingTop: 15,
     paddingBottom: 10,
     paddingRight: 10,
     paddingLeft: 10,
@@ -82,9 +100,15 @@ export const AddFriendStyles = StyleSheet.create({
   },
   friendListContainer: {
     width: '100%',
-    height: width * 0.13,
+    height: 45,
     paddingLeft: 5,
-    borderRadius: 5,
-    backgroundColor: '#DADADA',
+    borderRadius: 10,
+    backgroundColor: '#fff',
+  },
+  emojiIcon: {
+    width: width * 0.05,
+    height: width * 0.05,
+    marginLeft: 5,
+    opacity: 0.5,
   },
 });
