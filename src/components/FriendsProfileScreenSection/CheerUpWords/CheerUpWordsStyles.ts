@@ -35,7 +35,7 @@ export const CheerupWordsStyles = StyleSheet.create({
   supportButtonText: {
     color: '#5AA6A8',
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: 20,
     justifyContent: 'center',
   },
   infoText: {

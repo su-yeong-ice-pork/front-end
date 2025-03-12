@@ -7,13 +7,16 @@ import BadgeText from './BadgeText';
 import BadgeView from './BadgeView';
 import {BadgesProps} from '@/src/api/badge/getBadgesPropsType';
 
-const Badges: React.FC<BadgesProps> = ({badges,styleType}) => {
-    const badgeContainerStyle = styleType === 'home' ? HomeBadgeStyles.badgeContainer : ProfileBadgeStyles.badgeContainer;
+const Badges: React.FC<BadgesProps> = ({badges, styleType}) => {
+  const badgeContainerStyle =
+    styleType === 'home'
+      ? HomeBadgeStyles.badgeContainer
+      : ProfileBadgeStyles.badgeContainer;
 
   return (
     <Box style={badgeContainerStyle}>
-      <BadgeText styleType={styleType}/>
-      <BadgeView badges={badges} styleType={styleType}/>
+      <BadgeText styleType={styleType} />
+      <BadgeView badges={badges} styleType={styleType} />
     </Box>
   );
 };

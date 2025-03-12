@@ -65,7 +65,7 @@ export const FriendsProfileScreenStyles = StyleSheet.create({
   badgeContainer: {
     padding: height * 0.025,
     marginTop: 25,
-    marginLeft: -50,
+    marginRight: 10,
   },
   badges: {
     flexDirection: 'row',
@@ -77,8 +77,8 @@ export const FriendsProfileScreenStyles = StyleSheet.create({
   },
   badgeText: {
     fontWeight: 'bold',
-    fontSize: width * 0.035,
-    marginLeft: width * 0.015,
+    fontSize: 12,
+    marginLeft: 5,
     fontFamily: `${FONT}`,
     color: '#838F8F',
     marginBottom: height * 0.003,
