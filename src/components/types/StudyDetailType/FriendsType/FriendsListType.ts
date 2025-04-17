@@ -6,3 +6,16 @@ export type FriendsListType = {
   todayStudyTime: string;
   studyStatus: boolean;
 };
+
+export type AddFriendProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export type FriendSearchProps = {
+  friendData: {
+    id: number;
+    profileImage: string | null;
+    name: string;
+  };
+};
